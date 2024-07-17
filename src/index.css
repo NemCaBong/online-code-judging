@@ -1,9 +1,14 @@
+@import url("https://cdn.jsdelivr.net/gh/shacdn/CDN/Inter/Inter.css");
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"); /* Example font import */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    --font-sans: "Inter", sans-serif;
+    --font-roboto: "Roboto", sans-serif; /* Example font variable */
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
     --card: 0 0% 100%;
@@ -65,5 +70,6 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans); /* Apply the font globally */
   }
 }
