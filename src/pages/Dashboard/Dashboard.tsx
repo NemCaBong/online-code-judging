@@ -63,15 +63,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table.tsx";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs.tsx";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip.tsx";
-import DashboardCalender from "@/pages/Dashboard/DashboardCalender.tsx";
-import {DisplayCard} from "@/pages/Dashboard/DisplayCard.tsx";
+import DashboardChart from "@/pages/Dashboard/DashboardChart";
+import { DisplayCard } from "@/pages/Dashboard/DisplayCard.tsx";
+import { Calendar } from "@/components/ui/calendar";
 
 export function Dashboard() {
   return (
@@ -224,9 +230,7 @@ export function Dashboard() {
           <Breadcrumb className="hidden md:flex">
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage >
-                  Dashboard
-                </BreadcrumbPage>
+                <BreadcrumbPage>Dashboard</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -264,14 +268,16 @@ export function Dashboard() {
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3">
-          <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2">
-            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
-              <DisplayCard className="sm:col-span-2"/>
+        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8  xl:grid-cols-4 grid-flow-dense">
+          <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-3 grid-flow-dense justify-items-end">
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-7xl">
+              <DisplayCard className="sm:col-span-2" />
+              <DisplayCard />
+              <DisplayCard />
               <DisplayCard />
               <DisplayCard />
             </div>
-            <Tabs defaultValue="week">
+            <Tabs defaultValue="week" className="w-full max-w-7xl">
               <div className="flex items-center">
                 <TabsList>
                   <TabsTrigger value="week">Week</TabsTrigger>
@@ -507,8 +513,18 @@ export function Dashboard() {
               </TabsContent>
             </Tabs>
           </div>
-          <div>
-            <DashboardCalender />
+          <div className="grid grid-cols-2 md:grid-cols-1 gap-4 md:gap-8 ">
+            <div className="flex-1 place-items-center max-w-xs rounded-xl border border-zinc-200 text-zinc-950 shadow dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50">
+              <Calendar
+                mode="single"
+                // selected={date}
+                // onSelect={setDate}
+                className="p-4 w-full flex justify-center items-center"
+              />
+            </div>
+            <div className="flex-1">
+              <DashboardChart />
+            </div>
             {/*<Card className="overflow-hidden" x-chunk="dashboard-05-chunk-4">*/}
             {/*  <CardHeader className="flex flex-row items-start bg-muted/50">*/}
             {/*    <div className="grid gap-0.5">*/}
