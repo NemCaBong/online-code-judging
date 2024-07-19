@@ -513,7 +513,7 @@ export function Dashboard() {
               </TabsContent>
             </Tabs>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-1 gap-4 md:gap-8 ">
+          <div className="flex flex-wrap gap-4 md:gap-8 ">
             <div className="flex-1 place-items-center max-w-xs rounded-xl border border-zinc-200 text-zinc-950 shadow dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50">
               <Calendar
                 mode="single"
