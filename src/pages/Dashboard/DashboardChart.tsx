@@ -8,7 +8,7 @@ import { Separator } from "@/components//ui/separator";
 
 export default function DashboardChart() {
   return (
-    <Card className="max-w-xs">
+    <Card className="max-w-lg">
       <CardContent className="flex gap-4 p-4 pb-2">
         <ChartContainer
           config={{
