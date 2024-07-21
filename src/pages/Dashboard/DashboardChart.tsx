@@ -1,7 +1,4 @@
-"use client";
-
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
-
 import { Card, CardContent, CardFooter } from "@/components//ui/card";
 import { ChartContainer } from "@/components//ui/chart";
 import { Separator } from "@/components//ui/separator";
