@@ -1,5 +1,6 @@
 @import url("https://cdn.jsdelivr.net/gh/shacdn/CDN/Inter/Inter.css");
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"); /* Example font import */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -7,6 +8,7 @@
 
 @layer base {
   :root {
+    --font-mono: "JetBrains Mono", monospace;
     --font-sans: "Inter", sans-serif;
     --font-roboto: "Roboto", sans-serif; /* Example font variable */
     --background: 0 0% 100%;

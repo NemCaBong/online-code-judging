@@ -18,8 +18,9 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        sans: ["var(--font-sans)", "sans-serif"],
-        roboto: ["var(--font-roboto)", "sans-serif"] /* Existing font */,
+        sans: ["var(--font-sans)"],
+        roboto: ["var(--font-roboto)"],
+        mono: ["var(--font-mono)"],
       },
       colors: {
         border: "hsl(var(--border))",

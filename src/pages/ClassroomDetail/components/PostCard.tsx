@@ -24,7 +24,7 @@ export function PostCard({ className }: { className?: string }) {
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-2">
-                  <CardTitle>Phạm Thảo</CardTitle>
+                  <CardTitle className="leading-1">Phạm Thảo</CardTitle>
                   <Badge
                     variant="secondary"
                     className="ml-3 leading-1.5 text-xs font-semibold"
