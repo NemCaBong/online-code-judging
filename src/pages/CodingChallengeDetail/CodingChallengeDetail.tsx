@@ -15,6 +15,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import CodeMirrorEditor from "./components/CodeMirrorEditor";
+import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 export function CodingChallengeDetail() {
   return (
@@ -25,75 +28,201 @@ export function CodingChallengeDetail() {
         <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0">
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end">
             <div className="grid w-full max-w-7xl">
-              <Card className="">
-                <CardHeader>
-                  <CardTitle>12. Two Sums</CardTitle>
-                  <CardDescription>Easy question on LeetCode</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Magni, quibusdam voluptates nobis aspernatur pariatur
-                    molestiae id quam numquam quisquam totam similique nemo
-                    sequi nesciunt dolore exercitationem placeat. Voluptas,
-                    minus enim.
-                  </p>
-                  <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                    adipisci! Maxime magni, molestias, doloremque, nobis illum
-                    quas ab sed ea saepe possimus modi.
-                  </p>
-                </CardContent>
-                <CardFooter>
-                  {" "}
-                  <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                      <AccordionContent>
-                        Yes. It adheres to the WAI-ARIA design pattern.
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger>Is it styled?</AccordionTrigger>
-                      <AccordionContent>
-                        Yes. It comes with default styles that matches the other
-                        components&apos; aesthetic.
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-3">
-                      <AccordionTrigger>Is it animated?</AccordionTrigger>
-                      <AccordionContent>
-                        Yes. It's animated by default, but you can disable it if
-                        you prefer.
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
-                </CardFooter>
-              </Card>
+              <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
+                <Card className="">
+                  <CardHeader>
+                    <CardTitle>12. Two Sums</CardTitle>
+                    <CardDescription>Easy question on LeetCode</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                    <p>
+                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                      Magni, quibusdam voluptates nobis aspernatur pariatur
+                      molestiae id quam numquam quisquam totam similique nemo
+                      sequi nesciunt dolore exercitationem placeat. Voluptas,
+                      minus enim.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
+                      adipisci! Maxime magni, molestias, doloremque, nobis illum
+                      quas ab sed ea saepe possimus modi.
+                    </p>
+                    <p>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                      Molestiae, odio. Cupiditate quibusdam nostrum quas
+                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
+                      tenetur ea. Illum illo veritatis consectetur numquam!
+                    </p>
+                  </CardContent>
+                  <CardFooter>
+                    {" "}
+                    <Accordion type="single" collapsible className="w-full">
+                      <AccordionItem value="item-1">
+                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                        <AccordionContent>
+                          Yes. It adheres to the WAI-ARIA design pattern.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="item-2">
+                        <AccordionTrigger>Is it styled?</AccordionTrigger>
+                        <AccordionContent>
+                          Yes. It comes with default styles that matches the
+                          other components&apos; aesthetic.
+                        </AccordionContent>
+                      </AccordionItem>
+                      <AccordionItem value="item-3">
+                        <AccordionTrigger>Is it animated?</AccordionTrigger>
+                        <AccordionContent>
+                          Yes. It's animated by default, but you can disable it
+                          if you prefer.
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                  </CardFooter>
+                </Card>{" "}
+              </ScrollArea>
             </div>
           </div>
-          <div className="grid gap-2">
-            <div className="">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Code Editor</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CodeMirrorEditor
-                    language="python"
-                    className="h-[450px] min-h-[300px]"
-                  />
-                </CardContent>
-              </Card>
-            </div>
-            <div className="">
-              <Card>
-                <CardHeader></CardHeader>
-                <CardContent></CardContent>
-                <CardFooter></CardFooter>
-              </Card>
-            </div>
+          <div className="flex flex-col justify-between h-[91vh] gap-2">
+            <Card className="">
+              <CardHeader className="flex flex-row justify-between items-center">
+                <CardTitle>Code Editor</CardTitle>
+                <div className="flex gap-4">
+                  <Button className="text-xs">Run</Button>
+                  <Button className="text-xs" variant="secondary">
+                    Submit
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <CodeMirrorEditor
+                  language="python"
+                  className="max-h-[400px] h-[400px]"
+                />
+              </CardContent>
+            </Card>
+            <Card className="h-full">
+              <CardContent className="pt-3 h-full">
+                <Tabs defaultValue="tab-0" className="w-full h-full">
+                  <TabsList>
+                    {[...Array(5)].map((_, index) => (
+                      <TabsTrigger key={index} value={`tab-${index}`}>
+                        Case {index + 1}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  {[...Array(5)].map((_, index) => (
+                    <TabsContent
+                      className="h-[85%]"
+                      key={index}
+                      value={`tab-${index}`}
+                    >
+                      <Card className="border-none dark:bg-codeEditorDark h-full">
+                        <CardHeader>Tab ${index}</CardHeader>
+                        <CardContent></CardContent>
+                        <CardFooter></CardFooter>
+                      </Card>
+                    </TabsContent>
+                  ))}
+                </Tabs>
+              </CardContent>
+            </Card>
           </div>
         </main>
       </div>

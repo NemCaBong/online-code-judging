@@ -31,6 +31,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Sidebar } from "@/components/common/Sidebar";
 import { Header } from "@/components/common/Header";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function TaskBoard() {
   const location = useLocation();
@@ -119,7 +120,7 @@ export function TaskBoard() {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {[...Array(10)].map((_, _index) => (
+                      {[...Array(15)].map((_, _index) => (
                         <React.Fragment key={_index}>
                           <TableRow>
                             <TableCell className="hidden sm:table-cell">
