@@ -7,6 +7,7 @@ import { TaskBoard } from "./pages/client/TaskBoard/TaskBoard";
 import { ClassroomDetail } from "./pages/client/ClassroomDetail/ClassroomDetail";
 import { CodingChallengeDetail } from "./pages/client/CodingChallengeDetail/CodingChallengeDetail";
 import { AdminDashboard } from "./pages/admin/AdminDashboard/AdminDashboard";
+import { AdminClassroom } from "./pages/admin/AdminClassroom/AdminClassroom";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/challenges" element={<CodingChallengeDetail />} />
         <Route path="/admin">
           <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="classrooms" element={<AdminClassroom />} />
         </Route>
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
