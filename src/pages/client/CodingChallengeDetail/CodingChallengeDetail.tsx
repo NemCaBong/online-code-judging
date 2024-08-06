@@ -29,126 +29,21 @@ export function CodingChallengeDetail() {
           <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end">
             <div className="grid w-full max-w-7xl">
               <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
-                <Card className="">
+                <Card className="border-hidden">
                   <CardHeader>
                     <CardTitle>12. Two Sums</CardTitle>
                     <CardDescription>Easy question on LeetCode</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
-                    <p>
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Magni, quibusdam voluptates nobis aspernatur pariatur
-                      molestiae id quam numquam quisquam totam similique nemo
-                      sequi nesciunt dolore exercitationem placeat. Voluptas,
-                      minus enim.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Eligendi sunt, qui a obcaecati maiores numquam! Dolorum,
-                      adipisci! Maxime magni, molestias, doloremque, nobis illum
-                      quas ab sed ea saepe possimus modi.
-                    </p>
-                    <p>
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Molestiae, odio. Cupiditate quibusdam nostrum quas
-                      corporis, magnam nulla ducimus fugit ipsum vitae quod unde
-                      tenetur ea. Illum illo veritatis consectetur numquam!
-                    </p>
+                    {[...Array(15)].map(() => (
+                      <p>
+                        Lorem ipsum, dolor sit amet consectetur adipisicing
+                        elit. Magni, quibusdam voluptates nobis aspernatur
+                        pariatur molestiae id quam numquam quisquam totam
+                        similique nemo sequi nesciunt dolore exercitationem
+                        placeat. Voluptas, minus enim.
+                      </p>
+                    ))}
                   </CardContent>
                   <CardFooter>
                     {" "}
