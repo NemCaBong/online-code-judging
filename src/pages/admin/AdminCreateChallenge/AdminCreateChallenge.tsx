@@ -1,6 +1,7 @@
 import React from "react";
 import { AdminHeader } from "@/components/common/AdminHeader";
 import MDEditor from "@uiw/react-md-editor";
+import "./styles/MDEditor.css";
 
 export function AdminCreateChallenge() {
   const [markdownContent, setMarkdownContent] = React.useState(`
@@ -102,6 +103,7 @@ This web site is using \`markedjs/marked\`.
                 visibleDragbar={false}
                 height="100%"
                 onChange={(value: string) => setMarkdownContent(value)}
+                className="w-full"
               />
             </div>
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
