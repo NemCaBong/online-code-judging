@@ -18,8 +18,80 @@ import CodeMirrorEditor from "./components/CodeMirrorEditor";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import MDEditor from "@uiw/react-md-editor";
 
 export function CodingChallengeDetail() {
+  const markdownContent = `
+# Markdown \`syntax guide\`
+Here is some \`inline code\` with the word \`markdown\` inside it.
+
+## Headers
+
+# This is a Heading h1
+## This is a Heading h2
+###### This is a Heading h6
+
+## Emphasis
+
+*This text will be italic*  
+_This will also be italic_
+
+**This text will be bold**  
+__This will also be bold__
+
+_You **can** combine them_
+
+## Lists
+
+### Unordered
+
+* Item 1
+* Item 2
+* Item 2a
+* Item 2b
+
+### Ordered
+
+1. Item 1
+2. Item 2
+3. Item 3
+    1. Item 3a
+    2. Item 3b
+
+## Images
+
+![This is an alt text.](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxqglKDy3Z9-zDvnfRFQIGeQft28uRVTHoGQ&s "This is a sample image.")
+
+## Links
+
+You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
+
+## Blockquotes
+
+> Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
+>
+>> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
+
+## Tables
+
+| Left columns  | Right columns |
+| ------------- |:-------------:|
+| left foo      | right foo     |
+| left bar      | right bar     |
+| left baz      | right baz     |
+
+## Blocks of code
+
+\`\`\`javascript
+import React from "react";
+import ReactDOM from "react-dom";
+import MEDitor from '@uiw/react-md-editor';
+\`\`\`
+
+## Inline code
+
+This web site is using \`markedjs/marked\`.
+`;
   return (
     <div className="flex flex-col min-h-screen w-full bg-muted/40">
       <Sidebar />
@@ -35,7 +107,7 @@ export function CodingChallengeDetail() {
                     <CardDescription>Easy question on LeetCode</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    {[...Array(15)].map(() => (
+                    {/* {[...Array(15)].map(() => (
                       <p>
                         Lorem ipsum, dolor sit amet consectetur adipisicing
                         elit. Magni, quibusdam voluptates nobis aspernatur
@@ -43,7 +115,11 @@ export function CodingChallengeDetail() {
                         similique nemo sequi nesciunt dolore exercitationem
                         placeat. Voluptas, minus enim.
                       </p>
-                    ))}
+                    ))} */}
+                    <MDEditor.Markdown
+                      source={markdownContent}
+                      style={{ fontSize: "14px" }}
+                    />
                   </CardContent>
                   <CardFooter>
                     {" "}
@@ -93,7 +169,7 @@ export function CodingChallengeDetail() {
               </CardContent>
             </Card>
             <Card className="h-full">
-              <CardContent className="pt-3 h-full">
+              <CardContent className="pt-3 pb-0 h-full">
                 <Tabs defaultValue="tab-0" className="w-full h-full">
                   <TabsList>
                     {[...Array(5)].map((_, index) => (
@@ -110,8 +186,6 @@ export function CodingChallengeDetail() {
                     >
                       <Card className="border-none dark:bg-codeEditorDark h-full">
                         <CardHeader>Tab ${index}</CardHeader>
-                        <CardContent></CardContent>
-                        <CardFooter></CardFooter>
                       </Card>
                     </TabsContent>
                   ))}

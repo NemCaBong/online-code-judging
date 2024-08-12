@@ -102,7 +102,9 @@ This web site is using \`markedjs/marked\`.
                 value={markdownContent}
                 visibleDragbar={false}
                 height="100%"
-                onChange={(value: string) => setMarkdownContent(value)}
+                onChange={(value: string | undefined) =>
+                  setMarkdownContent(value || "")
+                }
                 className="w-full"
               />
             </div>
