@@ -25,27 +25,18 @@ const languages: { [key in LanguageType]: () => Extension } = {
 interface CodeMirrorEditorProps {
   language: LanguageType;
   className?: string;
+  value: string;
+  onChange?: (value: string) => void;
 }
 const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   language,
   className,
+  value,
+  onChange,
 }) => {
   return (
     <CodeMirror
-      value="/**
- * @param {number[]} nums
- * @return {number}
- */
-var singleNumber = function(nums) {
-    nums.sort()
-    for(let i = 0; i < nums.length; i++){
-        if (nums[i] === nums[i+1]){
-            i++;
-        } else {
-            return nums[i + 1]
-        }
-    }
-};"
+      value={value}
       height="100%"
       className={className}
       theme={vscodeDark}
@@ -54,6 +45,7 @@ var singleNumber = function(nums) {
         autocompletion(),
         keymap.of(completionKeymap),
       ]}
+      onChange={onChange}
     />
   );
 };
