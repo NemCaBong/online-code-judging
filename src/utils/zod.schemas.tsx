@@ -20,14 +20,17 @@ export const createChallengeSchema = z.object({
   markdownContent: z.string().min(1, {
     message: "Please enter some content",
   }),
-  inputAndOutput: z
+  boilerplate_code: z.string().min(10, {
+    message: "Please enter some boilerplate code",
+  }),
+  inputAndExpectedOutput: z
     .array(
       z.object({
         input: z.string().min(1, {
-          message: "Please enter some input",
+          message: "Please enter input",
         }),
-        output: z.string().min(1, {
-          message: "Please enter some output",
+        expected_output: z.string().min(1, {
+          message: "Please enter expected output",
         }),
       })
     )

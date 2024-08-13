@@ -17,6 +17,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/multi-select";
+import { Textarea } from "@/components/ui/textarea";
+import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
+import ReactCodeMirror from "@uiw/react-codemirror";
 
 const OPTIONS: Option[] = [
   { label: "nextjs", value: "nextjs" },
@@ -105,10 +108,11 @@ export function AdminCreateChallenge() {
       name: "",
       tags: [],
       markdownContent: initialMarkdownContent,
-      inputAndOutput: [
+      boilerplate_code: "",
+      inputAndExpectedOutput: [
         {
           input: "",
-          output: "",
+          expected_output: "",
         },
       ],
       hints: [
@@ -124,7 +128,7 @@ export function AdminCreateChallenge() {
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
-    name: "inputAndOutput",
+    name: "inputAndExpectedOutput",
   });
 
   const {
@@ -173,14 +177,14 @@ export function AdminCreateChallenge() {
                   name="name"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel className="text-xl">Name</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="Enter name challenge here ...."
+                          placeholder="Enter challenge's name here ...."
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>Enter name challenge</FormDescription>
+                      <FormDescription>Name of this challenge</FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -190,7 +194,7 @@ export function AdminCreateChallenge() {
                   name="tags"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tags</FormLabel>
+                      <FormLabel className="text-xl">Tags</FormLabel>
                       <FormControl>
                         <MultipleSelector
                           {...field}
@@ -215,7 +219,9 @@ export function AdminCreateChallenge() {
                   name="markdownContent"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Markdown Content</FormLabel>
+                      <FormLabel className="text-xl">
+                        Markdown Content
+                      </FormLabel>
                       <FormControl>
                         <MDEditor
                           value={field.value}
@@ -224,163 +230,197 @@ export function AdminCreateChallenge() {
                           onChange={(value: string | undefined) =>
                             field.onChange(value || "")
                           }
-                          className="w-full"
+                          className="w-full text-sm"
                         />
                       </FormControl>
-                      <FormDescription>Enter markdown content</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                {/* Boilerplate_code component */}
+                <FormField
+                  control={form.control}
+                  name="boilerplate_code"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xl">
+                        Boilerplate Code
+                      </FormLabel>
+                      <FormControl>
+                        <CodeMirrorEditor
+                          value={field.value}
+                          language="javascript"
+                          className="h-[500px]"
+                          onChange={(value: string | undefined) =>
+                            field.onChange(value || "")
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Boilerplate code for this challenge
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                <div className="w-full border rounded-sm py-2">
-                  <h2 className="text-lg p-2 font-semibold">Test Cases</h2>
-
-                  {fields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className="flex w-full p-2 flex-wrap gap-4"
-                    >
-                      <FormField
-                        control={form.control}
-                        name={`inputAndOutput.${index}.input`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Input</FormLabel>
-                            <FormControl>
-                              <Input
+                {/* Test cases component */}
+                <div>
+                  <h2 className="text-lg font-semibold pb-2">Test Cases</h2>
+                  <div className="w-full border rounded-md py-2 px-3">
+                    {fields.map((field, index) => (
+                      <div
+                        key={field.id}
+                        className="flex w-full p-2 flex-wrap gap-4"
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`inputAndExpectedOutput.${index}.input`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-base">Input</FormLabel>
+                              <FormControl>
+                                {/* <Input
                                 placeholder="Enter input here ...."
                                 {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>Enter input</FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`inputAndOutput.${index}.output`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Output</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter output here ...."
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>Enter output</FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={
-                          // nếu chỉ có 1 test case thì không cho xóa
-                          fields.length === 1 ? undefined : () => remove(index)
-                        }
-                        className="mt-8"
-                      >
-                        Xóa
-                      </Button>
-                    </div>
-                  ))}
+                              /> */}
+                                <Textarea
+                                  placeholder="Enter input here ...."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`inputAndExpectedOutput.${index}.expected_output`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-base">
+                                Expected Output
+                              </FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Enter expected output ...."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={
+                            // nếu chỉ có 1 test case thì không cho xóa
+                            fields.length === 1
+                              ? undefined
+                              : () => remove(index)
+                          }
+                          className="mt-8"
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    ))}
 
-                  <Button
-                    type="button"
-                    className="mt-8 m-2"
-                    variant="secondary"
-                    onClick={() => append({ input: "", output: "" })}
-                  >
-                    Add Test Case
-                  </Button>
-
-                  <FormMessage />
-                </div>
-
-                <div className="w-full border rounded-sm py-2">
-                  <h2 className="text-lg p-2 font-semibold">Hints</h2>
-
-                  {form.watch("hints").map((_, index) => (
-                    <div
-                      key={index}
-                      className="flex w-full p-2 flex-wrap gap-4"
+                    <Button
+                      type="button"
+                      className="mt-8 m-2"
+                      variant="secondary"
+                      onClick={() => append({ input: "", expected_output: "" })}
                     >
-                      <FormField
-                        control={form.control}
-                        name={`hints.${index}.hintQuestion`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hint Question</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter hint question here ...."
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>
-                              Enter hint question
-                            </FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name={`hints.${index}.hintAnswer`}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Hint Answer</FormLabel>
-                            <FormControl>
-                              <Input
-                                placeholder="Enter hint answer here ...."
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormDescription>Enter hint answer</FormDescription>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        onClick={
-                          // nếu chỉ có 1 hint thì không cho xóa
-                          hintFields.length === 1
-                            ? undefined
-                            : () => removeHint(index)
-                        }
-                        className="mt-8"
-                      >
-                        Xóa
-                      </Button>
-                    </div>
-                  ))}
-
-                  <Button
-                    type="button"
-                    className="mt-8 m-2"
-                    variant="secondary"
-                    onClick={() =>
-                      appendHint({ hintQuestion: "", hintAnswer: "" })
-                    }
-                  >
-                    Add Hint
-                  </Button>
-
-                  <FormMessage />
+                      Add Test Case
+                    </Button>
+                  </div>
                 </div>
 
+                {/* Hints */}
+                <div>
+                  <h2 className="text-lg font-semibold pb-2">Hints</h2>
+                  <div className="w-full border rounded-md py-2 px-3">
+                    {form.watch("hints").map((_, index) => (
+                      <div
+                        key={index}
+                        className="flex w-full p-2 flex-wrap gap-4"
+                      >
+                        <FormField
+                          control={form.control}
+                          name={`hints.${index}.hintQuestion`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-base">
+                                Hint Question
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter hint question here ...."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`hints.${index}.hintAnswer`}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-base">
+                                Hint Answer
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="Enter hint answer here ...."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={
+                            // nếu chỉ có 1 hint thì không cho xóa
+                            hintFields.length === 1
+                              ? undefined
+                              : () => removeHint(index)
+                          }
+                          className="mt-8"
+                        >
+                          Xóa
+                        </Button>
+                      </div>
+                    ))}
+
+                    <Button
+                      type="button"
+                      className="mt-8 m-2"
+                      variant="secondary"
+                      onClick={() =>
+                        appendHint({ hintQuestion: "", hintAnswer: "" })
+                      }
+                    >
+                      Add Hint
+                    </Button>
+
+                    <FormMessage />
+                  </div>
+                </div>
+
+                {/* Space & Time limit */}
                 <FormField
                   control={form.control}
                   name="timeLimit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Time Limit (MS)</FormLabel>
+                      <FormLabel className="text-xl">Time Limit (MS)</FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -388,7 +428,9 @@ export function AdminCreateChallenge() {
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>Enter time limit</FormDescription>
+                      <FormDescription>
+                        Time limit of this challenge
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -399,7 +441,9 @@ export function AdminCreateChallenge() {
                   name="spaceLimit"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Space Limit (MB)</FormLabel>
+                      <FormLabel className="text-xl">
+                        Space Limit (MB)
+                      </FormLabel>
                       <FormControl>
                         <Input
                           type="number"
@@ -407,7 +451,9 @@ export function AdminCreateChallenge() {
                           {...field}
                         />
                       </FormControl>
-                      <FormDescription>Enter space limit</FormDescription>
+                      <FormDescription>
+                        Space limit of this challenge
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
