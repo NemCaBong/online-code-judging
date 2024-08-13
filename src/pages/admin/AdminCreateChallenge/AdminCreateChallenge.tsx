@@ -19,10 +19,9 @@ import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/multi-select";
 import { Textarea } from "@/components/ui/textarea";
 import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
-import ReactCodeMirror from "@uiw/react-codemirror";
 
 const OPTIONS: Option[] = [
-  { label: "nextjs", value: "nextjs" },
+  { label: "NextJS", value: "nextjs" },
   { label: "React", value: "react" },
   { label: "Remix", value: "remix" },
 ];
