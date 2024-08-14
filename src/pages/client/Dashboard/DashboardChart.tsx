@@ -5,50 +5,50 @@ import { Separator } from "@/components//ui/separator";
 
 export default function DashboardChart() {
   return (
-    <Card className="max-w-lg">
-      <CardContent className="flex gap-4 p-4 pb-2">
+    <Card className="max-w-xl">
+      <CardContent className="flex gap-4 p-4 pb-2 ">
         <ChartContainer
           config={{
-            move: {
+            challenge: {
               label: "Move",
               color: "hsl(var(--chart-1))",
             },
-            stand: {
+            classes: {
               label: "Stand",
               color: "hsl(var(--chart-2))",
             },
-            exercise: {
+            exercises: {
               label: "Exercise",
               color: "hsl(var(--chart-3))",
             },
           }}
-          className="h-[140px] w-full"
+          className="h-[150px] w-full"
         >
           <BarChart
             margin={{
-              left: 0,
+              left: 10,
               right: 0,
               top: 0,
               bottom: 10,
             }}
             data={[
               {
-                activity: "stand",
+                activity: "classes",
                 value: (8 / 12) * 100,
                 label: "8/12 hr",
-                fill: "var(--color-stand)",
+                fill: "var(--color-classes)",
               },
               {
-                activity: "exercise",
+                activity: "exercises",
                 value: (46 / 60) * 100,
                 label: "46/60 min",
-                fill: "var(--color-exercise)",
+                fill: "var(--color-exercises)",
               },
               {
-                activity: "move",
+                activity: "challenge",
                 value: (245 / 360) * 100,
                 label: "245/360 kcal",
-                fill: "var(--color-move)",
+                fill: "var(--color-challenge)",
               },
             ]}
             layout="vertical"

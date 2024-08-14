@@ -34,7 +34,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { ListFilter } from "lucide-react";
+import { ArrowDownWideNarrow, ListFilter } from "lucide-react";
 
 const mails = [
   {
@@ -252,7 +252,7 @@ export function AdminGradingPage() {
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button size="sm" className="h-7 gap-1 text-sm">
-                            <ListFilter className="h-3.5 w-3.5" />
+                            <ArrowDownWideNarrow className="h-3.5 w-3.5" />
                             <span className="sr-only sm:not-sr-only">Sort</span>
                           </Button>
                         </DropdownMenuTrigger>
@@ -395,7 +395,11 @@ export function AdminGradingPage() {
                 </div>
               </CardHeader>
               <CardContent>
-                <CodeMirrorEditor language="javascript" className="h-[61vh]" />
+                <CodeMirrorEditor
+                  value=""
+                  language="javascript"
+                  className="h-[61vh]"
+                />
               </CardContent>
               <Separator />
               <CardFooter className="block">

@@ -20,25 +20,27 @@ export function ClassesListBoard() {
   return (
     <Card x-chunk="dashboard-05-chunk-3">
       <CardHeader className="px-7">
-        <CardTitle>Orders</CardTitle>
-        <CardDescription>Recent orders from your store.</CardDescription>
+        <CardTitle>Classes</CardTitle>
+        <CardDescription>All your coding classes</CardDescription>
       </CardHeader>
       <ScrollArea className="h-[62dvh]">
         <CardContent>
           <Table className="w-full">
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
-                <TableHead className="hidden sm:table-cell">Type</TableHead>
+                <TableHead>Class Name</TableHead>
+                <TableHead className="hidden sm:table-cell">Teacher</TableHead>
                 <TableHead className="hidden sm:table-cell">Status</TableHead>
-                <TableHead className="hidden md:table-cell">Date</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
+                <TableHead className="hidden md:table-cell">
+                  Total Students
+                </TableHead>
+                <TableHead className="text-right">Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {[...Array(30)].map((_, index) => (
                 <TableRow
-                  className={index % 2 === 0 ? "bg-accent" : ""}
+                  className={index % 2 === 0 ? "bg-muted/40" : ""}
                   key={index}
                 >
                   <TableCell>
@@ -47,16 +49,16 @@ export function ClassesListBoard() {
                       liam@example.com
                     </div>
                   </TableCell>
-                  <TableCell className="hidden sm:table-cell">Sale</TableCell>
+                  <TableCell className="hidden sm:table-cell">
+                    Phạm Thảo
+                  </TableCell>
                   <TableCell className="hidden sm:table-cell">
                     <Badge className="text-xs" variant="secondary">
                       Fulfilled
                     </Badge>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    2023-06-23
-                  </TableCell>
-                  <TableCell className="text-right">$250.00</TableCell>
+                  <TableCell className="hidden md:table-cell">50</TableCell>
+                  <TableCell className="text-right">2023-06-23</TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -151,20 +151,9 @@ export function AdminCreateChallenge() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
-              {/* <Button variant="outline" size="icon" className="h-7 w-7">
-                <ChevronLeft className="h-4 w-4" />
-                <span className="sr-only">Back</span>
-              </Button> */}
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-3xl font-bold tracking-tight sm:grow-0">
                 Create Coding Challenge
               </h1>
-              {/* <Badge className="ml-auto sm:ml-0">On going</Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Button variant="secondary" className="h-10 py-4">
-                  Grade Exercises
-                </Button>
-                <Button className="px-4 h-10 block">Post</Button>
-              </div> */}
             </div>
             <Form {...form}>
               <form

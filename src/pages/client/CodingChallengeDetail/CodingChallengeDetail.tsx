@@ -178,7 +178,7 @@ var singleNumber = function(nums) {
     }
 };"
                   language="javascript"
-                  className="h-[500px]"
+                  className="h-[45vh]"
                 />
               </CardContent>
             </Card>
