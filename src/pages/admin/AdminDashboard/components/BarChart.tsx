@@ -42,7 +42,7 @@ export function BarChartDashboard() {
   return (
     <Card className="xl:col-span-2">
       <CardHeader>
-        <CardTitle>Bar Chart - Multiple</CardTitle>
+        <CardTitle>Total Failed & Success Submissions</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent>

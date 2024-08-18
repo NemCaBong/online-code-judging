@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function ClassesListBoard() {
   return (
-    <Card x-chunk="dashboard-05-chunk-3">
+    <Card className="mt-2">
       <CardHeader className="px-7">
         <CardTitle>Classes</CardTitle>
         <CardDescription>All your coding classes</CardDescription>

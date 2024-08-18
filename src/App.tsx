@@ -19,7 +19,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/tasks" element={<TaskBoard />} />
-        <Route path="/classrooms" element={<ClassroomDetail />} />
+        <Route path="/classes" element={<ClassroomDetail />} />
         <Route path="/challenges" element={<CodingChallengeDetail />} />
         <Route path="/admin">
           <Route path="dashboard" element={<AdminDashboard />} />

@@ -1,4 +1,4 @@
-import { ArrowDownWideNarrow, File, ListFilter } from "lucide-react";
+import { ArrowDownWideNarrow, ListFilter } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import {
   DropdownMenu,
@@ -14,9 +14,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs.tsx";
-import DashboardChart from "@/pages/client/Dashboard/DashboardChart";
-import { DisplayCard } from "@/pages/client/Dashboard/DisplayCard";
-import DashboardNotificationBoard from "./DashboardNotificationBoard";
+import DashboardChart from "@/pages/client/Dashboard/components/DashboardChart";
+import { DisplayCard } from "@/pages/client/Dashboard/components/DisplayCard";
+import DashboardNotificationBoard from "./components/DashboardNotificationBoard";
 import { Sidebar } from "@/components/common/Sidebar";
 import { Header } from "@/components/common/Header";
 import { ClassesListBoard } from "./components/ClassesListBoard";
@@ -34,65 +34,66 @@ export function Dashboard() {
               <DisplayCard />
               <DisplayCard />
             </div>
-            <Tabs defaultValue="week" className="w-full max-w-7xl">
+            {/* <Tabs defaultValue="week" className="w-full max-w-7xl">
               <div className="flex items-center">
                 <TabsList>
                   <TabsTrigger value="week">Week</TabsTrigger>
                   <TabsTrigger value="month">Month</TabsTrigger>
                   <TabsTrigger value="year">Year</TabsTrigger>
                 </TabsList>
-                <div className="ml-auto flex items-center gap-2">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-sm"
-                      >
-                        <ListFilter className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only">Filter</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem checked>
-                        Fulfilled
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Declined
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>
-                        Refunded
-                      </DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-7 gap-1 text-sm"
-                      >
-                        <ArrowDownWideNarrow className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only">Sort</span>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuCheckboxItem checked>
-                        ASC
-                      </DropdownMenuCheckboxItem>
-                      <DropdownMenuCheckboxItem>DESC</DropdownMenuCheckboxItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
               </div>
-              <TabsContent value="week">
-                <ClassesListBoard />
-              </TabsContent>
-            </Tabs>
+              <TabsContent value="week"></TabsContent>
+            </Tabs> */}
+            <div className="w-full max-w-7xl">
+              <div className="ml-auto flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 gap-1 text-sm"
+                    >
+                      <ListFilter className="h-3.5 w-3.5" />
+                      <span className="sr-only sm:not-sr-only">Filter</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Filter by</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem checked>
+                      Fulfilled
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>
+                      Declined
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>
+                      Refunded
+                    </DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="h-7 gap-1 text-sm"
+                    >
+                      <ArrowDownWideNarrow className="h-3.5 w-3.5" />
+                      <span className="sr-only sm:not-sr-only">Sort</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuCheckboxItem checked>
+                      ASC
+                    </DropdownMenuCheckboxItem>
+                    <DropdownMenuCheckboxItem>DESC</DropdownMenuCheckboxItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+              <ClassesListBoard />
+            </div>
           </div>
           <div className="flex flex-wrap gap-4 md:gap-8">
             <div className="flex-1 place-items-center rounded-xl border border-zinc-200 text-zinc-950 shadow dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 min-w-72 max-w-2xl">

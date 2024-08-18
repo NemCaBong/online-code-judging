@@ -275,7 +275,7 @@ export function AdminGradingPage() {
                         <button
                           // key={item.id}
                           className={cn(
-                            "flex flex-col items-start gap-2 rounded-lg border text-left text-sm transition-all hover:bg-accent p-4"
+                            "flex flex-col items-start gap-2 rounded-lg border text-left text-sm transition-all hover:bg-muted/40 p-4"
                             // mail.selected === item.id && "bg-muted"
                           )}
                           // onClick={() =>

@@ -101,9 +101,9 @@ export function TaskBoard() {
             <TabsContent value="all">
               <Card x-chunk="dashboard-06-chunk-0">
                 <CardHeader>
-                  <CardTitle>Products</CardTitle>
+                  <CardTitle>Tasks</CardTitle>
                   <CardDescription>
-                    Manage your products and view their sales performance.
+                    View all of your tasks in this board
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -115,12 +115,12 @@ export function TaskBoard() {
                         </TableHead>
                         <TableHead>Name</TableHead>
                         <TableHead>Status</TableHead>
-                        <TableHead>Price</TableHead>
+                        <TableHead>Class</TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Total Sales
+                          Closed At
                         </TableHead>
                         <TableHead className="hidden md:table-cell">
-                          Created at
+                          Created At
                         </TableHead>
                         <TableHead>
                           <span className="sr-only">Actions</span>
@@ -146,9 +146,9 @@ export function TaskBoard() {
                             <TableCell>
                               <Badge variant="outline">Draft</Badge>
                             </TableCell>
-                            <TableCell>$499.99</TableCell>
+                            <TableCell>Quản trị thương hiệu</TableCell>
                             <TableCell className="hidden md:table-cell">
-                              25
+                              2023-07-12 10:42 AM
                             </TableCell>
                             <TableCell className="hidden md:table-cell">
                               2023-07-12 10:42 AM

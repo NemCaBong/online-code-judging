@@ -55,7 +55,7 @@ export function PieChartDashboard() {
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Pie Chart - Label List</CardTitle>
+        <CardTitle>Submissions Of Each Difficulty Level</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">

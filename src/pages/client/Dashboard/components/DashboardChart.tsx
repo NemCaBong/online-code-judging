@@ -35,19 +35,19 @@ export default function DashboardChart() {
               {
                 activity: "classes",
                 value: (8 / 12) * 100,
-                label: "8/12 hr",
+                label: "8 / 12",
                 fill: "var(--color-classes)",
               },
               {
                 activity: "exercises",
                 value: (46 / 60) * 100,
-                label: "46/60 min",
+                label: "46 / 60",
                 fill: "var(--color-exercises)",
               },
               {
                 activity: "challenge",
                 value: (245 / 360) * 100,
-                label: "245/360 kcal",
+                label: "245 / 360",
                 fill: "var(--color-challenge)",
               },
             ]}
@@ -79,32 +79,23 @@ export default function DashboardChart() {
       <CardFooter className="flex flex-row border-t p-4">
         <div className="flex w-full items-center gap-2">
           <div className="grid flex-1 auto-rows-min gap-0.5">
-            <div className="text-xs text-muted-foreground">Move</div>
+            <div className="text-xs text-muted-foreground">Challenges</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
               562
-              <span className="text-sm font-normal text-muted-foreground">
-                kcal
-              </span>
             </div>
           </div>
           <Separator orientation="vertical" className="mx-2 h-10 w-px" />
           <div className="grid flex-1 auto-rows-min gap-0.5">
-            <div className="text-xs text-muted-foreground">Exercise</div>
+            <div className="text-xs text-muted-foreground">Exercises</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
               73
-              <span className="text-sm font-normal text-muted-foreground">
-                min
-              </span>
             </div>
           </div>
           <Separator orientation="vertical" className="mx-2 h-10 w-px" />
           <div className="grid flex-1 auto-rows-min gap-0.5">
-            <div className="text-xs text-muted-foreground">Stand</div>
+            <div className="text-xs text-muted-foreground">Classes</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
               14
-              <span className="text-sm font-normal text-muted-foreground">
-                hr
-              </span>
             </div>
           </div>
         </div>
