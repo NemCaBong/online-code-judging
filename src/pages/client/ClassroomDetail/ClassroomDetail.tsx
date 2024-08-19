@@ -16,8 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Sidebar } from "@/components/common/Sidebar";
-import { Header } from "@/components/common/Header";
+import { Sidebar } from "@/common/components/Sidebar";
+import { Header } from "@/common/components/Header";
 import { PostCard } from "./components/PostCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 

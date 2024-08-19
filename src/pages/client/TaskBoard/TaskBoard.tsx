@@ -38,8 +38,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Sidebar } from "@/components/common/Sidebar";
-import { Header } from "@/components/common/Header";
+import { Sidebar } from "@/common/components/Sidebar";
+import { Header } from "@/common/components/Header";
 
 export function TaskBoard() {
   const location = useLocation();

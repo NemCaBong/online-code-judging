@@ -1,9 +1,10 @@
+import React from "react";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import MDEditor from "@uiw/react-md-editor";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createChallengeSchema } from "@/utils/zod.schemas";
+import { createExerciseSchema } from "@/utils/zod.schemas";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,7 +17,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/multi-select";
-import { Textarea } from "@/components/ui/textarea";
 import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 
@@ -26,7 +26,8 @@ const OPTIONS: Option[] = [
   { label: "Remix", value: "remix" },
 ];
 
-const initialMarkdownContent = `
+export function AdminCreateExercise() {
+  const [markdownContent, setMarkdownContent] = React.useState(`
 # Markdown \`syntax guide\`
 Here is some \`inline code\` with the word \`markdown\` inside it.
 
@@ -96,38 +97,22 @@ import MEDitor from '@uiw/react-md-editor';
 ## Inline code
 
 This web site is using \`markedjs/marked\`.
-`;
+`);
 
-export function AdminCreateChallenge() {
-  // const [markdownContent, setMarkdownContent] = React.useState();
-
-  const form = useForm<z.infer<typeof createChallengeSchema>>({
-    resolver: zodResolver(createChallengeSchema),
+  const form = useForm<z.infer<typeof createExerciseSchema>>({
+    resolver: zodResolver(createExerciseSchema),
     defaultValues: {
       name: "",
-      tags: [],
-      markdownContent: initialMarkdownContent,
+      topics: [],
+      markdownContent: markdownContent,
       boilerplate_code: "",
-      inputAndExpectedOutput: [
-        {
-          input: "",
-          expected_output: "",
-        },
-      ],
       hints: [
         {
           hintQuestion: "",
           hintAnswer: "",
         },
       ],
-      timeLimit: 0,
-      spaceLimit: 0,
     },
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "inputAndExpectedOutput",
   });
 
   const {
@@ -140,7 +125,7 @@ export function AdminCreateChallenge() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof createChallengeSchema>) {
+  function onSubmit(values: z.infer<typeof createExerciseSchema>) {
     console.log(values);
   }
 
@@ -152,7 +137,7 @@ export function AdminCreateChallenge() {
           <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-3xl font-bold tracking-tight sm:grow-0 mb-10">
-                Create Coding Challenge
+                Create Coding Exercise
               </h1>
             </div>
             <Form {...form}>
@@ -181,17 +166,17 @@ export function AdminCreateChallenge() {
                 />
                 <FormField
                   control={form.control}
-                  name="tags"
+                  name="topics"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-xl font-semibold">
-                        Tags
+                        Topics
                       </FormLabel>
                       <FormControl>
                         <MultipleSelector
                           {...field}
                           defaultOptions={OPTIONS}
-                          placeholder="Select tags ..."
+                          placeholder="Select topics ..."
                           emptyIndicator={
                             <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                               No results found.
@@ -200,7 +185,7 @@ export function AdminCreateChallenge() {
                         />
                       </FormControl>
                       <FormDescription>
-                        Select tags for this challenge
+                        Select topics for this challenge
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -229,6 +214,7 @@ export function AdminCreateChallenge() {
                     </FormItem>
                   )}
                 />
+
                 {/* Boilerplate_code component */}
                 <FormField
                   control={form.control}
@@ -255,80 +241,6 @@ export function AdminCreateChallenge() {
                     </FormItem>
                   )}
                 />
-
-                {/* Test cases component */}
-                <div>
-                  <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
-                  <div className="w-full border rounded-md py-2 px-3">
-                    {fields.map((field, index) => (
-                      <div
-                        key={field.id}
-                        className="flex w-full p-2 flex-wrap gap-4"
-                      >
-                        <FormField
-                          control={form.control}
-                          name={`inputAndExpectedOutput.${index}.input`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base">Input</FormLabel>
-                              <FormControl>
-                                {/* <Input
-                                placeholder="Enter input here ...."
-                                {...field}
-                              /> */}
-                                <Textarea
-                                  placeholder="Enter input here ...."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`inputAndExpectedOutput.${index}.expected_output`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base">
-                                Expected Output
-                              </FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Enter expected output ...."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={
-                            // nếu chỉ có 1 test case thì không cho xóa
-                            fields.length === 1
-                              ? undefined
-                              : () => remove(index)
-                          }
-                          className="mt-8"
-                        >
-                          Xóa
-                        </Button>
-                      </div>
-                    ))}
-
-                    <Button
-                      type="button"
-                      className="mt-8 m-2"
-                      variant="secondary"
-                      onClick={() => append({ input: "", expected_output: "" })}
-                    >
-                      Add Test Case
-                    </Button>
-                  </div>
-                </div>
 
                 {/* Hints */}
                 <div>
@@ -406,78 +318,9 @@ export function AdminCreateChallenge() {
                   </div>
                 </div>
 
-                {/* Space & Time limit */}
-                <FormField
-                  control={form.control}
-                  name="timeLimit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xl font-semibold">
-                        Time Limit (MS)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter time limit here ...."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Time limit of this challenge
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="spaceLimit"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xl font-semibold">
-                        Space Limit (MB)
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter space limit here ...."
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormDescription>
-                        Space limit of this challenge
-                      </FormDescription>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
                 <Button type="submit">Submit</Button>
               </form>
             </Form>
-            {/* <div data-color-mode="dark">
-              <MDEditor
-                value={markdownContent}
-                visibleDragbar={false}
-                height="100%"
-                onChange={(value: string | undefined) =>
-                  setMarkdownContent(value || "")
-                }
-                className="w-full"
-              />
-            </div> */}
-            {/* <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-1 lg:gap-8">
-                <PostCard />
-              </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8 min-w-64">
-                <MDEditor.Markdown
-                  source={markdownContent}
-                  style={{ whiteSpace: "pre-wrap" }}
-                />
-              </div>
-            </div> */}
           </div>
         </main>
       </div>

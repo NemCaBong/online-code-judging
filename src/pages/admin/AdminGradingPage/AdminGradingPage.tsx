@@ -1,4 +1,4 @@
-import { AdminHeader } from "@/components/common/AdminHeader";
+import { AdminHeader } from "@/common/components/AdminHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   CardHeader,

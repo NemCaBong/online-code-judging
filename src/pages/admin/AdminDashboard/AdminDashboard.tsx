@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChartDashboard } from "./components/BarChart";
 import { PieChartDashboard } from "./components/PieChart";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { AdminHeader } from "@/components/common/AdminHeader";
+import { AdminHeader } from "@/common/components/AdminHeader";
 
 export function AdminDashboard() {
   return (

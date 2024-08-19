@@ -1,5 +1,5 @@
-import { Header } from "@/components/common/Header";
-import { Sidebar } from "@/components/common/Sidebar";
+import { Header } from "@/common/components/Header";
+import { Sidebar } from "@/common/components/Sidebar";
 import {
   Card,
   CardContent,

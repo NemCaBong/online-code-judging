@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/table";
 import { PostCard } from "@/pages/client/ClassroomDetail/components/PostCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AdminHeader } from "@/components/common/AdminHeader";
+import { AdminHeader } from "@/common/components/AdminHeader";
 
 export function AdminClassroom() {
   return (

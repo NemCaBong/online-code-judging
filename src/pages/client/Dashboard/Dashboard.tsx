@@ -17,8 +17,8 @@ import {
 import DashboardChart from "@/pages/client/Dashboard/components/DashboardChart";
 import { DisplayCard } from "@/pages/client/Dashboard/components/DisplayCard";
 import DashboardNotificationBoard from "./components/DashboardNotificationBoard";
-import { Sidebar } from "@/components/common/Sidebar";
-import { Header } from "@/components/common/Header";
+import { Sidebar } from "@/common/components/Sidebar";
+import { Header } from "@/common/components/Header";
 import { ClassesListBoard } from "./components/ClassesListBoard";
 
 export function Dashboard() {
