@@ -1,4 +1,3 @@
-import React from "react";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import MDEditor from "@uiw/react-md-editor";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -25,9 +24,7 @@ const OPTIONS: Option[] = [
   { label: "React", value: "react" },
   { label: "Remix", value: "remix" },
 ];
-
-export function AdminCreateExercise() {
-  const [markdownContent, setMarkdownContent] = React.useState(`
+const markdownContent = `
 # Markdown \`syntax guide\`
 Here is some \`inline code\` with the word \`markdown\` inside it.
 
@@ -97,8 +94,9 @@ import MEDitor from '@uiw/react-md-editor';
 ## Inline code
 
 This web site is using \`markedjs/marked\`.
-`);
+`;
 
+export function AdminCreateExercise() {
   const form = useForm<z.infer<typeof createExerciseSchema>>({
     resolver: zodResolver(createExerciseSchema),
     defaultValues: {
@@ -124,7 +122,6 @@ This web site is using \`markedjs/marked\`.
     name: "hints",
   });
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof createExerciseSchema>) {
     console.log(values);
   }
@@ -246,10 +243,10 @@ This web site is using \`markedjs/marked\`.
                 <div>
                   <h2 className="text-xl font-semibold pb-2">Hints</h2>
                   <div className="w-full border rounded-md py-2 px-3">
-                    {form.watch("hints").map((_, index) => (
+                    {hintFields.map((hint, index) => (
                       <div
-                        key={index}
-                        className="flex w-full p-2 flex-wrap gap-4"
+                        key={hint.id}
+                        className="flex w-full p-2 flex-wrap gap-4 justify-between items-center"
                       >
                         <FormField
                           control={form.control}
@@ -261,6 +258,7 @@ This web site is using \`markedjs/marked\`.
                               </FormLabel>
                               <FormControl>
                                 <Input
+                                  className="w-[40vh]"
                                   placeholder="Enter hint question here ...."
                                   {...field}
                                 />
@@ -269,44 +267,46 @@ This web site is using \`markedjs/marked\`.
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name={`hints.${index}.hintAnswer`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base">
-                                Hint Answer
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter hint answer here ...."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={
-                            // nếu chỉ có 1 hint thì không cho xóa
-                            hintFields.length === 1
-                              ? undefined
-                              : () => removeHint(index)
-                          }
-                          className="mt-8"
-                        >
-                          Xóa
-                        </Button>
+                        <div className="flex gap-4">
+                          <FormField
+                            control={form.control}
+                            name={`hints.${index}.hintAnswer`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base">
+                                  Hint Answer
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="w-[40vh]"
+                                    placeholder="Enter hint answer here ...."
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={
+                              // nếu chỉ có 1 hint thì không cho xóa
+                              hintFields.length === 1
+                                ? undefined
+                                : () => removeHint(index)
+                            }
+                            className="mt-8"
+                          >
+                            Xóa
+                          </Button>
+                        </div>
                       </div>
                     ))}
 
                     <Button
                       type="button"
                       className="mt-8 m-2"
-                      variant="secondary"
                       onClick={() =>
                         appendHint({ hintQuestion: "", hintAnswer: "" })
                       }

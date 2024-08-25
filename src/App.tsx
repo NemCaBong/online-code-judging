@@ -24,8 +24,8 @@ function App() {
         <Route path="/challenges" element={<CodingChallengeDetail />} />
         <Route path="/admin">
           <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="classrooms" element={<AdminClassroom />} />
-          <Route path="classrooms/grading" element={<AdminGradingPage />} />
+          <Route path="classes" element={<AdminClassroom />} />
+          <Route path="classes/grading" element={<AdminGradingPage />} />
           <Route path="create-challenge" element={<AdminCreateChallenge />} />
           <Route path="create-exercise" element={<AdminCreateExercise />} />
         </Route>

@@ -30,10 +30,10 @@ export function ClassroomDetail() {
         <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
           <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
             <div className="flex items-center gap-4">
-              <Button variant="outline" size="icon" className="h-7 w-7">
+              {/* <Button variant="outline" size="icon" className="h-7 w-7">
                 <ChevronLeft className="h-4 w-4" />
                 <span className="sr-only">Back</span>
-              </Button>
+              </Button> */}
               <h1 className="flex-1 shrink-0 whitespace-nowrap text-2xl font-bold tracking-tight sm:grow-0">
                 Lập trình Java
               </h1>
@@ -42,7 +42,7 @@ export function ClassroomDetail() {
                 {/* <Button variant="outline" size="sm">
                   Discard
                 </Button> */}
-                <Button size="sm">Post</Button>
+                {/* <Button size="sm">Post</Button> */}
               </div>
             </div>
             <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">

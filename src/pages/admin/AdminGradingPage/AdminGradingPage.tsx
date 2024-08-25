@@ -14,16 +14,16 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog,
   DialogContent,
+  Dialog,
   DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
   DialogFooter,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
@@ -35,6 +35,18 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ArrowDownWideNarrow, ListFilter } from "lucide-react";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { gradingExerciseSchema } from "./schemas/grading.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
 const mails = [
   {
@@ -208,7 +220,20 @@ const mails = [
     labels: ["personal"],
   },
 ];
+
 export function AdminGradingPage() {
+  const gradingExerciseForm = useForm<z.infer<typeof gradingExerciseSchema>>({
+    resolver: zodResolver(gradingExerciseSchema),
+    defaultValues: {
+      code: "Hahahahahaha",
+      review: "",
+    },
+  });
+
+  function onGradingExercise(values: z.infer<typeof gradingExerciseSchema>) {
+    console.log(values);
+  }
+
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-col sm:gap-4">
@@ -271,9 +296,10 @@ export function AdminGradingPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-col gap-4">
-                      {[...Array(15)].map((_, _index) => (
+                      {[...Array(15)].map((_, index) => (
                         <button
                           // key={item.id}
+                          key={index}
                           className={cn(
                             "flex flex-col items-start gap-2 rounded-lg border text-left text-sm transition-all hover:bg-muted/40 p-4"
                             // mail.selected === item.id && "bg-muted"
@@ -370,79 +396,130 @@ export function AdminGradingPage() {
             </div>
           </div>
           <div className="flex flex-col justify-between h-[91vh] gap-2 lg:col-span-4 md:col-span-1">
-            <Card className="h-full">
-              <CardHeader>
-                <div className="flex items-start">
-                  <div className="flex items-start gap-4 text-base">
-                    <Avatar>
-                      <AvatarImage alt="Nguyen Minh Hoang" />
-                      <AvatarFallback>NM</AvatarFallback>
-                    </Avatar>
-                    <div className="grid gap-1">
-                      <div className="font-semibold text-lg">
-                        Nguyễn Minh Hoàng
+            <Form {...gradingExerciseForm}>
+              <form
+                onSubmit={gradingExerciseForm.handleSubmit(onGradingExercise)}
+              >
+                <Card className="h-full">
+                  <CardHeader>
+                    <div className="flex items-start">
+                      <div className="flex items-start gap-4 text-base">
+                        <Avatar>
+                          <AvatarImage alt="Nguyen Minh Hoang" />
+                          <AvatarFallback>NM</AvatarFallback>
+                        </Avatar>
+                        <div className="grid gap-1">
+                          <div className="font-semibold text-lg">
+                            Nguyễn Minh Hoàng
+                          </div>
+                          <div className="line-clamp-1 text-base">
+                            nemcabong@gmail.com
+                          </div>
+                          {/* <div className="line-clamp-1 text-sm">11218459</div> */}
+                        </div>
                       </div>
-                      <div className="line-clamp-1 text-base">
-                        nemcabong@gmail.com
-                      </div>
-                      {/* <div className="line-clamp-1 text-sm">11218459</div> */}
-                    </div>
-                  </div>
-                  <div className="ml-auto text-sm text-muted-foreground">
-                    {/* {format(new Date(mail.date), "PPpp")} */}
-                    Oct 22, 2023, 9:00:00 AM
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CodeMirrorEditor
-                  value=""
-                  language="javascript"
-                  className="h-[61vh]"
-                />
-              </CardContent>
-              <Separator />
-              <CardFooter className="block">
-                <div className="pt-6">
-                  <form>
-                    <div className="grid gap-4">
-                      <Textarea
-                        className="p-4 h-[10vh] resize-none"
-                        placeholder={`Review Nguyễn Minh Hoàng's submission...`}
-                      />
-                      <div className="flex items-center">
-                        <div className="ml-auto"></div>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button>Send & Grade</Button>
-                          </DialogTrigger>
-                          <DialogContent className="sm:max-w-[425px]">
-                            <DialogHeader>
-                              <DialogTitle>Grade submission</DialogTitle>
-                              <DialogDescription>
-                                Score this submission from 0 to 10. Click send
-                                when you're done.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="score" className="text-right">
-                                  Score
-                                </Label>
-                                <Input id="score" className="col-span-3" />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                              <Button type="submit">Send</Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
+                      <div className="ml-auto text-sm text-muted-foreground">
+                        {/* {format(new Date(mail.date), "PPpp")} */}
+                        Oct 22, 2023, 9:00:00 AM
                       </div>
                     </div>
-                  </form>
-                </div>
-              </CardFooter>
-            </Card>
+                  </CardHeader>
+                  <CardContent className="h-[62vh]">
+                    <FormField
+                      control={gradingExerciseForm.control}
+                      name="code"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CodeMirrorEditor
+                              language="javascript"
+                              className="h-[58vh]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                  <Separator />
+                  <CardFooter className="block h-[19.5vh]">
+                    <div className="pt-6">
+                      <div className="grid gap-4">
+                        <FormField
+                          control={gradingExerciseForm.control}
+                          name="review"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormControl>
+                                <Textarea
+                                  className="p-4 h-[8vh] resize-none"
+                                  placeholder={`Review Nguyễn Minh Hoàng's submission...`}
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <div className="flex items-center">
+                          <div className="ml-auto"></div>
+                          <FormField
+                            control={gradingExerciseForm.control}
+                            name="score"
+                            render={({ field }) => (
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button>Grade</Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-[425px]">
+                                  <DialogHeader>
+                                    <DialogTitle>Grade submission</DialogTitle>
+                                    <DialogDescription>
+                                      Score this submission from 0 to 10. Click
+                                      send when you're done.
+                                    </DialogDescription>
+                                  </DialogHeader>
+                                  <div className="grid gap-4 py-4">
+                                    <div className="grid grid-cols-4 items-center gap-4">
+                                      {/* <Label
+                                        htmlFor="score"
+                                        className="text-right"
+                                      >
+                                        Score
+                                      </Label> */}
+                                      <FormLabel className="text-right">
+                                        Score
+                                      </FormLabel>
+                                      <Input
+                                        id="score"
+                                        className="col-span-3"
+                                        {...field}
+                                      />
+                                    </div>
+                                    <FormMessage />
+                                  </div>
+                                  <DialogFooter>
+                                    <DialogClose asChild>
+                                      <Button type="button" variant="secondary">
+                                        Close
+                                      </Button>
+                                    </DialogClose>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            )}
+                          />{" "}
+                          <Button type="submit" className="ml-4">
+                            Send
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </form>
+            </Form>
           </div>
         </main>
       </div>

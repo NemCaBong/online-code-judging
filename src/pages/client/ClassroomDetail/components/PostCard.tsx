@@ -59,11 +59,8 @@ export function PostCard({ className }: { className?: string }) {
             </div>
             <p>Bạn lớp trưởng hãy gửi lại danh sách điểm cho thầy.</p>
           </div>
-          <Separator className="my-3" />
         </CardContent>
-        <CardFooter>
-          <Textarea placeholder="Write a comment..." />
-        </CardFooter>
+        <CardFooter></CardFooter>
       </Card>
     </div>
   );

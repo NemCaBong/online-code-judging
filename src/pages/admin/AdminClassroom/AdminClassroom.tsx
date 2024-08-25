@@ -38,6 +38,9 @@ export function AdminClassroom() {
               <Badge className="ml-auto sm:ml-0">On going</Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
                 <Button variant="secondary" className="h-10 py-4">
+                  Add Exercise
+                </Button>
+                <Button variant="secondary" className="h-10 py-4">
                   Grade Exercises
                 </Button>
                 <Button className="px-4 h-10 block">Post</Button>

@@ -26,7 +26,7 @@ const OPTIONS: Option[] = [
   { label: "Remix", value: "remix" },
 ];
 
-const initialMarkdownContent = `
+const markdownContent = `
 # Markdown \`syntax guide\`
 Here is some \`inline code\` with the word \`markdown\` inside it.
 
@@ -99,14 +99,12 @@ This web site is using \`markedjs/marked\`.
 `;
 
 export function AdminCreateChallenge() {
-  // const [markdownContent, setMarkdownContent] = React.useState();
-
   const form = useForm<z.infer<typeof createChallengeSchema>>({
     resolver: zodResolver(createChallengeSchema),
     defaultValues: {
       name: "",
       tags: [],
-      markdownContent: initialMarkdownContent,
+      markdownContent: markdownContent,
       boilerplate_code: "",
       inputAndExpectedOutput: [
         {
@@ -125,7 +123,11 @@ export function AdminCreateChallenge() {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
+  const {
+    fields: testCaseFields,
+    append: appendTestCase,
+    remove: removeTestCase,
+  } = useFieldArray({
     control: form.control,
     name: "inputAndExpectedOutput",
   });
@@ -260,10 +262,10 @@ export function AdminCreateChallenge() {
                 <div>
                   <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
                   <div className="w-full border rounded-md py-2 px-3">
-                    {fields.map((field, index) => (
+                    {testCaseFields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="flex w-full p-2 flex-wrap gap-4"
+                        className="flex w-full p-2 flex-wrap gap-4 justify-between items-center"
                       >
                         <FormField
                           control={form.control}
@@ -277,6 +279,7 @@ export function AdminCreateChallenge() {
                                 {...field}
                               /> */}
                                 <Textarea
+                                  className="w-[40vh]"
                                   placeholder="Enter input here ...."
                                   {...field}
                                 />
@@ -285,45 +288,48 @@ export function AdminCreateChallenge() {
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name={`inputAndExpectedOutput.${index}.expected_output`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base">
-                                Expected Output
-                              </FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="Enter expected output ...."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={
-                            // nếu chỉ có 1 test case thì không cho xóa
-                            fields.length === 1
-                              ? undefined
-                              : () => remove(index)
-                          }
-                          className="mt-8"
-                        >
-                          Xóa
-                        </Button>
+                        <div className="flex gap-4">
+                          <FormField
+                            control={form.control}
+                            name={`inputAndExpectedOutput.${index}.expected_output`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base">
+                                  Expected Output
+                                </FormLabel>
+                                <FormControl>
+                                  <Textarea
+                                    className="w-[40vh]"
+                                    placeholder="Enter expected output ...."
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={
+                              // nếu chỉ có 1 test case thì không cho xóa
+                              testCaseFields.length === 1
+                                ? undefined
+                                : () => removeTestCase(index)
+                            }
+                            className="mt-8"
+                          >
+                            Xóa
+                          </Button>
+                        </div>
                       </div>
                     ))}
-
                     <Button
                       type="button"
                       className="mt-8 m-2"
-                      variant="secondary"
-                      onClick={() => append({ input: "", expected_output: "" })}
+                      onClick={() =>
+                        appendTestCase({ input: "", expected_output: "" })
+                      }
                     >
                       Add Test Case
                     </Button>
@@ -334,10 +340,10 @@ export function AdminCreateChallenge() {
                 <div>
                   <h2 className="text-xl font-semibold pb-2">Hints</h2>
                   <div className="w-full border rounded-md py-2 px-3">
-                    {form.watch("hints").map((_, index) => (
+                    {hintFields.map((hint, index) => (
                       <div
-                        key={index}
-                        className="flex w-full p-2 flex-wrap gap-4"
+                        key={hint.id}
+                        className="flex w-full p-2 flex-wrap gap-4 justify-between items-center"
                       >
                         <FormField
                           control={form.control}
@@ -349,6 +355,7 @@ export function AdminCreateChallenge() {
                               </FormLabel>
                               <FormControl>
                                 <Input
+                                  className="w-[40vh]"
                                   placeholder="Enter hint question here ...."
                                   {...field}
                                 />
@@ -357,44 +364,46 @@ export function AdminCreateChallenge() {
                             </FormItem>
                           )}
                         />
-                        <FormField
-                          control={form.control}
-                          name={`hints.${index}.hintAnswer`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-base">
-                                Hint Answer
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  placeholder="Enter hint answer here ...."
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={
-                            // nếu chỉ có 1 hint thì không cho xóa
-                            hintFields.length === 1
-                              ? undefined
-                              : () => removeHint(index)
-                          }
-                          className="mt-8"
-                        >
-                          Xóa
-                        </Button>
+                        <div className="flex gap-4">
+                          <FormField
+                            control={form.control}
+                            name={`hints.${index}.hintAnswer`}
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel className="text-base">
+                                  Hint Answer
+                                </FormLabel>
+                                <FormControl>
+                                  <Input
+                                    className="w-[40vh]"
+                                    placeholder="Enter hint answer here ...."
+                                    {...field}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={
+                              // nếu chỉ có 1 hint thì không cho xóa
+                              hintFields.length === 1
+                                ? undefined
+                                : () => removeHint(index)
+                            }
+                            className="mt-8"
+                          >
+                            Xóa
+                          </Button>
+                        </div>
                       </div>
                     ))}
 
                     <Button
                       type="button"
                       className="mt-8 m-2"
-                      variant="secondary"
                       onClick={() =>
                         appendHint({ hintQuestion: "", hintAnswer: "" })
                       }
@@ -456,28 +465,6 @@ export function AdminCreateChallenge() {
                 <Button type="submit">Submit</Button>
               </form>
             </Form>
-            {/* <div data-color-mode="dark">
-              <MDEditor
-                value={markdownContent}
-                visibleDragbar={false}
-                height="100%"
-                onChange={(value: string | undefined) =>
-                  setMarkdownContent(value || "")
-                }
-                className="w-full"
-              />
-            </div> */}
-            {/* <div className="grid gap-4 md:grid-cols-[1fr_250px] lg:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 lg:col-span-1 lg:gap-8">
-                <PostCard />
-              </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8 min-w-64">
-                <MDEditor.Markdown
-                  source={markdownContent}
-                  style={{ whiteSpace: "pre-wrap" }}
-                />
-              </div>
-            </div> */}
           </div>
         </main>
       </div>
