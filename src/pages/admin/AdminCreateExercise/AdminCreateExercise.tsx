@@ -154,6 +154,7 @@ export function AdminCreateExercise() {
                         <Input
                           placeholder="Enter challenge's name here ...."
                           {...field}
+                          className="h-11"
                         />
                       </FormControl>
                       <FormDescription>Name of this challenge</FormDescription>
@@ -258,7 +259,7 @@ export function AdminCreateExercise() {
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  className="w-[40vh]"
+                                  className="w-[40vh] h-11"
                                   placeholder="Enter hint question here ...."
                                   {...field}
                                 />
@@ -278,7 +279,7 @@ export function AdminCreateExercise() {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="w-[40vh]"
+                                    className="w-[40vh] h-11"
                                     placeholder="Enter hint answer here ...."
                                     {...field}
                                   />

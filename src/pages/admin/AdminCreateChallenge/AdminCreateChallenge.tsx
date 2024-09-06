@@ -174,6 +174,7 @@ export function AdminCreateChallenge() {
                         <Input
                           placeholder="Enter challenge's name here ...."
                           {...field}
+                          className="h-11"
                         />
                       </FormControl>
                       <FormDescription>Name of this challenge</FormDescription>
@@ -191,9 +192,11 @@ export function AdminCreateChallenge() {
                       </FormLabel>
                       <FormControl>
                         <MultipleSelector
-                          {...field}
                           defaultOptions={OPTIONS}
+                          {...field}
+                          badgeClassName="text-sm"
                           placeholder="Select tags ..."
+                          hidePlaceholderWhenSelected={true}
                           emptyIndicator={
                             <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
                               No results found.
@@ -218,9 +221,9 @@ export function AdminCreateChallenge() {
                       </FormLabel>
                       <FormControl>
                         <MDEditor
-                          value={field.value}
                           visibleDragbar={false}
                           height="100%"
+                          value={field.value}
                           onChange={(value: string | undefined) =>
                             field.onChange(value || "")
                           }
@@ -355,7 +358,7 @@ export function AdminCreateChallenge() {
                               </FormLabel>
                               <FormControl>
                                 <Input
-                                  className="w-[40vh]"
+                                  className="w-[40vh] h-11"
                                   placeholder="Enter hint question here ...."
                                   {...field}
                                 />
@@ -375,7 +378,7 @@ export function AdminCreateChallenge() {
                                 </FormLabel>
                                 <FormControl>
                                   <Input
-                                    className="w-[40vh]"
+                                    className="w-[40vh] h-11"
                                     placeholder="Enter hint answer here ...."
                                     {...field}
                                   />
@@ -429,6 +432,7 @@ export function AdminCreateChallenge() {
                           type="number"
                           placeholder="Enter time limit here ...."
                           {...field}
+                          className="h-11"
                         />
                       </FormControl>
                       <FormDescription>
@@ -452,6 +456,7 @@ export function AdminCreateChallenge() {
                           type="number"
                           placeholder="Enter space limit here ...."
                           {...field}
+                          className="h-11"
                         />
                       </FormControl>
                       <FormDescription>
