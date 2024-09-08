@@ -11,11 +11,14 @@ import {
 import {
   Breadcrumb,
   BreadcrumbItem,
+  BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
+  BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb.tsx";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
+  ChevronRightIcon,
   CircleUserRound,
   Home,
   LineChart,
@@ -27,8 +30,26 @@ import {
   Users2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMemo } from "react";
+import React from "react";
+import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
 export function Header() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const breadcrumbs = useMemo(() => {
+    const pathnames = location.pathname.split("/").filter((x) => x);
+    return [
+      { href: "#", label: "Home" },
+      ...pathnames.map((name, index) => {
+        const href = `/${pathnames.slice(0, index + 1).join("/")}`;
+        const label = name.charAt(0).toUpperCase() + name.slice(1);
+        return { href, label };
+      }),
+    ];
+  }, [location]);
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
       <Sheet>
@@ -85,13 +106,82 @@ export function Header() {
           </nav>
         </SheetContent>
       </Sheet>
-      <Breadcrumb className="hidden md:flex">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
+
+      <div className="hidden md:block">
+        <Breadcrumb>
+          <BreadcrumbList>
+            {breadcrumbs.length === 2 ? (
+              breadcrumbs.map((item, index) => (
+                <React.Fragment key={index}>
+                  {index > 0 && (
+                    <BreadcrumbSeparator className="list-none">
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </BreadcrumbSeparator>
+                  )}
+                  <BreadcrumbItem>
+                    {index === breadcrumbs.length - 1 ? (
+                      <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbLink href={item.href}>
+                        {item.label}
+                      </BreadcrumbLink>
+                    )}
+                  </BreadcrumbItem>
+                </React.Fragment>
+              ))
+            ) : (
+              <>
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={breadcrumbs[0].href}>
+                    {breadcrumbs[0].label}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                {breadcrumbs.length > 3 && (
+                  <>
+                    <BreadcrumbSeparator className="list-none">
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon">
+                            <DotsHorizontalIcon className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                          {breadcrumbs.slice(1, -2).map((item, index) => (
+                            <DropdownMenuItem key={index}>
+                              <Link to={item.href}>{item.label}</Link>
+                            </DropdownMenuItem>
+                          ))}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </BreadcrumbItem>
+                  </>
+                )}
+                {breadcrumbs.slice(-2).map((item, index) => (
+                  <React.Fragment key={index}>
+                    <BreadcrumbSeparator className="list-none">
+                      <ChevronRightIcon className="h-4 w-4" />
+                    </BreadcrumbSeparator>
+                    <BreadcrumbItem>
+                      {index === breadcrumbs.slice(-2).length - 1 ? (
+                        <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                      ) : (
+                        <BreadcrumbLink href={item.href}>
+                          {item.label}
+                        </BreadcrumbLink>
+                      )}
+                    </BreadcrumbItem>
+                  </React.Fragment>
+                ))}
+              </>
+            )}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
+
       <div className="relative ml-auto flex-1 md:grow-0">
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input

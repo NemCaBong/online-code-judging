@@ -34,16 +34,6 @@ export function Dashboard() {
               <DisplayCard />
               <DisplayCard />
             </div>
-            {/* <Tabs defaultValue="week" className="w-full max-w-7xl">
-              <div className="flex items-center">
-                <TabsList>
-                  <TabsTrigger value="week">Week</TabsTrigger>
-                  <TabsTrigger value="month">Month</TabsTrigger>
-                  <TabsTrigger value="year">Year</TabsTrigger>
-                </TabsList>
-              </div>
-              <TabsContent value="week"></TabsContent>
-            </Tabs> */}
             <div className="w-full max-w-7xl">
               <div className="ml-auto flex items-center gap-2">
                 <DropdownMenu>

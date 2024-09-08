@@ -1,12 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PostCard } from "@/pages/client/ClassroomDetail/components/PostCard";
+import { PostCard } from "@/components/classroom/PostCard";
 import { AdminHeader } from "@/common/components/AdminHeader";
-import { addExerciseSchema } from "./schemas/add-exercise.schema";
-import { z } from "zod";
 import { Option } from "@/components/multi-select";
-import { UploadFiles } from "./components/UploadFiles";
-import { ImagesCard } from "./components/ImagesCard";
+import { UploadFiles } from "../../../components/classroom/UploadFiles";
+import { ImagesCard } from "../../../components/classroom/ImagesCard";
 import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
@@ -113,6 +111,7 @@ const exampleExercises: Option[] = [
     value: "nho",
   },
 ];
+
 const initialValue = `# Markdown syntax guide
 
 ## Headers
@@ -181,11 +180,8 @@ alert(message);
 
 This web site is using \`markedjs/marked\`.
 `;
-export function AdminClassroom() {
-  function onAddingExercises(values: z.infer<typeof addExerciseSchema>) {
-    console.log(values);
-  }
 
+export function AdminClassroom() {
   return (
     <div className="flex min-h-screen w-full flex-col">
       <div className="flex flex-col sm:gap-4">
@@ -198,10 +194,7 @@ export function AdminClassroom() {
               </h1>
               <Badge className="ml-auto sm:ml-0">On going</Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <AddExercisesDialog
-                  exercises={exampleExercises}
-                  onAddExercises={onAddingExercises}
-                />
+                <AddExercisesDialog exercises={exampleExercises} />
                 <Link
                   to="/admin/classes/grading"
                   target="_blank"

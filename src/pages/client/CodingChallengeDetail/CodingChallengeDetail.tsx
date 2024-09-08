@@ -93,6 +93,7 @@ import MEDitor from '@uiw/react-md-editor';
 
 This web site is using \`markedjs/marked\`.
 `;
+
   return (
     <div className="flex flex-col min-h-screen w-full bg-muted/40">
       <Sidebar />
@@ -228,7 +229,7 @@ var singleNumber = function(nums) {
               </CardContent>
             </Card>
             <Card className="h-full border-none">
-              <Tabs>
+              <Tabs defaultValue="test-case">
                 <TabsList
                   className="w-full justify-start"
                   style={{

@@ -23,7 +23,7 @@ export function ClassesListBoard() {
         <CardTitle>Classes</CardTitle>
         <CardDescription>All your coding classes</CardDescription>
       </CardHeader>
-      <ScrollArea className="h-[62dvh]">
+      <ScrollArea className="h-[56dvh]">
         <CardContent>
           <Table className="w-full">
             <TableHeader>

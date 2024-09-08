@@ -26,23 +26,19 @@ type AddExerciseFormValues = z.infer<typeof addExerciseSchema>;
 
 interface AddExercisesDialogProps {
   exercises: Option[];
-  onAddExercises: (values: AddExerciseFormValues) => void;
 }
 
-function onAddExercises(values: z.infer<typeof addExerciseSchema>) {
-  console.log(values);
-}
-
-export function AddExercisesDialog({
-  exercises,
-  onAddExercises,
-}: AddExercisesDialogProps) {
+export function AddExercisesDialog({ exercises }: AddExercisesDialogProps) {
   const form = useForm<AddExerciseFormValues>({
     resolver: zodResolver(addExerciseSchema),
     defaultValues: {
       exercises: [],
     },
   });
+
+  function onAddExercises(values: z.infer<typeof addExerciseSchema>) {
+    console.log(values);
+  }
 
   return (
     <Dialog>
