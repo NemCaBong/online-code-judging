@@ -1,53 +1,15 @@
-import { Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { PostCard } from "@/pages/client/ClassroomDetail/components/PostCard";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { AdminHeader } from "@/common/components/AdminHeader";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTrigger,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { addExerciseSchema } from "./schemas/add-exercise.schema";
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import MultipleSelector from "@/components/multi-select";
 import { Option } from "@/components/multi-select";
-import { Textarea } from "@/components/ui/textarea";
-import MDEditor from "@uiw/react-md-editor";
-import { useState } from "react";
+import { UploadFiles } from "./components/UploadFiles";
+import { ImagesCard } from "./components/ImagesCard";
+import { AddExercisesDialog } from "./components/AddExercisesDialog";
+import { PostDialog } from "./components/PostDialog";
+import { Link } from "react-router-dom";
 
 const exampleExercises: Option[] = [
   {
@@ -151,52 +113,7 @@ const exampleExercises: Option[] = [
     value: "nho",
   },
 ];
-
-const postSchema = z.object({
-  content: z.string().min(1, "Content is required"),
-  files: z.custom<FileList>().optional(),
-  // .refine(
-  //   (files) => {
-  //     if (!files || files.length === 0) return true;
-  //     return Array.from(files).every((file) =>
-  //       allowedFileTypes.includes(file.type)
-  //     );
-  //   },
-  //   { message: "Only zip, txt, csv, or code files are allowed" }
-  // ),
-});
-
-type PostFormValues = z.infer<typeof postSchema>;
-
-const allowedFileTypes = [
-  "application/zip",
-  "text/plain",
-  "text/csv",
-  "text/javascript",
-  "text/typescript",
-  "text/python",
-  "text/java",
-  "text/c",
-  "text/cpp",
-];
-
-export function AdminClassroom() {
-  const [fileError, setFileError] = useState<string | null>(null);
-  const addExerciseForm = useForm<z.infer<typeof addExerciseSchema>>({
-    resolver: zodResolver(addExerciseSchema),
-    defaultValues: {
-      exercises: [],
-    },
-  });
-
-  function onAddingExercises(values: z.infer<typeof addExerciseSchema>) {
-    console.log(values);
-  }
-
-  const postForm = useForm<PostFormValues>({
-    resolver: zodResolver(postSchema),
-    defaultValues: {
-      content: `# Markdown syntax guide
+const initialValue = `# Markdown syntax guide
 
 ## Headers
 
@@ -233,7 +150,7 @@ _You **can** combine them_
 
 ## Images
 
-![This is an alt text.](/image/sample.webp "This is a sample image.")
+![Placeholder image](https://via.placeholder.com/300x200 "This is a placeholder image")
 
 ## Links
 
@@ -263,31 +180,11 @@ alert(message);
 ## Inline code
 
 This web site is using \`markedjs/marked\`.
-`,
-      files: undefined,
-    },
-  });
-
-  function onPosting(values: PostFormValues) {
-    console.log("Form submitted:", values);
-    // Handle form submission here
+`;
+export function AdminClassroom() {
+  function onAddingExercises(values: z.infer<typeof addExerciseSchema>) {
+    console.log(values);
   }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files) {
-      const invalidFiles = Array.from(files).filter(
-        (file) => !allowedFileTypes.includes(file.type)
-      );
-      if (invalidFiles.length > 0) {
-        setFileError("Only zip, txt, csv, or code files are allowed");
-        postForm.setValue("files", undefined);
-      } else {
-        setFileError(null);
-        postForm.setValue("files", files);
-      }
-    }
-  };
 
   return (
     <div className="flex min-h-screen w-full flex-col">
@@ -301,278 +198,29 @@ This web site is using \`markedjs/marked\`.
               </h1>
               <Badge className="ml-auto sm:ml-0">On going</Badge>
               <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="secondary" className="h-10 py-4">
-                      Add Exercise
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent
-                    className="sm:max-w-[50vh] h-max"
-                    autoFocus={true}
-                  >
-                    <Form {...addExerciseForm}>
-                      <form
-                        onSubmit={addExerciseForm.handleSubmit(
-                          onAddingExercises
-                        )}
-                      >
-                        <DialogHeader className="mb-4">
-                          <DialogTitle>Add Exercise</DialogTitle>
-                          <DialogDescription>
-                            Choose one or more exercises to assign to this
-                            class.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <FormField
-                          control={addExerciseForm.control}
-                          name="exercises"
-                          render={({ field }) => (
-                            <>
-                              <FormItem>
-                                <FormLabel htmlFor="exercises">
-                                  Exercises
-                                </FormLabel>
-                                <FormControl>
-                                  <MultipleSelector
-                                    options={exampleExercises}
-                                    {...field}
-                                    badgeClassName="text-sm"
-                                    placeholder="Select exercises ..."
-                                    hidePlaceholderWhenSelected={true}
-                                    emptyIndicator={
-                                      <p className="text-center text-base leading-6 text-gray-600 dark:text-gray-400">
-                                        No results found.
-                                      </p>
-                                    }
-                                    triggerSearchOnFocus={true}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            </>
-                          )}
-                        />
-                        <DialogFooter>
-                          <Button className="mt-4" type="submit">
-                            Save changes
-                          </Button>
-                        </DialogFooter>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
-                <Button variant="secondary" className="h-10 py-4">
-                  Grade Exercises
-                </Button>
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button className="px-4 h-10 block">Post</Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-[800px] w-full">
-                    <Form {...postForm}>
-                      <form
-                        onSubmit={postForm.handleSubmit(onPosting)}
-                        className="space-y-6"
-                      >
-                        <DialogHeader>
-                          <DialogTitle>Create a New Post</DialogTitle>
-                          <DialogDescription>
-                            Write a new post for your classroom here using the
-                            Markdown editor below.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <FormField
-                          control={postForm.control}
-                          name="content"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Content</FormLabel>
-                              <FormControl>
-                                <MDEditor
-                                  preview="edit"
-                                  height={500}
-                                  visibleDragbar={false}
-                                  textareaProps={{
-                                    placeholder:
-                                      "Write your post content here...",
-                                  }}
-                                  className="border border-input bg-background"
-                                  // {...field}
-                                  value={field.value}
-                                  onChange={(value: string | undefined) =>
-                                    field.onChange(value || "")
-                                  }
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={postForm.control}
-                          name="files"
-                          render={({
-                            field: { value, onChange, ...fieldProps },
-                          }) => (
-                            <FormItem>
-                              <FormLabel
-                                className={fileError ? "text-destructive" : ""}
-                              >
-                                Files
-                              </FormLabel>
-                              <FormControl>
-                                <div className="flex items-center">
-                                  <Input
-                                    type="file"
-                                    multiple={true}
-                                    id="file-upload"
-                                    className="hidden"
-                                    accept=".zip,.txt,.csv,.js,.ts,.py,.java,.c,.cpp"
-                                    {...fieldProps}
-                                    onChange={handleFileChange}
-                                  />
-                                  <label
-                                    htmlFor="file-upload"
-                                    className="cursor-pointer bg-secondary text-secondary-foreground hover:bg-secondary/80 inline-flex h-10 items-center justify-center rounded-md px-4 py-2 text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
-                                  >
-                                    Choose files
-                                  </label>
-                                  <span className="ml-3 text-sm text-gray-500">
-                                    {value
-                                      ? `${value.length} file(s) selected`
-                                      : "No file chosen"}
-                                  </span>
-                                </div>
-                              </FormControl>
-                              {!fileError && (
-                                <FormDescription>
-                                  Upload one or more files related to your post.
-                                </FormDescription>
-                              )}
-                              {fileError && (
-                                <FormMessage>{fileError}</FormMessage>
-                              )}
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <DialogFooter>
-                          <Button type="submit">Post</Button>
-                        </DialogFooter>
-                      </form>
-                    </Form>
-                  </DialogContent>
-                </Dialog>
+                <AddExercisesDialog
+                  exercises={exampleExercises}
+                  onAddExercises={onAddingExercises}
+                />
+                <Link
+                  to="/admin/classes/grading"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <Button variant="secondary" className="h-10 py-4">
+                    Grade Exercises
+                  </Button>
+                </Link>
+                <PostDialog />
               </div>
             </div>
-            <div className="grid gap-4 lg:grid-cols-[1fr_250px] xl:grid-cols-3 lg:gap-8">
+            <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] xl:grid-cols-3 lg:gap-8">
               <div className="grid auto-rows-max items-start gap-4 xl:col-span-2 lg:gap-8">
-                <PostCard />
+                <PostCard post={{ content: initialValue }} />
               </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8 min-w-64">
-                <Card x-chunk="dashboard-07-chunk-3">
-                  <CardHeader>
-                    <CardTitle>Upload Files</CardTitle>
-                    <CardDescription>All upload files are here</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <ScrollArea className="h-[520px]">
-                      <div className="p-2">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>File Name</TableHead>
-                              <TableHead>Size</TableHead>
-                              <TableHead className="hidden xl:table-cell">
-                                Uploaded At
-                              </TableHead>
-                              <TableHead>By</TableHead>
-                            </TableRow>
-                          </TableHeader>
-
-                          <TableBody>
-                            {[...Array(30)].map((_, index) => (
-                              <TableRow
-                                key={index}
-                                className={index % 2 === 1 ? "bg-accent" : " "}
-                              >
-                                <TableCell>File 1</TableCell>
-                                <TableCell>1.2 MB</TableCell>
-                                <TableCell className="hidden xl:table-cell">
-                                  2021-09-01
-                                </TableCell>
-                                <TableCell>Nguyễn Minh Hoàng</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </ScrollArea>
-
-                    {/* <div className="grid gap-6">
-                      <div className="grid gap-3">
-                        <Label htmlFor="status">Status</Label>
-                        <Select>
-                          <SelectTrigger id="status" aria-label="Select status">
-                            <SelectValue placeholder="Select status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="draft">Draft</SelectItem>
-                            <SelectItem value="published">Active</SelectItem>
-                            <SelectItem value="archived">Archived</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div> */}
-                  </CardContent>
-                </Card>
-                <Card
-                  className="overflow-hidden"
-                  x-chunk="dashboard-07-chunk-4"
-                >
-                  <CardHeader>
-                    <CardTitle>Product Images</CardTitle>
-                    <CardDescription>
-                      Lipsum dolor sit amet, consectetur adipiscing elit
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid gap-2">
-                      <img
-                        alt="Product image"
-                        className="aspect-square w-full rounded-md object-cover"
-                        height="300"
-                        src="https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
-                        width="300"
-                      />
-                      <div className="grid grid-cols-3 gap-2">
-                        <button>
-                          <img
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
-                            width="84"
-                          />
-                        </button>
-                        <button>
-                          <img
-                            alt="Product image"
-                            className="aspect-square w-full rounded-md object-cover"
-                            height="84"
-                            src="https://i0.wp.com/sunrisedaycamp.org/wp-content/uploads/2020/10/placeholder.png?ssl=1"
-                            width="84"
-                          />
-                        </button>
-                        <button className="flex aspect-square w-full items-center justify-center rounded-md border border-dashed">
-                          <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="sr-only">Upload</span>
-                        </button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
+                <UploadFiles />
+                <ImagesCard />
               </div>
             </div>
             <div className="flex items-center justify-center gap-2 md:hidden">

@@ -10,8 +10,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import MDEditor from "@uiw/react-md-editor";
 
-export function PostCard({ className }: { className?: string }) {
+type Post = {
+  content: string;
+};
+
+export function PostCard({
+  className,
+  post,
+}: {
+  className?: string;
+  post?: Post;
+}) {
   return (
     <div className={className}>
       <Card>
@@ -42,22 +53,7 @@ export function PostCard({ className }: { className?: string }) {
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="ml-14">
-            <p className="leading-normal">
-              [!NOTE] Các em hôm nay hãy hoàn thành hết bài "Tìm số nguyên tố"
-              cho thầy nhé.
-            </p>
-            <p className="leading-normal">Chúc các em một cuối tuần vui vẻ!</p>
-            <p className="leading-normal">
-              Tôi rất vui vì được làm thầy giáo của các em.
-            </p>
-            <div className="flex justify-center m-3">
-              <img
-                alt="Book Image"
-                className="w-90 rounded-md object-cover aspect-auto"
-                src="https://ddimitrov.dev/wp-content/uploads/2020/03/designing-data-intensive-applications-cover-748x515.png"
-              />
-            </div>
-            <p>Bạn lớp trưởng hãy gửi lại danh sách điểm cho thầy.</p>
+            <MDEditor.Markdown source={post?.content ?? "# Hello world!"} />
           </div>
         </CardContent>
         <CardFooter></CardFooter>
