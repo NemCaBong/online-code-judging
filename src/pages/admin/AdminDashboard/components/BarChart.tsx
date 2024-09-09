@@ -1,5 +1,11 @@
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -15,6 +21,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
 const chartData = [
   { month: "January", desktop: 186, mobile: 80 },
   { month: "February", desktop: 305, mobile: 200 },
@@ -40,42 +47,41 @@ const chartConfig = {
 
 export function BarChartDashboard() {
   return (
-    <Card className="xl:col-span-2">
-      <CardHeader>
-        <CardTitle>Total Failed & Success Submissions</CardTitle>
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
+        <CardTitle className="text-lg">Submissions Over Time</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
-      <CardContent>
-        <ChartContainer
-          className="max-w-[90vh] flex justify-center items-center"
-          config={chartConfig}
-        >
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dashed" />}
-            />
-            <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
-            <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
-          </BarChart>
+      <CardContent className="flex-grow">
+        <ChartContainer className="w-full h-full" config={chartConfig}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+              />
+              <YAxis axisLine={false} tickLine={false} width={30} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar
+                dataKey="desktop"
+                fill="var(--color-desktop)"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="mobile"
+                fill="var(--color-mobile)"
+                radius={[4, 4, 0, 0]}
+              />
+            </BarChart>
+          </ResponsiveContainer>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }

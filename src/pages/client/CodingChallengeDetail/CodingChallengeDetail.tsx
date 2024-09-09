@@ -99,8 +99,8 @@ This web site is using \`markedjs/marked\`.
       <Sidebar />
       <div className="flex flex-col sm:py-4 sm:pl-14 sm:gap-4">
         <Header />
-        <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0">
-          <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end">
+        <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
+          <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
             {/* <div className="grid w-full max-w-7xl"> */}
             <Card className="grid w-full max-w-7xl border-none h-[91vh]">
               <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
@@ -196,7 +196,7 @@ This web site is using \`markedjs/marked\`.
               {/* </div> */}
             </Card>
           </div>
-          <div className="flex flex-col justify-between h-[91vh] gap-2">
+          <div className="flex flex-col justify-between h-full gap-2">
             <Card className="">
               <CardHeader className="flex flex-row justify-between items-center">
                 <CardTitle>Code Editor</CardTitle>

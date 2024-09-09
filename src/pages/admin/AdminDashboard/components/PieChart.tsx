@@ -1,8 +1,5 @@
-"use client";
-
 import { TrendingUp } from "lucide-react";
-import { LabelList, Pie, PieChart } from "recharts";
-
+import { LabelList, Pie, PieChart, ResponsiveContainer } from "recharts";
 import {
   Card,
   CardContent,
@@ -17,6 +14,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
@@ -53,13 +51,54 @@ const chartConfig = {
 
 export function PieChartDashboard() {
   return (
+    <Card className="h-full flex flex-col">
+      <CardHeader className="flex-shrink-0">
+        <CardTitle className="text-lg">Submissions By Difficulty</CardTitle>
+        <CardDescription>January - June 2024</CardDescription>
+      </CardHeader>
+      <CardContent className="flex-grow flex items-center justify-center">
+        <ChartContainer config={chartConfig} className="w-full h-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <ChartTooltip
+                content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+              />
+              <Pie
+                data={chartData}
+                dataKey="visitors"
+                // innerRadius="60%"
+                outerRadius="90%"
+              >
+                <LabelList
+                  dataKey="browser"
+                  // position="outside"
+                  className="fill-foreground text-sm md:text-xs"
+                  stroke="none"
+                  formatter={(value: keyof typeof chartConfig) =>
+                    chartConfig[value]?.label
+                  }
+                />
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function Component() {
+  return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
-        <CardTitle>Submissions Of Each Difficulty Level</CardTitle>
+        <CardTitle>Pie Chart - Label List</CardTitle>
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square">
+        <ChartContainer
+          config={chartConfig}
+          className="mx-auto aspect-square max-h-[250px]"
+        >
           <PieChart>
             <ChartTooltip
               content={<ChartTooltipContent nameKey="visitors" hideLabel />}
