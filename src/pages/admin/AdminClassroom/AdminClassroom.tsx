@@ -8,6 +8,7 @@ import { ImagesCard } from "../../../components/classroom/ImagesCard";
 import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const exampleExercises: Option[] = [
   {
@@ -183,48 +184,50 @@ This web site is using \`markedjs/marked\`.
 
 export function AdminClassroom() {
   return (
-    <div className="flex min-h-screen w-full flex-col">
-      <div className="flex flex-col sm:gap-4">
-        <AdminHeader />
-        <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-          <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
-            <div className="flex items-center gap-4">
-              <h1 className="flex-1 shrink-0 whitespace-nowrap text-2xl font-bold tracking-tight sm:grow-0">
-                Lập trình Java
-              </h1>
-              <Badge className="ml-auto sm:ml-0">On going</Badge>
-              <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                <AddExercisesDialog exercises={exampleExercises} />
-                <Link
-                  to="/admin/classes/grading"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <Button variant="secondary" className="h-10 py-4">
-                    Grade Exercises
-                  </Button>
-                </Link>
-                <PostDialog />
+    <ScrollArea className="h-[100dvh]">
+      <div className="flex min-h-screen w-full flex-col">
+        <div className="flex flex-col sm:gap-4">
+          <AdminHeader />
+          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
+            <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
+              <div className="flex items-center gap-4">
+                <h1 className="flex-1 shrink-0 whitespace-nowrap text-2xl font-bold tracking-tight sm:grow-0">
+                  Lập trình Java
+                </h1>
+                <Badge className="ml-auto sm:ml-0">On going</Badge>
+                <div className="hidden items-center gap-2 md:ml-auto md:flex">
+                  <AddExercisesDialog exercises={exampleExercises} />
+                  <Link
+                    to="/admin/classes/grading"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Button variant="secondary" className="h-10 py-4">
+                      Grade Exercises
+                    </Button>
+                  </Link>
+                  <PostDialog />
+                </div>
+              </div>
+              <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] xl:grid-cols-3 lg:gap-8">
+                <div className="grid auto-rows-max items-start gap-4 xl:col-span-2 lg:gap-8">
+                  <PostCard post={{ content: initialValue }} />
+                </div>
+                <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
+                  <UploadFiles />
+                  <ImagesCard />
+                </div>
+              </div>
+              <div className="flex items-center justify-center gap-2 md:hidden">
+                <Button variant="outline" size="sm">
+                  Discard
+                </Button>
+                <Button size="sm">Save Product</Button>
               </div>
             </div>
-            <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] xl:grid-cols-3 lg:gap-8">
-              <div className="grid auto-rows-max items-start gap-4 xl:col-span-2 lg:gap-8">
-                <PostCard post={{ content: initialValue }} />
-              </div>
-              <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
-                <UploadFiles />
-                <ImagesCard />
-              </div>
-            </div>
-            <div className="flex items-center justify-center gap-2 md:hidden">
-              <Button variant="outline" size="sm">
-                Discard
-              </Button>
-              <Button size="sm">Save Product</Button>
-            </div>
-          </div>
-        </main>
+          </main>
+        </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 }
