@@ -11,6 +11,7 @@ import { AdminClassroom } from "./pages/admin/AdminClassroom/AdminClassroom";
 import { AdminGradingPage } from "./pages/admin/AdminGradingPage/AdminGradingPage";
 import { AdminCreateChallenge } from "./pages/admin/AdminCreateChallenge/AdminCreateChallenge";
 import { AdminCreateExercise } from "./pages/admin/AdminCreateExercise/AdminCreateExercise";
+import { ChallengesList } from "./pages/client/ChallengesList/ChallengesList";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/tasks" element={<TaskBoard />} />
         <Route path="/classes" element={<ClassroomDetail />} />
         <Route path="/challenges" element={<CodingChallengeDetail />} />
+        <Route path="/challenges-list" element={<ChallengesList />} />
         <Route path="/admin">
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="classes" element={<AdminClassroom />} />

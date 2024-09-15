@@ -1,20 +1,41 @@
 import { Bar, BarChart, LabelList, XAxis, YAxis } from "recharts";
-import { Card, CardContent, CardFooter } from "@/components//ui/card";
-import { ChartContainer } from "@/components//ui/chart";
-import { Separator } from "@/components//ui/separator";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { ChartContainer } from "@/components/ui/chart";
+import { Separator } from "@/components/ui/separator";
 
-export default function DashboardChart() {
+interface ActivityData {
+  activity: string;
+  value: number;
+  label: string;
+  fill: string;
+}
+
+interface SummaryData {
+  challenges: number;
+  exercises: number;
+  classes: number;
+}
+
+interface DashboardChartProps {
+  activityData: ActivityData[];
+  summaryData: SummaryData;
+}
+
+export default function DashboardChart({
+  activityData,
+  summaryData,
+}: DashboardChartProps) {
   return (
     <Card className="max-w-xl">
       <CardContent className="flex gap-4 p-4 pb-2 ">
         <ChartContainer
           config={{
-            challenge: {
-              label: "Move",
+            challenges: {
+              label: "Challenges",
               color: "hsl(var(--chart-1))",
             },
             classes: {
-              label: "Stand",
+              label: "Classes",
               color: "hsl(var(--chart-2))",
             },
             exercises: {
@@ -31,26 +52,7 @@ export default function DashboardChart() {
               top: 0,
               bottom: 10,
             }}
-            data={[
-              {
-                activity: "classes",
-                value: (8 / 12) * 100,
-                label: "8 / 12",
-                fill: "var(--color-classes)",
-              },
-              {
-                activity: "exercises",
-                value: (46 / 60) * 100,
-                label: "46 / 60",
-                fill: "var(--color-exercises)",
-              },
-              {
-                activity: "challenge",
-                value: (245 / 360) * 100,
-                label: "245 / 360",
-                fill: "var(--color-challenge)",
-              },
-            ]}
+            data={activityData}
             layout="vertical"
             barSize={32}
             barGap={2}
@@ -81,21 +83,21 @@ export default function DashboardChart() {
           <div className="grid flex-1 auto-rows-min gap-0.5">
             <div className="text-xs text-muted-foreground">Challenges</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              562
+              {summaryData.challenges}
             </div>
           </div>
           <Separator orientation="vertical" className="mx-2 h-10 w-px" />
           <div className="grid flex-1 auto-rows-min gap-0.5">
             <div className="text-xs text-muted-foreground">Exercises</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              73
+              {summaryData.exercises}
             </div>
           </div>
           <Separator orientation="vertical" className="mx-2 h-10 w-px" />
           <div className="grid flex-1 auto-rows-min gap-0.5">
             <div className="text-xs text-muted-foreground">Classes</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              14
+              {summaryData.classes}
             </div>
           </div>
         </div>
