@@ -186,8 +186,8 @@ export function Dashboard() {
             <div className="flex flex-wrap gap-4 md:gap-8">
               <div className="flex-1 place-items-center rounded-xl border border-zinc-200 text-zinc-950 shadow dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 min-w-72 max-w-2xl">
                 <DashboardNotificationBoard
-                  title="Bảng Thông Báo"
-                  description="Các thông báo gần đây từ lớp học của bạn"
+                  title="Notifications"
+                  description="Recent notifications from your classes"
                   notifications={mockNotifications}
                 />
               </div>

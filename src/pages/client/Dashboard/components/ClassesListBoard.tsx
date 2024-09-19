@@ -23,7 +23,7 @@ export function ClassesListBoard() {
         <CardTitle>Classes</CardTitle>
         <CardDescription>All your coding classes</CardDescription>
       </CardHeader>
-      <ScrollArea className="h-[56dvh]">
+      <ScrollArea className="h-[55dvh]">
         <CardContent>
           <Table className="w-full">
             <TableHeader>
@@ -38,7 +38,7 @@ export function ClassesListBoard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[...Array(30)].map((_, index) => (
+              {[...Array(1)].map((_, index) => (
                 <TableRow
                   className={index % 2 === 0 ? "bg-muted/40" : ""}
                   key={index}

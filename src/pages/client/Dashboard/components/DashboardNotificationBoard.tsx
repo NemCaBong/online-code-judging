@@ -52,7 +52,7 @@ export default function DashboardNotificationBoard({
           </Link>
         </Button>
       </CardHeader>
-      <ScrollArea className="h-[50.5vh]">
+      <ScrollArea className="h-[50vh]">
         <CardContent>
           <Table>
             <TableHeader>

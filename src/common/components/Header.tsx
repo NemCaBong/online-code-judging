@@ -16,7 +16,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb.tsx";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   ChevronRightIcon,
   CircleUserRound,
@@ -34,21 +34,23 @@ import { useMemo } from "react";
 import React from "react";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
 
-export function Header() {
-  const location = useLocation();
-  const navigate = useNavigate();
+interface HeaderProps {
+  pathString?: string;
+}
 
+export function Header({ pathString }: HeaderProps) {
   const breadcrumbs = useMemo(() => {
-    const pathnames = location.pathname.split("/").filter((x) => x);
+    if (!pathString) return [{ href: "/dashboard", label: "Dashboard" }];
+    const pathnames = pathString.split("/").filter((x) => x);
     return [
-      { href: "#", label: "Home" },
+      { href: "/dashboard", label: "Dashboard" },
       ...pathnames.map((name, index) => {
         const href = `/${pathnames.slice(0, index + 1).join("/")}`;
         const label = name.charAt(0).toUpperCase() + name.slice(1);
         return { href, label };
       }),
     ];
-  }, [location]);
+  }, [pathString]);
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
@@ -110,7 +112,11 @@ export function Header() {
       <div className="hidden md:block">
         <Breadcrumb>
           <BreadcrumbList>
-            {breadcrumbs.length === 2 ? (
+            {breadcrumbs.length === 1 ? (
+              <BreadcrumbItem>
+                <BreadcrumbPage>{breadcrumbs[0].label}</BreadcrumbPage>
+              </BreadcrumbItem>
+            ) : breadcrumbs.length === 2 ? (
               breadcrumbs.map((item, index) => (
                 <React.Fragment key={index}>
                   {index > 0 && (

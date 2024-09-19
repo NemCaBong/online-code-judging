@@ -3,7 +3,6 @@ import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
 import { DataTable } from "./components/DataTable";
 import DashboardNotificationBoard from "../Dashboard/components/DashboardNotificationBoard";
-import DashboardChart from "../Dashboard/components/DashboardChart";
 import { Notification } from "../Dashboard/components/DashboardNotificationBoard";
 import SummaryChart from "./components/SummaryChart";
 
@@ -85,10 +84,11 @@ const summaryData = {
   medium: 5,
   hard: 3,
 };
+
 const activityData = [
   {
     activity: "easy",
-    value: (1 / 18) * 100,
+    value: (10 / 18) * 100,
     label: "10 / 18",
     fill: "var(--color-easy)",
   },
@@ -112,7 +112,7 @@ export function ChallengesList() {
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-          <Header />
+          <Header pathString="challenges-list" />
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 grid-flow-dense">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 grid-flow-dense justify-items-end">
               <div className="w-full max-w-7xl">

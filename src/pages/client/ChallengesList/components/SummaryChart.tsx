@@ -54,7 +54,7 @@ export default function SummaryChart({
             }}
             data={activityData}
             layout="vertical"
-            barSize={24}
+            barSize={32}
             barGap={2}
           >
             <XAxis type="number" dataKey="value" hide />
