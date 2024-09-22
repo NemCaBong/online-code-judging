@@ -71,9 +71,13 @@ export const createExerciseSchema = z.object({
   markdownContent: z.string().min(1, {
     message: "Please enter some content",
   }),
-  boilerplate_code: z.string().min(10, {
-    message: "Please enter some boilerplate code",
-  }),
+  boilerplate_codes: z.array(
+    z.object({
+      language: z.string(),
+      code: z.string(),
+      fileName: z.string(),
+    })
+  ),
   hints: z
     .array(
       z.object({

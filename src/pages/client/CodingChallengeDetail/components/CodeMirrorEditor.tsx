@@ -12,7 +12,12 @@ import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import "../styles/codemirror.css";
 
 // Define the type for languages
-type LanguageType = "javascript" | "java" | "python" | "cpp" | "markdown";
+export type LanguageType =
+  | "javascript"
+  | "java"
+  | "python"
+  | "cpp"
+  | "markdown";
 // Define the languages object
 // The object contains the language type as the key and the language extension as the value
 const languages: { [key in LanguageType]: () => Extension } = {

@@ -16,15 +16,28 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/multi-select";
-import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
+import CodeMirrorEditor, {
+  LanguageType,
+} from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { PlusCircle, X } from "lucide-react";
+import { useState } from "react";
 
 const OPTIONS: Option[] = [
   { label: "NextJS", value: "nextjs" },
   { label: "React", value: "react" },
   { label: "Remix", value: "remix" },
 ];
+
 const markdownContent = `
 # Markdown \`syntax guide\`
 Here is some \`inline code\` with the word \`markdown\` inside it.
@@ -97,6 +110,13 @@ import MEDitor from '@uiw/react-md-editor';
 This web site is using \`markedjs/marked\`.
 `;
 
+const LANGUAGE_OPTIONS: Option[] = [
+  { label: "JavaScript", value: "javascript" },
+  { label: "Python", value: "python" },
+  { label: "Java", value: "java" },
+  // Add more languages as needed
+];
+
 export function AdminCreateExercise() {
   const form = useForm<z.infer<typeof createExerciseSchema>>({
     resolver: zodResolver(createExerciseSchema),
@@ -104,7 +124,13 @@ export function AdminCreateExercise() {
       name: "",
       topics: [],
       markdownContent: markdownContent,
-      boilerplate_code: "",
+      boilerplate_codes: [
+        {
+          language: "javascript",
+          code: "",
+          fileName: "index.js",
+        },
+      ],
       hints: [
         {
           hintQuestion: "",
@@ -123,9 +149,35 @@ export function AdminCreateExercise() {
     name: "hints",
   });
 
+  const {
+    fields: boilerplateFields,
+    append: appendBoilerplate,
+    remove: removeBoilerplate,
+  } = useFieldArray({
+    control: form.control,
+    name: "boilerplate_codes",
+  });
+
+  const [activeTab, setActiveTab] = useState("0");
+
+  const handleAddTab = () => {
+    const newIndex = boilerplateFields.length.toString();
+    appendBoilerplate({
+      language: "javascript",
+      code: "",
+      fileName: "index.js",
+    });
+    setActiveTab(newIndex);
+  };
+
   function onSubmit(values: z.infer<typeof createExerciseSchema>) {
     console.log(values);
   }
+
+  const handleRemoveTab = (index: number) => {
+    removeBoilerplate(index);
+    setActiveTab(Math.max(0, parseInt(activeTab) - 1).toString());
+  };
 
   return (
     <ScrollArea className="h-[100dvh]">
@@ -218,9 +270,9 @@ export function AdminCreateExercise() {
                   />
 
                   {/* Boilerplate_code component */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
-                    name="boilerplate_code"
+                    name="boilerplate_code.code"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xl font-semibold">
@@ -229,7 +281,9 @@ export function AdminCreateExercise() {
                         <FormControl>
                           <CodeMirrorEditor
                             value={field.value}
-                            language="javascript"
+                            language={form.getValues(
+                              "boilerplate_code.language"
+                            )}
                             className="h-[500px]"
                             onChange={(value: string | undefined) =>
                               field.onChange(value || "")
@@ -242,7 +296,224 @@ export function AdminCreateExercise() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
+                  {/* <div>
+                    <h2 className="text-xl font-semibold pb-2">
+                      Boilerplate Codes
+                    </h2>
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                      <div className="flex items-center">
+                        <TabsList>
+                          {boilerplateFields.map((field, index) => (
+                            <TabsTrigger
+                              key={field.id}
+                              value={index.toString()}
+                            >
+                              {`Code ${index + 1}`}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={handleAddTab}
+                          className="ml-2"
+                        >
+                          <PlusCircle className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {boilerplateFields.map((field, index) => (
+                        <TabsContent key={field.id} value={index.toString()}>
+                          <div className="space-y-4">
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.fileName`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>File Name</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      placeholder="Enter file name"
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.language`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Language</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a language" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {LANGUAGE_OPTIONS.map((option) => (
+                                        <SelectItem
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.code`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Code</FormLabel>
+                                  <FormControl>
+                                    <CodeMirrorEditor
+                                      value={field.value}
+                                      language={form.watch(
+                                        `boilerplate_codes.${index}.language`
+                                      )}
+                                      className="h-[300px]"
+                                      onChange={(value: string | undefined) =>
+                                        field.onChange(value || "")
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              onClick={() => {
+                                removeBoilerplate(index);
+                                setActiveTab("0");
+                              }}
+                            >
+                              Remove This Code
+                            </Button>
+                          </div>
+                        </TabsContent>
+                      ))}
+                    </Tabs>
+                  </div> */}
+                  <div>
+                    <h2 className="text-xl font-semibold pb-2">
+                      Boilerplate Codes
+                    </h2>
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                      <div className="flex items-center">
+                        <TabsList>
+                          {boilerplateFields.map((field, index) => (
+                            <TabsTrigger
+                              key={field.id}
+                              value={index.toString()}
+                            >
+                              {`Code ${index + 1}`}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={handleAddTab}
+                          className="ml-2"
+                        >
+                          <PlusCircle className="h-4 w-4" />
+                        </Button>
+                        {boilerplateFields.length > 1 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => handleRemoveTab(parseInt(activeTab))}
+                            className="ml-2"
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                      {boilerplateFields.map((field, index) => (
+                        <TabsContent key={field.id} value={index.toString()}>
+                          <div className="space-y-4">
+                            {/* File Name input */}
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.fileName`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>File Name</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      {...field}
+                                      placeholder="Enter file name"
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                            {/* Language selection */}
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.language`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Language</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a language" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {LANGUAGE_OPTIONS.map((option) => (
+                                        <SelectItem
+                                          key={option.value}
+                                          value={option.value}
+                                        >
+                                          {option.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                </FormItem>
+                              )}
+                            />
+                            {/* Code editor */}
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.code`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Code</FormLabel>
+                                  <FormControl>
+                                    <CodeMirrorEditor
+                                      value={field.value}
+                                      language={
+                                        form.watch(
+                                          `boilerplate_codes.${index}.language`
+                                        ) as LanguageType
+                                      }
+                                      className="h-[300px]"
+                                      onChange={(value: string | undefined) =>
+                                        field.onChange(value || "")
+                                      }
+                                    />
+                                  </FormControl>
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </TabsContent>
+                      ))}
+                    </Tabs>
+                  </div>
 
                   {/* Hints */}
                   <div>
