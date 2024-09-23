@@ -2,9 +2,9 @@ import { Badge } from "@/components/ui/badge";
 import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
 import { PostCard } from "../../../components/classroom/PostCard";
-import { ImagesCard } from "@/components/classroom/ImagesCard";
-import { UploadFiles } from "@/components/classroom/UploadFiles";
+import { UploadedFiles } from "@/components/classroom/UploadedFiles";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ExercisesTable from "@/components/classroom/ExerciseTable";
 
 export function ClassroomDetail() {
   return (
@@ -13,8 +13,8 @@ export function ClassroomDetail() {
         <Sidebar />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <Header pathString="classroom/hello/world/damn" />
-          <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            <div className="mx-auto grid max-w-screen-2xl flex-1 auto-rows-max gap-4">
+          <main className="grid flex-1 items-start gap-4 p-2 sm:px-4 md:px-6 lg:px-8">
+            <div className="mx-auto grid w-full max-w-[1600px] flex-1 auto-rows-max gap-4">
               <div className="flex items-center gap-4">
                 <h1 className="flex-1 shrink-0 whitespace-nowrap text-2xl font-bold tracking-tight sm:grow-0">
                   Lập trình Java
@@ -30,8 +30,8 @@ export function ClassroomDetail() {
                   />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                  <UploadFiles />
-                  <ImagesCard />
+                  <UploadedFiles />
+                  <ExercisesTable />
                 </div>
               </div>
             </div>

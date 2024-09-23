@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { PostCard } from "@/components/classroom/PostCard";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import { Option } from "@/components/multi-select";
-import { UploadFiles } from "../../../components/classroom/UploadFiles";
+import { UploadedFiles } from "../../../components/classroom/UploadedFiles";
 import { ImagesCard } from "../../../components/classroom/ImagesCard";
 import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
@@ -214,7 +214,7 @@ export function AdminClassroom() {
                   <PostCard post={{ content: initialValue }} />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
-                  <UploadFiles />
+                  <UploadedFiles />
                   <ImagesCard />
                 </div>
               </div>

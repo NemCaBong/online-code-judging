@@ -18,7 +18,6 @@ import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import MDEditor from "@uiw/react-md-editor";
-import { SquareCheckBig, Terminal } from "lucide-react";
 import CodeMirrorEditor, {
   LanguageType,
 } from "../CodingChallengeDetail/components/CodeMirrorEditor";
