@@ -21,6 +21,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { addExerciseSchema } from "../schemas/add-exercise.schema";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  format,
+  setHours,
+  setMilliseconds,
+  setMinutes,
+  setSeconds,
+} from "date-fns";
+import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 type AddExerciseFormValues = z.infer<typeof addExerciseSchema>;
 
@@ -33,6 +48,10 @@ export function AddExercisesDialog({ exercises }: AddExercisesDialogProps) {
     resolver: zodResolver(addExerciseSchema),
     defaultValues: {
       exercises: [],
+      dueDate: setMilliseconds(
+        setSeconds(setMinutes(setHours(new Date(), 23), 59), 59),
+        999
+      ),
     },
   });
 
@@ -56,11 +75,63 @@ export function AddExercisesDialog({ exercises }: AddExercisesDialogProps) {
                 Choose one or more exercises to assign to this class.
               </DialogDescription>
             </DialogHeader>
+
+            <FormField
+              control={form.control}
+              name="dueDate"
+              render={({ field }) => (
+                <FormItem className="flex flex-col mb-4">
+                  <FormLabel>Due Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-[250px] pl-3 text-left font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "do MMM yy 'at' HH:mm")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={(date) => {
+                          if (date) {
+                            const endOfDay = setMilliseconds(
+                              setSeconds(
+                                setMinutes(setHours(date, 23), 59),
+                                59
+                              ),
+                              999
+                            );
+                            field.onChange(endOfDay);
+                          }
+                        }}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <FormField
               control={form.control}
               name="exercises"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="mb-4">
                   <FormLabel htmlFor="exercises">Exercises</FormLabel>
                   <FormControl>
                     <MultipleSelector
@@ -74,7 +145,6 @@ export function AddExercisesDialog({ exercises }: AddExercisesDialogProps) {
                           No results found.
                         </p>
                       }
-                      triggerSearchOnFocus={true}
                     />
                   </FormControl>
                   <FormMessage />

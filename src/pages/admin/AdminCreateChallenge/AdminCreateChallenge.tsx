@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector, { Option } from "@/components/multi-select";
-import { Textarea } from "@/components/ui/textarea";
 import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -107,12 +106,7 @@ export function AdminCreateChallenge() {
       tags: [],
       markdownContent: markdownContent,
       boilerplate_code: "",
-      inputAndExpectedOutput: [
-        {
-          input: "",
-          expected_output: "",
-        },
-      ],
+      testCasesFile: undefined,
       hints: [
         {
           hintQuestion: "",
@@ -124,14 +118,14 @@ export function AdminCreateChallenge() {
     },
   });
 
-  const {
-    fields: testCaseFields,
-    append: appendTestCase,
-    remove: removeTestCase,
-  } = useFieldArray({
-    control: form.control,
-    name: "inputAndExpectedOutput",
-  });
+  // const {
+  //   fields: testCaseFields,
+  //   append: appendTestCase,
+  //   remove: removeTestCase,
+  // } = useFieldArray({
+  //   control: form.control,
+  //   name: "testCasesFile",
+  // });
 
   const {
     fields: hintFields,
@@ -266,7 +260,7 @@ export function AdminCreateChallenge() {
                   />
 
                   {/* Test cases component */}
-                  <div>
+                  {/* <div>
                     <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
                     <div className="w-full border rounded-md py-2 px-3">
                       {testCaseFields.map((field, index) => (
@@ -283,10 +277,6 @@ export function AdminCreateChallenge() {
                                   Input
                                 </FormLabel>
                                 <FormControl>
-                                  {/* <Input
-                                placeholder="Enter input here ...."
-                                {...field}
-                              /> */}
                                   <Textarea
                                     className="w-[40vh]"
                                     placeholder="Enter input here ...."
@@ -343,6 +333,74 @@ export function AdminCreateChallenge() {
                         Add Test Case
                       </Button>
                     </div>
+                  </div> */}
+
+                  <div>
+                    <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
+                    {/* <FormField
+                      control={form.control}
+                      name="testCasesFile"
+                      render={({ field: { onChange, value, ...rest } }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              id="file"
+                              type="file"
+                              accept=".zip"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  onChange(file);
+                                }
+                              }}
+                              {...rest}
+                              className="text-blue-400"
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Upload a ZIP file containing your test cases
+                          </FormDescription>
+                          {value && <p>Selected file: {value.name}</p>}
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    /> */}
+                    <FormField
+                      control={form.control}
+                      name="testCasesFile"
+                      render={({ field: { onChange, value, ...rest } }) => (
+                        <FormItem>
+                          <FormControl>
+                            <div className="relative">
+                              <Input
+                                id="file"
+                                type="file"
+                                accept=".zip"
+                                onChange={(e) => {
+                                  const file = e.target.files?.[0];
+                                  if (file) {
+                                    onChange(file);
+                                  }
+                                }}
+                                {...rest}
+                                className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="w-full"
+                              >
+                                {value ? value.name : "Upload ZIP file"}
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            Upload a ZIP file containing your test cases
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
                   </div>
 
                   {/* Hints */}

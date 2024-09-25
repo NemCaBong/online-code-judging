@@ -23,21 +23,11 @@ export const createChallengeSchema = z.object({
   boilerplate_code: z.string().min(10, {
     message: "Please enter some boilerplate code",
   }),
-  inputAndExpectedOutput: z
-    .array(
-      z.object({
-        input: z.string().min(1, {
-          message: "Please enter input",
-        }),
-        expected_output: z.string().min(1, {
-          message: "Please enter expected output",
-        }),
-      })
-    )
-    .nonempty({
-      message: "Please enter at least one test case",
+  testCasesFile: z
+    .instanceof(File)
+    .refine((file) => file.type === "application/zip", {
+      message: "File must be a ZIP archive",
     }),
-
   hints: z
     .array(
       z.object({

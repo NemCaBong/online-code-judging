@@ -14,4 +14,5 @@ export const addExerciseSchema = z.object({
       })
     )
     .min(1, { message: "At least one exercise must be selected" }),
+  dueDate: z.date().min(new Date(), "Expiration date must be in the future"),
 });
