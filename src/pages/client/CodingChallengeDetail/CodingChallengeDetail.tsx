@@ -256,13 +256,15 @@ var singleNumber = function(nums) {
                     <Card className="h-full border-none pt-3">
                       <CardContent className="h-full">
                         <Tabs defaultValue="tab-0" className="w-full h-full">
-                          <TabsList>
-                            {[...Array(5)].map((_, index) => (
-                              <TabsTrigger key={index} value={`tab-${index}`}>
-                                Case {index + 1}
-                              </TabsTrigger>
-                            ))}
-                          </TabsList>
+                          <ScrollArea className="w-full">
+                            <TabsList className="inline-flex w-max">
+                              {[...Array(5)].map((_, index) => (
+                                <TabsTrigger key={index} value={`tab-${index}`}>
+                                  Case {index + 1}
+                                </TabsTrigger>
+                              ))}
+                            </TabsList>
+                          </ScrollArea>
                           {[...Array(5)].map((_, index) => (
                             <TabsContent
                               className="h-[85%]"

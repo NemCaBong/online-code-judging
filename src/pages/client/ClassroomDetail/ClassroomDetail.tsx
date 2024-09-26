@@ -2,9 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
 import { PostCard } from "../../../components/classroom/PostCard";
-import { UploadedFiles } from "@/components/classroom/UploadedFiles";
+import GradedExercises from "@/components/classroom/GradedExercises";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ExercisesTable from "@/components/classroom/ExerciseTable";
+import ScoreChart from "@/components/classroom/ScoreChart";
 
 export function ClassroomDetail() {
   return (
@@ -30,8 +31,9 @@ export function ClassroomDetail() {
                   />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                  <UploadedFiles />
+                  <ScoreChart />
                   <ExercisesTable />
+                  <GradedExercises />
                 </div>
               </div>
             </div>

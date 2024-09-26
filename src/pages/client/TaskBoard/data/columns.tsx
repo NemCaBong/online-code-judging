@@ -24,7 +24,7 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <Link
           to={`/task/${task.slug}`}
-          className="transition-colors duration-200 ease-in-out hover:text-primary hover:underline"
+          className="transition-colors duration-200 ease-in-out hover:text-primary"
         >
           {task.name}
         </Link>
@@ -90,9 +90,9 @@ export const columns: ColumnDef<Task>[] = [
       return (
         <Link
           to={`/class/${task.class}`}
-          className="transition-colors duration-200 ease-in-out hover:text-primary hover:underline"
+          className="transition-colors duration-200 ease-in-out hover:text-primary"
         >
-          {task.class}
+          <div className="text-center">{task.class}</div>
         </Link>
       );
     },
