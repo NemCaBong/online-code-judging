@@ -4,11 +4,11 @@ import { PostCard } from "@/components/classroom/PostCard";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import { Option } from "@/components/multi-select";
 import { UploadedFiles } from "../../../components/classroom/UploadedFiles";
-import { ImagesCard } from "../../../components/classroom/ImagesCard";
 import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ScoreChart from "@/components/classroom/ScoreChart";
 
 const exampleExercises: Option[] = [
   {
@@ -214,8 +214,7 @@ export function AdminClassroom() {
                   <PostCard post={{ content: initialValue }} />
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
-                  <UploadedFiles />
-                  <ImagesCard />
+                  <ScoreChart /> <UploadedFiles />
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 md:hidden">
