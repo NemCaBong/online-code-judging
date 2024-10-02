@@ -1,25 +1,11 @@
 import { Header } from "@/common/components/Header";
 import { Sidebar } from "@/common/components/Sidebar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardFooter,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import CodeMirrorEditor from "./components/CodeMirrorEditor";
-import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import MDEditor from "@uiw/react-md-editor";
-import { SquareCheckBig, Terminal } from "lucide-react";
+import { z } from "zod";
+import { CodeEditorCard } from "@/components/code-editor/CodeEditorCard";
+import DescriptionDetail from "@/components/challenge-exercise/DescriptionDetail";
+import { codeEditorSchema } from "@/utils/code-editor.schemas";
+import TestCase from "./components/TestCase";
 
 export function CodingChallengeDetail() {
   const markdownContent = `
@@ -94,6 +80,16 @@ import MEDitor from '@uiw/react-md-editor';
 This web site is using \`markedjs/marked\`.
 `;
 
+  function onRun(values: z.infer<typeof codeEditorSchema>) {
+    console.log("Running code:", values);
+    // Send data to backend for running
+  }
+
+  function onSubmit(values: z.infer<typeof codeEditorSchema>) {
+    console.log("Submitting code:", values);
+    // Send data to backend for submission
+  }
+
   return (
     <ScrollArea className="h-[100dvh]">
       <div className="flex flex-col min-h-screen w-full bg-muted/40">
@@ -102,186 +98,35 @@ This web site is using \`markedjs/marked\`.
           <Header />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
-              {/* <div className="grid w-full max-w-7xl"> */}
-              <Card className="grid w-full max-w-7xl border-none h-[91vh]">
-                <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
-                  <Tabs defaultValue="description" className="w-full h-full">
-                    <TabsList className="m-4 mb-0">
-                      <TabsTrigger value="description">Description</TabsTrigger>
-                      <TabsTrigger value="submission">Submission</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="description">
-                      <Card className="border-hidden">
-                        <CardHeader>
-                          <CardTitle>12. Two Sums</CardTitle>
-                          <CardDescription>
-                            Easy question on LeetCode
-                          </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <MDEditor.Markdown
-                            source={markdownContent}
-                            style={{ fontSize: "14px" }}
-                          />
-                        </CardContent>
-                        <CardFooter>
-                          {" "}
-                          <Accordion
-                            type="single"
-                            collapsible
-                            className="w-full"
-                          >
-                            <AccordionItem value="item-1">
-                              <AccordionTrigger>
-                                Is it accessible?
-                              </AccordionTrigger>
-                              <AccordionContent>
-                                Yes. It adheres to the WAI-ARIA design pattern.
-                              </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-2">
-                              <AccordionTrigger>Is it styled?</AccordionTrigger>
-                              <AccordionContent>
-                                Yes. It comes with default styles that matches
-                                the other components&apos; aesthetic.
-                              </AccordionContent>
-                            </AccordionItem>
-                            <AccordionItem value="item-3">
-                              <AccordionTrigger>
-                                Is it animated?
-                              </AccordionTrigger>
-                              <AccordionContent>
-                                Yes. It's animated by default, but you can
-                                disable it if you prefer.
-                              </AccordionContent>
-                            </AccordionItem>
-                          </Accordion>
-                        </CardFooter>
-                      </Card>{" "}
-                    </TabsContent>
-                  </Tabs>
-                </ScrollArea>
-                {/* <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
-                <Card className="border-hidden">
-                  <CardHeader>
-                    <CardTitle>12. Two Sums</CardTitle>
-                    <CardDescription>Easy question on LeetCode</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <MDEditor.Markdown
-                      source={markdownContent}
-                      style={{ fontSize: "14px" }}
-                    />
-                  </CardContent>
-                  <CardFooter>
-                    {" "}
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It adheres to the WAI-ARIA design pattern.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it styled?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It comes with default styles that matches the
-                          other components&apos; aesthetic.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-3">
-                        <AccordionTrigger>Is it animated?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It's animated by default, but you can disable it
-                          if you prefer.
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </CardFooter>
-                </Card>{" "}
-              </ScrollArea> */}
-                {/* </div> */}
-              </Card>
+              <DescriptionDetail
+                type="challenge"
+                title="12. Two Sums"
+                description="Easy question on LeetCode"
+                markdownContent={markdownContent}
+                submissionContent={markdownContent}
+                accordionItems={[
+                  {
+                    trigger: "Is it accessible?",
+                    content: "Yes. It adheres to the WAI-ARIA design pattern.",
+                  },
+                  {
+                    trigger: "Is it styled?",
+                    content:
+                      "Yes. It comes with default styles that matches the other components' aesthetic.",
+                  },
+                  {
+                    trigger: "Is it animated?",
+                    content:
+                      "Yes. It's animated by default, but you can disable it if you prefer.",
+                  },
+                ]}
+              />
             </div>
+            {/* Right column */}
             <div className="flex flex-col justify-between h-full gap-2">
-              <Card className="">
-                <CardHeader className="flex flex-row justify-between items-center">
-                  <CardTitle>Code Editor</CardTitle>
-                  <div className="flex gap-4">
-                    <Button className="text-xs">Run</Button>
-                    <Button className="text-xs" variant="secondary">
-                      Submit
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CodeMirrorEditor
-                    value="/**
- * @param {number[]} nums
- * @return {number}
- */
-var singleNumber = function(nums) {
-  nums.sort()
-  for(let i = 0; i < nums.length; i++){
-      if (nums[i] === nums[i+1]){
-          i++;
-      } else {
-          return nums[i + 1]
-      }
-  }
-};"
-                    language="javascript"
-                    className="h-[45vh]"
-                  />
-                </CardContent>
-              </Card>
-              <Card className="h-full border-none">
-                <Tabs defaultValue="test-case">
-                  <TabsList
-                    className="w-full justify-start"
-                    style={{
-                      borderRadius: "0.75rem 0.75rem 0 0",
-                    }}
-                  >
-                    <TabsTrigger value="test-case">
-                      <SquareCheckBig className="text-sm pr-2" />
-                      Test Cases
-                    </TabsTrigger>
-                    <TabsTrigger value="result">
-                      <Terminal className="text-sm pr-2" />
-                      Result
-                    </TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="test-case" className="h-[85%]">
-                    <Card className="h-full border-none pt-3">
-                      <CardContent className="h-full">
-                        <Tabs defaultValue="tab-0" className="w-full h-full">
-                          <ScrollArea className="w-full">
-                            <TabsList className="inline-flex w-max">
-                              {[...Array(5)].map((_, index) => (
-                                <TabsTrigger key={index} value={`tab-${index}`}>
-                                  Case {index + 1}
-                                </TabsTrigger>
-                              ))}
-                            </TabsList>
-                          </ScrollArea>
-                          {[...Array(5)].map((_, index) => (
-                            <TabsContent
-                              className="h-[85%]"
-                              key={index}
-                              value={`tab-${index}`}
-                            >
-                              <Card className="border-none dark:bg-codeEditorDark">
-                                <CardHeader>Tab ${index}</CardHeader>
-                              </Card>
-                            </TabsContent>
-                          ))}
-                        </Tabs>
-                      </CardContent>
-                    </Card>
-                  </TabsContent>
-                </Tabs>
-              </Card>
+              <CodeEditorCard onRun={onRun} onSubmit={onSubmit} />
+              {/* Bottom right column */}
+              <TestCase />
             </div>
           </main>
         </div>
