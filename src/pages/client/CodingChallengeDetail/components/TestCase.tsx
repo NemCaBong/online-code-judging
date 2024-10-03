@@ -23,7 +23,7 @@ export default function TestCase() {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="test-case" className="h-[85%]">
-          <ScrollArea className="h-[27vh]">
+          <ScrollArea className="h-[24vh]">
             <Card className="h-full border-none pt-3">
               <CardContent className="h-full">
                 <Tabs defaultValue="tab-0" className="w-full h-full">

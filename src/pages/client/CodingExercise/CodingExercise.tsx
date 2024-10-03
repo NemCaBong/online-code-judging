@@ -1,26 +1,15 @@
 import { Header } from "@/common/components/Header";
 import { Sidebar } from "@/common/components/Sidebar";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardFooter,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import MDEditor from "@uiw/react-md-editor";
-import CodeMirrorEditor, {
-  LanguageType,
-} from "../CodingChallengeDetail/components/CodeMirrorEditor";
+import { useFieldArray, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ExerciseFormSchemaType,
+  exerciseFormSchema,
+} from "./schemas/code.schema";
+import OutputCard from "./components/OutputCard";
+import ExerciseEditor from "./components/ExerciseEditor";
+import DescriptionDetail from "@/components/challenge-exercise/DescriptionDetail";
 
 export function CodingExercise() {
   const markdownContent = `
@@ -113,6 +102,27 @@ This web site is using \`markedjs/marked\`.
     },
   ];
 
+  const form = useForm<ExerciseFormSchemaType>({
+    resolver: zodResolver(exerciseFormSchema),
+    defaultValues: {
+      codes: boilerplateCodes,
+    },
+  });
+  const { fields: codesFields } = useFieldArray({
+    control: form.control,
+    name: "codes",
+  });
+
+  function onRun(values: ExerciseFormSchemaType) {
+    console.log("Running code:", values);
+    // Send data to backend for running
+  }
+
+  function onSubmit(values: ExerciseFormSchemaType) {
+    console.log("Submitting code:", values);
+    // Send data to backend for submission
+  }
+
   return (
     <ScrollArea className="h-[100dvh]">
       <div className="flex flex-col min-h-screen w-full bg-muted/40">
@@ -120,124 +130,39 @@ This web site is using \`markedjs/marked\`.
         <div className="flex flex-col sm:py-4 sm:pl-14 sm:gap-4">
           <Header />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
-            {/* Left column */}
-
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
-              {/* <div className="grid w-full max-w-7xl"> */}
-              <Card className="grid w-full max-w-7xl border-none h-[91vh]">
-                <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
-                  <Card className="border-hidden">
-                    <CardHeader>
-                      <CardTitle>12. Two Sums</CardTitle>
-                      <CardDescription>
-                        Easy question on LeetCode
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <MDEditor.Markdown
-                        source={markdownContent}
-                        style={{ fontSize: "14px" }}
-                      />
-                    </CardContent>
-                    <CardFooter>
-                      <Accordion type="single" collapsible className="w-full">
-                        <AccordionItem value="item-1">
-                          <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                          <AccordionContent>
-                            Yes. It adheres to the WAI-ARIA design pattern.
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-2">
-                          <AccordionTrigger>Is it styled?</AccordionTrigger>
-                          <AccordionContent>
-                            Yes. It comes with default styles that matches the
-                            other components&apos; aesthetic.
-                          </AccordionContent>
-                        </AccordionItem>
-                        <AccordionItem value="item-3">
-                          <AccordionTrigger>Is it animated?</AccordionTrigger>
-                          <AccordionContent>
-                            Yes. It's animated by default, but you can disable
-                            it if you prefer.
-                          </AccordionContent>
-                        </AccordionItem>
-                      </Accordion>
-                    </CardFooter>
-                  </Card>{" "}
-                </ScrollArea>
-              </Card>
+              <DescriptionDetail
+                type="exercise"
+                title="12. Two Sums"
+                description="Easy question on LeetCode"
+                markdownContent={markdownContent}
+                submissionContent={markdownContent}
+                accordionItems={[
+                  {
+                    trigger: "Is it accessible?",
+                    content: "Yes. It adheres to the WAI-ARIA design pattern.",
+                  },
+                  {
+                    trigger: "Is it styled?",
+                    content:
+                      "Yes. It comes with default styles that matches the other components' aesthetic.",
+                  },
+                  {
+                    trigger: "Is it animated?",
+                    content:
+                      "Yes. It's animated by default, but you can disable it if you prefer.",
+                  },
+                ]}
+              />
             </div>
-
-            {/* Right column */}
-            {/* <div className="flex flex-col justify-between h-full gap-2">
-              <Card className="">
-                <CardHeader className="flex flex-row justify-between items-center">
-                  <CardTitle>Code Editor</CardTitle>
-                  <div className="flex gap-4">
-                    <Button className="text-xs">Run</Button>
-                    <Button className="text-xs" variant="secondary">
-                      Submit
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <CodeMirrorEditor
-                    value=""
-                    language="javascript"
-                    className="h-[45vh]"
-                  />
-                </CardContent>
-              </Card>
-              <Card className="h-full border-none">
-                <CardHeader>
-                  <CardTitle>Output</CardTitle>
-                  <CardDescription>Result from user's code</CardDescription>
-                </CardHeader>
-                <CardContent className="dark:bg-codeEditorDark min-h-[21vh] mx-6 rounded-md"></CardContent>
-              </Card>
-            </div> */}
-
             <div className="flex flex-col justify-between h-full min-h-[50vh] gap-2">
-              <Card>
-                <CardHeader className="flex flex-row justify-between items-center">
-                  <CardTitle>Code Editor</CardTitle>
-                  <div className="flex gap-4">
-                    <Button className="text-xs">Run</Button>
-                    <Button className="text-xs" variant="secondary">
-                      Submit
-                    </Button>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue={boilerplateCodes[0].fileName}>
-                    <TabsList>
-                      {boilerplateCodes.map((code) => (
-                        <TabsTrigger key={code.fileName} value={code.fileName}>
-                          {code.fileName}
-                        </TabsTrigger>
-                      ))}
-                    </TabsList>
-                    {boilerplateCodes.map((code) => (
-                      <TabsContent key={code.fileName} value={code.fileName}>
-                        <CodeMirrorEditor
-                          value={code.code}
-                          language={code.language as LanguageType}
-                          className="h-[40vh]"
-                        />
-                      </TabsContent>
-                    ))}
-                  </Tabs>
-                </CardContent>
-              </Card>
-              <Card className="h-full border-none flex flex-col">
-                <CardHeader>
-                  <CardTitle>Output</CardTitle>
-                  <CardDescription>Result from user's code</CardDescription>
-                </CardHeader>
-                <CardContent className="dark:bg-codeEditorDark mx-6 rounded-md flex-grow mb-4 min-h-[21vh]">
-                  {/* Content goes here */}
-                </CardContent>
-              </Card>
+              <ExerciseEditor
+                form={form}
+                onRun={onRun}
+                onSubmit={onSubmit}
+                codesFields={codesFields}
+              />
+              <OutputCard />
             </div>
           </main>
         </div>
