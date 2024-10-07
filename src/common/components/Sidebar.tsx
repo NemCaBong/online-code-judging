@@ -5,15 +5,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip.tsx";
-import {
-  CodeXml,
-  LineChart,
-  Settings,
-  School,
-  Users2,
-  Swords,
-  BellDot,
-} from "lucide-react";
+import { CodeXml, Settings, School, Swords, BellDot } from "lucide-react";
 
 export function Sidebar() {
   return (

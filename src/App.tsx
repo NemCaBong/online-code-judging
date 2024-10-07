@@ -13,6 +13,7 @@ import { AdminCreateChallenge } from "./pages/admin/AdminCreateChallenge/AdminCr
 import { AdminCreateExercise } from "./pages/admin/AdminCreateExercise/AdminCreateExercise";
 import { ChallengesList } from "./pages/client/ChallengesList/ChallengesList";
 import { CodingExercise } from "./pages/client/CodingExercise/CodingExercise";
+import { AdminCreateClass } from "./pages/admin/AdminCreateClass/AdminCreateClass";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="classes/grading" element={<AdminGradingPage />} />
           <Route path="create-challenge" element={<AdminCreateChallenge />} />
           <Route path="create-exercise" element={<AdminCreateExercise />} />
+          <Route path="create-class" element={<AdminCreateClass />} />
         </Route>
         <Route path="*" element={<h1>Not Found</h1>} />
       </Routes>
