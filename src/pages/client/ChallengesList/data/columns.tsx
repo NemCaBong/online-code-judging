@@ -148,6 +148,6 @@ export const columns: ColumnDef<Challenge>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: () => <DataTableRowActions />,
   },
 ];
