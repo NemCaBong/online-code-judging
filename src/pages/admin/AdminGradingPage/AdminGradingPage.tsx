@@ -266,7 +266,7 @@ export function AdminGradingPage() {
                             <FormControl>
                               <CodeMirrorEditor
                                 language="javascript"
-                                className="h-[58vh]"
+                                className="h-[56vh]"
                                 {...field}
                               />
                             </FormControl>
@@ -277,7 +277,7 @@ export function AdminGradingPage() {
                     </CardContent>
                     <Separator />
                     <CardFooter className="block h-[19.5vh] pb-0">
-                      <div className="pt-6">
+                      <div className="pt-4">
                         <div className="grid gap-4">
                           <FormField
                             control={gradingExerciseForm.control}

@@ -1,6 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CodeMirrorEditor, {
   LanguageType,
@@ -80,14 +86,17 @@ export default function ExerciseEditor({
                     control={form.control}
                     name={`codes.${index}.code`}
                     render={({ field: codeField }) => (
-                      <FormControl>
-                        <CodeMirrorEditor
-                          value={codeField.value}
-                          onChange={codeField.onChange}
-                          language={field.language as LanguageType}
-                          className="h-[40vh]"
-                        />
-                      </FormControl>
+                      <FormItem>
+                        <FormControl>
+                          <CodeMirrorEditor
+                            value={codeField.value}
+                            onChange={codeField.onChange}
+                            language={field.language as LanguageType}
+                            className="h-[40vh]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
                   />
                 </TabsContent>

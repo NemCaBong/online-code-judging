@@ -7,7 +7,7 @@ export default function OutputCard() {
       <CardHeader>
         <CardTitle>Output</CardTitle>
       </CardHeader>
-      <CardContent className="dark:bg-codeEditorDark rounded-md flex-grow m-6 mt-0 h-[22vh] pr-0 pb-0 pt-2">
+      <CardContent className="dark:bg-codeEditorDark rounded-md flex-grow m-6 mt-0 h-[21vh] pr-0 pb-0 pt-2">
         <ScrollArea className="h-full">
           {[...Array(25)].map((_, index) => (
             <p key={index}>
