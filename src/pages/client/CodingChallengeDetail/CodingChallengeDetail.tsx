@@ -79,14 +79,33 @@ import MEDitor from '@uiw/react-md-editor';
 
 This web site is using \`markedjs/marked\`.
 `;
+  const testCases = [
+    {
+      id: 2,
+      input: "4\n2 7 11 15\n9",
+      expected_output: "0 1",
+    },
+    {
+      id: 3,
+      input: "4\n2 7 11 15\n13",
+      expected_output: "1 2",
+    },
+    {
+      id: 4,
+      input: "2\n3 3\n6",
+      expected_output: "0 1",
+    },
+  ];
 
   function onRun(values: z.infer<typeof codeEditorSchema>) {
-    console.log("Running code:", values);
+    const testCaseIds = testCases.map((testCase) => testCase.id);
+
+    console.log("Running code:", { testCaseIds, ...values });
     // Send data to backend for running
   }
 
   function onSubmit(values: z.infer<typeof codeEditorSchema>) {
-    console.log("Submitting code:", values);
+    console.log("Submitting code:", { ...values });
     // Send data to backend for submission
   }
 
@@ -126,7 +145,7 @@ This web site is using \`markedjs/marked\`.
             <div className="flex flex-col justify-between h-full gap-2">
               <CodeEditorCard onRun={onRun} onSubmit={onSubmit} />
               {/* Bottom right column */}
-              <TestCase />
+              <TestCase testCases={testCases} />
             </div>
           </main>
         </div>

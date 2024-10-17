@@ -3,31 +3,46 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { ChartContainer } from "@/components/ui/chart";
 import { Separator } from "@/components/ui/separator";
 
-interface ActivityData {
-  activity: string;
-  value: number;
-  label: string;
-  fill: string;
-}
-
-interface SummaryData {
-  challenges: number;
-  exercises: number;
-  classes: number;
+interface ProgressData {
+  done: number;
+  total: number;
 }
 
 interface DashboardChartProps {
-  activityData: ActivityData[];
-  summaryData: SummaryData;
+  challenges: ProgressData;
+  classes: ProgressData;
+  exercises: ProgressData;
 }
 
 export default function DashboardChart({
-  activityData,
-  summaryData,
+  challenges,
+  classes,
+  exercises,
 }: DashboardChartProps) {
+  const activityData = [
+    {
+      activity: "challenges",
+      value: (challenges.done / challenges.total) * 100,
+      label: `${challenges.done} / ${challenges.total}`,
+      fill: "var(--color-challenges)",
+    },
+    {
+      activity: "classes",
+      value: (classes.done / classes.total) * 100,
+      label: `${classes.done} / ${classes.total}`,
+      fill: "var(--color-classes)",
+    },
+    {
+      activity: "exercises",
+      value: (exercises.done / exercises.total) * 100,
+      label: `${exercises.done} / ${exercises.total}`,
+      fill: "var(--color-exercises)",
+    },
+  ];
+
   return (
     <Card className="max-w-xl">
-      <CardContent className="flex gap-4 p-4 pb-2 ">
+      <CardContent className="flex gap-4 p-4 pb-2">
         <ChartContainer
           config={{
             challenges: {
@@ -39,7 +54,7 @@ export default function DashboardChart({
               color: "hsl(var(--chart-2))",
             },
             exercises: {
-              label: "Exercise",
+              label: "Exercises",
               color: "hsl(var(--chart-3))",
             },
           }}
@@ -83,21 +98,21 @@ export default function DashboardChart({
           <div className="grid flex-1 auto-rows-min gap-0.5">
             <div className="text-xs text-muted-foreground">Challenges</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              {summaryData.challenges}
-            </div>
-          </div>
-          <Separator orientation="vertical" className="mx-2 h-10 w-px" />
-          <div className="grid flex-1 auto-rows-min gap-0.5">
-            <div className="text-xs text-muted-foreground">Exercises</div>
-            <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              {summaryData.exercises}
+              {challenges.done}
             </div>
           </div>
           <Separator orientation="vertical" className="mx-2 h-10 w-px" />
           <div className="grid flex-1 auto-rows-min gap-0.5">
             <div className="text-xs text-muted-foreground">Classes</div>
             <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
-              {summaryData.classes}
+              {classes.done}
+            </div>
+          </div>
+          <Separator orientation="vertical" className="mx-2 h-10 w-px" />
+          <div className="grid flex-1 auto-rows-min gap-0.5">
+            <div className="text-xs text-muted-foreground">Exercises</div>
+            <div className="flex items-baseline gap-1 text-2xl font-bold tabular-nums leading-none">
+              {exercises.done}
             </div>
           </div>
         </div>

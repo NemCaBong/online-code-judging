@@ -18,25 +18,35 @@ import {
 } from "@/components/ui/table";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
 
-export interface Notification {
-  id: string;
-  task: string;
-  course: string;
-  status: string;
-  date: string;
+interface Exercise {
+  id: number;
+  slug: string;
+  created_at: string;
+  name: string;
+  classExercises: {
+    due_at: string;
+    class: {
+      id: number;
+      name: string;
+    };
+  }[];
+  userExerciseResult: {
+    status: string;
+  }[];
 }
 
 interface DashboardNotificationBoardProps {
   title: string;
   description: string;
-  notifications: Notification[];
+  exercises: Exercise[];
 }
 
 export default function DashboardNotificationBoard({
   title,
   description,
-  notifications,
+  exercises,
 }: DashboardNotificationBoardProps) {
   return (
     <Card className="xl:col-span-2 max-w-2xl min-w-72">
@@ -57,27 +67,34 @@ export default function DashboardNotificationBoard({
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Task</TableHead>
+                <TableHead>Exercise</TableHead>
                 <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-right">Date</TableHead>
+                <TableHead className="text-right">Due Date</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {notifications.map((notification) => (
-                <TableRow key={notification.id}>
+              {exercises.map((exercise) => (
+                <TableRow key={exercise.id}>
                   <TableCell>
-                    <div className="font-medium">{notification.task}</div>
+                    <div className="font-medium">{exercise.name}</div>
                     <div className="text-sm text-muted-foreground md:inline">
-                      {notification.course}
+                      {exercise.classExercises[0].class.name}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge className="text-xs" variant="outline">
-                      {notification.status}
+                    <Badge
+                      className="text-xs"
+                      variant={
+                        exercise.userExerciseResult[0].status === "done"
+                          ? "default"
+                          : "destructive"
+                      }
+                    >
+                      {exercise.userExerciseResult[0].status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    {notification.date}
+                    {format(new Date(exercise.classExercises[0].due_at), "PP")}
                   </TableCell>
                 </TableRow>
               ))}

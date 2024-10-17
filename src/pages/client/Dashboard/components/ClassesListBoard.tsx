@@ -15,8 +15,28 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
 
-export function ClassesListBoard() {
+interface ClassInfo {
+  id: number;
+  name: string;
+  created_at: string;
+  slug: string;
+  total_students: number;
+  teacher: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  is_done: boolean;
+}
+
+interface ClassesListBoardProps {
+  classes: ClassInfo[];
+}
+
+export function ClassesListBoard({ classes }: ClassesListBoardProps) {
   return (
     <Card className="mt-2">
       <CardHeader className="px-7">
@@ -38,27 +58,35 @@ export function ClassesListBoard() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {[...Array(1)].map((_, index) => (
+              {classes.map((classInfo, index) => (
                 <TableRow
                   className={index % 2 === 0 ? "bg-muted/40" : ""}
-                  key={index}
+                  key={classInfo.id}
                 >
                   <TableCell>
-                    <div className="font-medium">Liam Johnson</div>
+                    <div className="font-medium">{classInfo.name}</div>
                     <div className="hidden text-sm text-muted-foreground md:inline">
-                      liam@example.com
+                      {classInfo.slug}
                     </div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    Phạm Thảo
+                    {classInfo.teacher.first_name} {classInfo.teacher.last_name}
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    <Badge className="text-xs" variant="secondary">
-                      Fulfilled
-                    </Badge>
+                    {classInfo.is_done ? (
+                      <Badge className="text-xs" variant="secondary">
+                        Done
+                      </Badge>
+                    ) : (
+                      <Badge className="text-xs">Ongoing</Badge>
+                    )}
                   </TableCell>
-                  <TableCell className="hidden md:table-cell">50</TableCell>
-                  <TableCell className="text-right">2023-06-23</TableCell>
+                  <TableCell className="hidden md:table-cell">
+                    {classInfo.total_students}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {format(new Date(classInfo.created_at), "PP")}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

@@ -7,7 +7,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { markdown } from "@codemirror/lang-markdown";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { Extension } from "@codemirror/state";
-import { keymap } from "@codemirror/view";
+import { EditorView, keymap } from "@codemirror/view";
 import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import "../styles/codemirror.css";
 
@@ -49,6 +49,7 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
         languages[language](),
         autocompletion(),
         keymap.of(completionKeymap),
+        EditorView.lineWrapping,
       ]}
       onChange={onChange}
     />

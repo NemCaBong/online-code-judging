@@ -10,86 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu.tsx";
 import DashboardChart from "@/pages/client/Dashboard/components/DashboardChart";
 import { DisplayCard } from "@/pages/client/Dashboard/components/DisplayCard";
-import DashboardNotificationBoard, {
-  Notification,
-} from "./components/DashboardNotificationBoard";
+import DashboardNotificationBoard from "./components/DashboardNotificationBoard";
 import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
 import { ClassesListBoard } from "./components/ClassesListBoard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-const mockNotifications: Notification[] = [
-  {
-    id: "1",
-    task: "Nộp bài tập về nhà: Giải phương trình bậc 2",
-    course: "Đại số",
-    status: "Chưa hoàn thành",
-    date: "2024-03-15",
-  },
-  {
-    id: "2",
-    task: "Làm bài kiểm tra online: Cấu trúc dữ liệu và giải thuật",
-    course: "Khoa học máy tính",
-    status: "Đã hoàn thành",
-    date: "2024-03-14",
-  },
-  {
-    id: "3",
-    task: "Nộp báo cáo thí nghiệm: Đo lường áp suất",
-    course: "Vật lý đại cương",
-    status: "Đang chờ đánh giá",
-    date: "2024-03-13",
-  },
-  {
-    id: "4",
-    task: "Tham gia thảo luận nhóm: Biến đổi khí hậu",
-    course: "Môi trường học",
-    status: "Đang diễn ra",
-    date: "2024-03-16",
-  },
-  {
-    id: "5",
-    task: "Nộp bài luận: Phân tích tác phẩm 'Truyện Kiều'",
-    course: "Văn học Việt Nam",
-    status: "Chưa bắt đầu",
-    date: "2024-03-20",
-  },
-  {
-    id: "6",
-    task: "Hoàn thành bài tập lập trình: Tạo ứng dụng Todo",
-    course: "Lập trình web",
-    status: "Đang làm",
-    date: "2024-03-18",
-  },
-  {
-    id: "7",
-    task: "Nộp bài thuyết trình: Kỹ thuật marketing số",
-    course: "Marketing cơ bản",
-    status: "Đã nộp",
-    date: "2024-03-12",
-  },
-  {
-    id: "8",
-    task: "Tham gia buổi hội thảo trực tuyến: AI trong y tế",
-    course: "Công nghệ thông tin y sinh",
-    status: "Sắp diễn ra",
-    date: "2024-03-19",
-  },
-  {
-    id: "9",
-    task: "Nộp bài tập nhóm: Thiết kế poster quảng cáo",
-    course: "Thiết kế đồ họa",
-    status: "Cần chỉnh sửa",
-    date: "2024-03-17",
-  },
-  {
-    id: "10",
-    task: "Hoàn thành khảo sát: Đánh giá chất lượng giảng dạy",
-    course: "Quản lý giáo dục",
-    status: "Chưa hoàn thành",
-    date: "2024-03-21",
-  },
-];
 
 const activityData = [
   {
@@ -118,6 +43,109 @@ const summaryData = {
   classes: 8,
 };
 
+const classData = {
+  id: 4,
+  name: "Advanced JavaScript",
+  created_at: "2024-10-13T04:10:11.380Z",
+  slug: "adv-javascript",
+  total_students: 30,
+  teacher: {
+    id: 2,
+    first_name: "Tuấn",
+    last_name: "Nguyễn",
+    email: "tuan.nguyen@example.com",
+  },
+};
+
+const classes = [
+  {
+    id: 4,
+    name: "Advanced JavaScript",
+    created_at: "2024-10-13T04:10:11.380Z",
+    slug: "adv-javascript",
+    total_students: 30,
+    teacher: {
+      id: 2,
+      first_name: "Tuấn",
+      last_name: "Nguyễn",
+      email: "tuan.nguyen@example.com",
+    },
+    is_done: true,
+  },
+  {
+    id: 2,
+    name: "Lập trình web",
+    created_at: "2024-10-13T01:05:23.287Z",
+    slug: "lap-trinh-web",
+    total_students: 30,
+    teacher: {
+      id: 2,
+      first_name: "Tuấn",
+      last_name: "Nguyễn",
+      email: "tuan.nguyen@example.com",
+    },
+    is_done: false,
+  },
+];
+
+const soonDueExercises = [
+  {
+    id: 1,
+    slug: "basic-array-manipulation",
+    created_at: "2024-10-13T01:05:23.287Z",
+    name: "Basic Array Manipulation",
+    classExercises: [
+      {
+        due_at: "2024-10-13T01:15:14.171Z",
+        class: {
+          id: 2,
+          name: "Lập trình web",
+        },
+      },
+    ],
+    userExerciseResult: [
+      {
+        status: "done",
+      },
+    ],
+  },
+  {
+    id: 2,
+    slug: "string-reversal",
+    created_at: "2024-10-13T01:05:23.287Z",
+    name: "String Reversal",
+    classExercises: [
+      {
+        due_at: "2024-10-13T01:15:14.171Z",
+        class: {
+          id: 2,
+          name: "Lập trình web",
+        },
+      },
+    ],
+    userExerciseResult: [
+      {
+        status: "not-done",
+      },
+    ],
+  },
+];
+
+const progressData = {
+  challenges: {
+    done: 1,
+    total: 10,
+  },
+  classes: {
+    done: 0,
+    total: 2,
+  },
+  exercises: {
+    done: 1,
+    total: 2,
+  },
+};
+
 export function Dashboard() {
   return (
     <ScrollArea className="h-[100dvh]">
@@ -128,9 +156,9 @@ export function Dashboard() {
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 grid-flow-dense">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 grid-flow-dense justify-items-end">
               <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-7xl">
-                <DisplayCard className="sm:col-span-2" />
-                <DisplayCard />
-                <DisplayCard />
+                <DisplayCard className="sm:col-span-2" classInfo={classData} />
+                <DisplayCard classInfo={classData} />
+                <DisplayCard classInfo={classData} />
               </div>
               <div className="w-full max-w-7xl">
                 <div className="ml-auto flex items-center gap-2">
@@ -180,7 +208,7 @@ export function Dashboard() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                <ClassesListBoard />
+                <ClassesListBoard classes={classes} />
               </div>
             </div>
             <div className="flex flex-wrap gap-4 md:gap-8">
@@ -188,13 +216,14 @@ export function Dashboard() {
                 <DashboardNotificationBoard
                   title="Notifications"
                   description="Recent notifications from your classes"
-                  notifications={mockNotifications}
+                  exercises={soonDueExercises}
                 />
               </div>
               <div className="flex-1 max-w-2xl min-w-72">
                 <DashboardChart
-                  activityData={activityData}
-                  summaryData={summaryData}
+                  challenges={progressData.challenges}
+                  classes={progressData.classes}
+                  exercises={progressData.exercises}
                 />
               </div>
             </div>

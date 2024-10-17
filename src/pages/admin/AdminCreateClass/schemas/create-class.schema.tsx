@@ -3,7 +3,13 @@ import { z } from "zod";
 export const studentsSchema = z.object({
   label: z.string(),
   value: z.string(),
-  id: z.string(),
+  id: z.number(),
+});
+
+export const teacherSchema = z.object({
+  label: z.string(),
+  value: z.string(),
+  id: z.number(),
 });
 
 export const createClassSchema = z.object({
@@ -18,4 +24,5 @@ export const createClassSchema = z.object({
   students: z.array(studentsSchema).nonempty({
     message: "Please select at least one student",
   }),
+  teacher_id: z.string(),
 });

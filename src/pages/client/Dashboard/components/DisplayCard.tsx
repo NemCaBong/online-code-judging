@@ -1,25 +1,53 @@
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card.tsx";
-import { Progress } from "@/components/ui/progress.tsx";
+import { format } from "date-fns";
 
-export function DisplayCard({ className }: { className?: string }) {
+interface ClassInfo {
+  id: number;
+  name: string;
+  created_at: string;
+  slug: string;
+  total_students: number;
+  teacher: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+
+interface DisplayCardProps {
+  className?: string;
+  classInfo: ClassInfo;
+}
+
+export function DisplayCard({ className, classInfo }: DisplayCardProps) {
+  const formattedDate = format(new Date(classInfo.created_at), "PP");
+
   return (
-    <Card className={className} x-chunk="dashboard-05-chunk-1">
-      <CardHeader className="pb-2">
-        <CardDescription>This Week</CardDescription>
-        <CardTitle className="text-4xl">$1,329</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="text-xs text-muted-foreground">+25% from last week</div>
-      </CardContent>
-      <CardFooter>
-        <Progress value={25} aria-label="25% increase" />
+    <Card
+      className={`${className} flex flex-col h-full`}
+      x-chunk="dashboard-05-chunk-1"
+    >
+      <div className="flex-grow">
+        <CardHeader className="pb-0 flex justify-between">
+          <CardTitle className="text-xl">{classInfo.name}</CardTitle>
+          <div className="text-sm text-muted-foreground">{formattedDate}</div>
+        </CardHeader>
+        <CardContent></CardContent>
+      </div>
+      <CardFooter className="mt-auto">
+        <div className="w-full">
+          <div className="text-sm text-muted-foreground">
+            Teacher: {classInfo.teacher.first_name}{" "}
+            {classInfo.teacher.last_name}
+          </div>
+        </div>
       </CardFooter>
     </Card>
   );

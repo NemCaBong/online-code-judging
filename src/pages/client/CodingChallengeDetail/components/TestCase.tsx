@@ -1,9 +1,17 @@
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Terminal, SquareCheckBig } from "lucide-react";
 
-export default function TestCase() {
+interface TestCaseProps {
+  testCases: {
+    id: number;
+    input: string;
+    expected_output: string;
+  }[];
+}
+
+export default function TestCase({ testCases }: TestCaseProps) {
   return (
     <Card className="h-full border-none">
       <Tabs defaultValue="test-case">
@@ -26,24 +34,44 @@ export default function TestCase() {
           <ScrollArea className="h-[24vh]">
             <Card className="h-full border-none pt-3">
               <CardContent className="h-full">
-                <Tabs defaultValue="tab-0" className="w-full h-full">
+                <Tabs
+                  defaultValue={`tab-${testCases[0]?.id}`}
+                  className="w-full h-full"
+                >
                   <ScrollArea className="w-full">
                     <TabsList className="inline-flex w-max">
-                      {[...Array(5)].map((_, index) => (
-                        <TabsTrigger key={index} value={`tab-${index}`}>
-                          Case {index + 1}
+                      {testCases.map((testCase, idx) => (
+                        <TabsTrigger key={idx + 1} value={`tab-${idx + 1}`}>
+                          Case {idx + 1}
                         </TabsTrigger>
                       ))}
                     </TabsList>
                   </ScrollArea>
-                  {[...Array(5)].map((_, index) => (
+                  {testCases.map((testCase, idx) => (
                     <TabsContent
                       className="h-[85%]"
-                      key={index}
-                      value={`tab-${index}`}
+                      key={idx + 1}
+                      value={`tab-${idx + 1}`}
                     >
-                      <Card className="border-none dark:bg-codeEditorDark">
-                        <CardHeader>Tab ${index}</CardHeader>
+                      <Card className="border-none dark:bg-codeEditorDark mt-4">
+                        <CardContent className="pt-3">
+                          <p>
+                            <strong>Input:</strong>
+                          </p>
+                          <pre>
+                            <code>{testCase.input}</code>
+                          </pre>
+                        </CardContent>
+                      </Card>
+                      <Card className="border-none dark:bg-codeEditorDark mt-4">
+                        <CardContent className="pt-3">
+                          <p>
+                            <strong>Expected Output:</strong>
+                          </p>
+                          <pre>
+                            <code>{testCase.expected_output}</code>
+                          </pre>
+                        </CardContent>
                       </Card>
                     </TabsContent>
                   ))}

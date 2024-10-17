@@ -17,6 +17,7 @@ export const createChallengeSchema = z.object({
   tags: z.array(optionSchema).nonempty({
     message: "Please select at least one tag",
   }),
+  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
   markdownContent: z.string().min(1, {
     message: "Please enter some content",
   }),

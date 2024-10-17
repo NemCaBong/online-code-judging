@@ -19,12 +19,26 @@ import MultipleSelector, { Option } from "@/components/multi-select";
 import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import rehypeKatex from "rehype-katex";
+import remarkMath from "remark-math";
+import "katex/dist/katex.min.css";
 
-const OPTIONS: Option[] = [
-  { label: "NextJS", value: "nextjs" },
-  { label: "React", value: "react" },
-  { label: "Remix", value: "remix" },
-];
+// const OPTIONS: Option[] = [
+//   { label: "NextJS", value: "nextjs" },
+//   { label: "React", value: "react" },
+//   { label: "Remix", value: "remix" },
+// ];
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -98,6 +112,20 @@ import MEDitor from '@uiw/react-md-editor';
 This web site is using \`markedjs/marked\`.
 `;
 
+// Assuming you have a function or a way to get the token
+const getToken = () => {
+  // Replace this with your actual token retrieval logic
+  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ";
+};
+
+// Define the type for the tags
+interface Tag {
+  id: number;
+  name: string;
+}
+
+type ChallengeData = z.infer<typeof createChallengeSchema>;
+
 export function AdminCreateChallenge() {
   const form = useForm<z.infer<typeof createChallengeSchema>>({
     resolver: zodResolver(createChallengeSchema),
@@ -115,17 +143,27 @@ export function AdminCreateChallenge() {
       ],
       timeLimit: 0,
       spaceLimit: 0,
+      difficulty: "EASY",
     },
   });
 
-  // const {
-  //   fields: testCaseFields,
-  //   append: appendTestCase,
-  //   remove: removeTestCase,
-  // } = useFieldArray({
-  //   control: form.control,
-  //   name: "testCasesFile",
-  // });
+  // Set up the mutation
+  const mutation = useMutation({
+    mutationFn: (newChallenge: ChallengeData) => {
+      return axios.post(
+        "http://localhost:3000/challenges/create",
+        newChallenge, headers: {
+          Authorization: `Bearer ${getToken()}`,
+        }
+      );
+    },
+    onSuccess: () => {
+      toast.success("Challenge created successfully");
+    },
+    onError: (error) => {
+      toast.error("Error creating challenge");
+    },
+  });
 
   const {
     fields: hintFields,
@@ -136,9 +174,53 @@ export function AdminCreateChallenge() {
     name: "hints",
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof createChallengeSchema>) {
-    console.log(values);
+  // Define the query function
+  const fetchTags = async (): Promise<Tag[]> => {
+    const token = getToken();
+    const response = await axios.get("http://localhost:3000/tags/list", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data.tags;
+  };
+
+  // Use the useQuery hook with object syntax
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["tags"],
+    queryFn: fetchTags,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col items-center">
+          <p>Loading this page</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Display an error message if there's an error
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-full text-red-500">
+        <p>Error loading this page</p>
+      </div>
+    );
+  }
+
+  // Use the data
+  const tagOptions = data
+    ? data.map((tag) => ({
+        label: tag.name,
+        value: tag.name.toLowerCase(),
+      }))
+    : [];
+
+  // Modify the onSubmit function
+  function onSubmit(values: ChallengeData) {
+    mutation.mutate(values);
   }
 
   return (
@@ -190,7 +272,7 @@ export function AdminCreateChallenge() {
                         </FormLabel>
                         <FormControl>
                           <MultipleSelector
-                            defaultOptions={OPTIONS}
+                            defaultOptions={tagOptions}
                             {...field}
                             badgeClassName="text-sm"
                             placeholder="Select tags ..."
@@ -209,6 +291,35 @@ export function AdminCreateChallenge() {
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={form.control}
+                    name="difficulty"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xl font-semibold">
+                          Difficulty
+                        </FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select difficulty" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="EASY">Easy</SelectItem>
+                              <SelectItem value="MEDIUM">Medium</SelectItem>
+                              <SelectItem value="HARD">Hard</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormDescription>
+                          Select difficulty for this challenge
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormField
                     control={form.control}
                     name="markdownContent"
@@ -226,6 +337,10 @@ export function AdminCreateChallenge() {
                               field.onChange(value || "")
                             }
                             className="w-full text-sm"
+                            previewOptions={{
+                              rehypePlugins: [rehypeKatex],
+                              remarkPlugins: [remarkMath],
+                            }}
                           />
                         </FormControl>
                         <FormMessage />
@@ -489,7 +604,7 @@ export function AdminCreateChallenge() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xl font-semibold">
-                          Time Limit (MS)
+                          Time Limit (S)
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -500,7 +615,7 @@ export function AdminCreateChallenge() {
                           />
                         </FormControl>
                         <FormDescription>
-                          Time limit of this challenge
+                          Time limit of this challenge in seconds
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -513,7 +628,7 @@ export function AdminCreateChallenge() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xl font-semibold">
-                          Space Limit (MB)
+                          Space Limit (KB)
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -524,7 +639,7 @@ export function AdminCreateChallenge() {
                           />
                         </FormControl>
                         <FormDescription>
-                          Space limit of this challenge
+                          Space limit of this challenge in kilobytes
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
@@ -538,6 +653,7 @@ export function AdminCreateChallenge() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

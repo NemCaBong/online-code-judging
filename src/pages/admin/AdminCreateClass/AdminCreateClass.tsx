@@ -17,86 +17,27 @@ import MultipleSelector, { Option } from "@/components/multi-select";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { createClassSchema } from "./schemas/create-class.schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const studentsData: Option[] = [
-  { label: "Nguyễn Văn An", value: "nguyen_van_an", id: "std001" },
-  { label: "Trần Thị Bình", value: "tran_thi_binh", id: "std002" },
-  { label: "Lê Hoàng Cường", value: "le_hoang_cuong", id: "std003" },
-  { label: "Phạm Minh Dung", value: "pham_minh_dung", id: "std004" },
-  { label: "Hoàng Thị Em", value: "hoang_thi_em", id: "std005" },
+  { label: "Nguyễn Văn An", value: "1", id: 1 },
+  { label: "Trần Thị Bình", value: "2", id: 2 },
+  { label: "Lê Hoàng Cường", value: "3", id: 3 },
+  { label: "Phạm Minh Dung", value: "4", id: 4 },
+  { label: "Hoàng Thị Em", value: "5", id: 5 },
 ];
 
-// const markdownContent = `
-// # Markdown \`syntax guide\`
-// Here is some \`inline code\` with the word \`markdown\` inside it.
-
-// ## Headers
-
-// # This is a Heading h1
-// ## This is a Heading h2
-// ###### This is a Heading h6
-
-// ## Emphasis
-
-// *This text will be italic*
-// _This will also be italic_
-
-// **This text will be bold**
-// __This will also be bold__
-
-// _You **can** combine them_
-
-// ## Lists
-
-// ### Unordered
-
-// * Item 1
-// * Item 2
-// * Item 2a
-// * Item 2b
-
-// ### Ordered
-
-// 1. Item 1
-// 2. Item 2
-// 3. Item 3
-//     1. Item 3a
-//     2. Item 3b
-
-// ## Images
-
-// ![This is an alt text.](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxqglKDy3Z9-zDvnfRFQIGeQft28uRVTHoGQ&s "This is a sample image.")
-
-// ## Links
-
-// You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
-
-// ## Blockquotes
-
-// > Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
-// >
-// >> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
-
-// ## Tables
-
-// | Left columns  | Right columns |
-// | ------------- |:-------------:|
-// | left foo      | right foo     |
-// | left bar      | right bar     |
-// | left baz      | right baz     |
-
-// ## Blocks of code
-
-// \`\`\`javascript
-// import React from "react";
-// import ReactDOM from "react-dom";
-// import MEDitor from '@uiw/react-md-editor';
-// \`\`\`
-
-// ## Inline code
-
-// This web site is using \`markedjs/marked\`.
-// `;
+const teachersData: Option[] = [
+  { label: "Nguyễn Văn A", value: "10", id: 10 },
+  { label: "Trần Thị B", value: "8", id: 8 },
+  { label: "Lê Hoàng C", value: "13", id: 13 },
+];
 
 export function AdminCreateClass() {
   const form = useForm<z.infer<typeof createClassSchema>>({
@@ -170,6 +111,41 @@ export function AdminCreateClass() {
                               </p>
                             }
                           />
+                        </FormControl>
+                        <FormDescription>
+                          Add students to this class
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="teacher_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xl font-semibold">
+                          Students
+                        </FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a teacher" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {teachersData.map((teacher) => (
+                                <SelectItem
+                                  key={teacher.id as number}
+                                  value={teacher.value}
+                                >
+                                  {teacher.label}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </FormControl>
                         <FormDescription>
                           Add students to this class

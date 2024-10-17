@@ -14,13 +14,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import CodeMirrorEditor, {
-  LanguageType,
-} from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
+import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { codeEditorSchema } from "@/utils/code-editor.schemas";
+import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
 
 type CodeEditorCardProps = {
   onRun: (values: z.infer<typeof codeEditorSchema>) => void;
@@ -31,7 +30,7 @@ export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
   const form = useForm<z.infer<typeof codeEditorSchema>>({
     resolver: zodResolver(codeEditorSchema),
     defaultValues: {
-      language: "javascript",
+      languageId: "63",
       code: "// Your code here",
     },
   });
@@ -44,7 +43,7 @@ export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
           <Form {...form}>
             <FormField
               control={form.control}
-              name="language"
+              name="languageId"
               render={({ field }) => (
                 <Select
                   onValueChange={field.onChange}
@@ -54,10 +53,10 @@ export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="javascript">JavaScript</SelectItem>
-                    <SelectItem value="python">Python</SelectItem>
-                    <SelectItem value="java">Java</SelectItem>
-                    <SelectItem value="cpp">C++</SelectItem>
+                    <SelectItem value="63">JavaScript</SelectItem>
+                    <SelectItem value="71">Python</SelectItem>
+                    <SelectItem value="54">Java</SelectItem>
+                    <SelectItem value="62">C++</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -86,7 +85,13 @@ export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
                   <FormControl>
                     <CodeMirrorEditor
                       value={field.value}
-                      language={form.watch("language") as LanguageType}
+                      language={
+                        LanguageIdToTypeMap[
+                          form.watch(
+                            "languageId"
+                          ) as keyof typeof LanguageIdToTypeMap
+                        ]
+                      }
                       className="h-[45vh]"
                       onChange={field.onChange}
                     />
