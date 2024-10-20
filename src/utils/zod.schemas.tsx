@@ -1,8 +1,15 @@
 import { z } from "zod";
 
 const optionSchema = z.object({
-  label: z.string(),
-  value: z.string(),
+  label: z.string({
+    message: "label must be a string",
+  }),
+  value: z.string({
+    message: "value must be a string",
+  }),
+  id: z.number({
+    message: "id must be a number",
+  }),
 });
 
 export const createChallengeSchema = z.object({

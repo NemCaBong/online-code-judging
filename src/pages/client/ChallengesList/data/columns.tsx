@@ -1,12 +1,12 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { Challenge } from "../components/DataTable";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown, Check, ClipboardList, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DataTableRowActions } from "../components/RowActions";
+import { ChallengeWithUserStatus } from "../ChallengesList";
 
-export const columns: ColumnDef<Challenge>[] = [
+export const columns: ColumnDef<ChallengeWithUserStatus>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -34,13 +34,13 @@ export const columns: ColumnDef<Challenge>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "title",
+    accessorKey: "name",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Title
+        Name
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -53,12 +53,12 @@ export const columns: ColumnDef<Challenge>[] = [
       return (
         <div>
           <div className="font-medium">
-            {challenge.id}. {challenge.title}
+            {challenge.id}. {challenge.name}
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
             {displayTags.map((tag, index) => (
               <Badge key={index} variant="secondary">
-                {tag}
+                {tag.name}
               </Badge>
             ))}
             {remainingTags > 0 && (
@@ -68,26 +68,28 @@ export const columns: ColumnDef<Challenge>[] = [
         </div>
       );
     },
+    enableSorting: true,
   },
   {
-    accessorKey: "status",
-    header: () => <div className="text-center">Status</div>,
+    accessorKey: "user_challenge_results",
+    header: "Status",
+    filterFn: (row, id, value) => {
+      const status =
+        row.original.user_challenge_results[0]?.status || "not-done";
+      return value.includes(status);
+    },
     cell: ({ row }) => {
-      const status = row.getValue("status") as string | null;
+      const status =
+        row.original.user_challenge_results[0]?.status || "not-done";
       return (
         <div className="flex justify-center">
           {status === "done" && <Check className="h-5 w-5 text-green-500" />}
-          {status === "todo" && (
+          {status === "to-do" && (
             <ClipboardList className="h-5 w-5 text-yellow-500" />
           )}
-          {(status === "not done" || status === null) && (
-            <X className="h-5 w-5 text-red-500" />
-          )}
+          {status === "not-done" && <X className="h-5 w-5 text-red-500" />}
         </div>
       );
-    },
-    filterFn: (row, columnName, filterValue) => {
-      return filterValue.includes(row.getValue(columnName));
     },
   },
   {
@@ -103,8 +105,24 @@ export const columns: ColumnDef<Challenge>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const rate = row.getValue("acceptanceRate") as number;
-      return <div className="text-center">{(rate * 100).toFixed(1)}%</div>;
+      const acceptedResults = row.original.accepted_results;
+      const totalAttempts = row.original.total_attempts;
+      const rate =
+        totalAttempts > 0 ? (acceptedResults / totalAttempts) * 100 : 0;
+      return <div className="text-center">{rate.toFixed(1)}%</div>;
+    },
+    sortingFn: (rowA, rowB) => {
+      const rateA =
+        rowA.original.total_attempts > 0
+          ? (rowA.original.accepted_results / rowA.original.total_attempts) *
+            100
+          : 0;
+      const rateB =
+        rowB.original.total_attempts > 0
+          ? (rowB.original.accepted_results / rowB.original.total_attempts) *
+            100
+          : 0;
+      return rateA - rateB;
     },
   },
   {
@@ -124,9 +142,9 @@ export const columns: ColumnDef<Challenge>[] = [
       return (
         <div
           className={`font-medium text-center ${
-            difficulty === "easy"
+            difficulty === "EASY"
               ? "text-green-500"
-              : difficulty === "medium"
+              : difficulty === "MEDIUM"
               ? "text-yellow-500"
               : "text-red-500"
           }`}
@@ -136,12 +154,14 @@ export const columns: ColumnDef<Challenge>[] = [
       );
     },
     sortingFn: (rowA, rowB, columnId) => {
-      const difficultyOrder = { easy: 0, medium: 1, hard: 2 };
+      const difficultyOrder = { EASY: 0, MEDIUM: 1, HARD: 2 };
       const diffA = rowA.getValue(columnId) as keyof typeof difficultyOrder;
       const diffB = rowB.getValue(columnId) as keyof typeof difficultyOrder;
       return difficultyOrder[diffA] - difficultyOrder[diffB];
     },
     filterFn: (row, columnName, filterValue) => {
+      console.log(filterValue);
+      console.log(row.getValue(columnName));
       return filterValue.includes(row.getValue(columnName));
     },
   },

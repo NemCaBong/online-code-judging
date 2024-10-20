@@ -6,28 +6,17 @@ import {
   CardTitle,
 } from "@/components/ui/card.tsx";
 import { format } from "date-fns";
-
-interface ClassInfo {
-  id: number;
-  name: string;
-  created_at: string;
-  slug: string;
-  total_students: number;
-  teacher: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-  };
-}
+import { Class } from "../Dashboard";
 
 interface DisplayCardProps {
   className?: string;
-  classInfo: ClassInfo;
+  classInfo: Class | null;
 }
 
 export function DisplayCard({ className, classInfo }: DisplayCardProps) {
-  const formattedDate = format(new Date(classInfo.created_at), "PP");
+  const formattedDate = classInfo?.created_at
+    ? format(new Date(classInfo.created_at), "PP")
+    : "";
 
   return (
     <Card
@@ -36,7 +25,7 @@ export function DisplayCard({ className, classInfo }: DisplayCardProps) {
     >
       <div className="flex-grow">
         <CardHeader className="pb-0 flex justify-between">
-          <CardTitle className="text-xl">{classInfo.name}</CardTitle>
+          <CardTitle className="text-xl">{classInfo?.name || ""}</CardTitle>
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
         </CardHeader>
         <CardContent></CardContent>
@@ -44,8 +33,12 @@ export function DisplayCard({ className, classInfo }: DisplayCardProps) {
       <CardFooter className="mt-auto">
         <div className="w-full">
           <div className="text-sm text-muted-foreground">
-            Teacher: {classInfo.teacher.first_name}{" "}
-            {classInfo.teacher.last_name}
+            {classInfo?.teacher?.first_name && (
+              <>
+                Teacher: {classInfo?.teacher.first_name || ""}{" "}
+                {classInfo?.teacher.last_name || ""}
+              </>
+            )}
           </div>
         </div>
       </CardFooter>

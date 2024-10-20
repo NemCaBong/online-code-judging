@@ -9,7 +9,7 @@ import {
 } from "./schemas/code.schema";
 import OutputCard from "./components/OutputCard";
 import ExerciseEditor from "./components/ExerciseEditor";
-import DescriptionDetail from "@/components/challenge-exercise/DescriptionDetail";
+import ExerciseDescriptionCard from "./components/ExerciseDescriptionCard";
 
 export function CodingExercise() {
   const markdownContent = `
@@ -131,12 +131,10 @@ This web site is using \`markedjs/marked\`.
           <Header />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
-              <DescriptionDetail
-                type="exercise"
+              <ExerciseDescriptionCard
                 title="12. Two Sums"
                 description="Easy question on LeetCode"
                 markdownContent={markdownContent}
-                submissionContent={markdownContent}
                 accordionItems={[
                   {
                     trigger: "Is it accessible?",

@@ -29,5 +29,8 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "src/pages/client/ChallengesList/components/TodoChallengeBoard/.tsx"
+  ]
 }

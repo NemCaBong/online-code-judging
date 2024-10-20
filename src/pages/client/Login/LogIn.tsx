@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,9 +8,86 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { jwtDecode } from "jwt-decode";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/auth.context";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast, ToastContainer } from "react-toastify";
+
+// Define a Zod schema for the form
+const loginSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+type LoginFormInputs = z.infer<typeof loginSchema>;
+
+interface DecodedToken {
+  email: string;
+  name: string;
+  role: string;
+}
+
+interface LoginResponse {
+  access_token: string;
+  statusCode: number;
+  message: string;
+}
 
 export function LoginForm() {
+  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const form = useForm<LoginFormInputs>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const loginMutation = useMutation<LoginResponse, Error, LoginFormInputs>({
+    mutationFn: async (loginData) => {
+      const response = await axios.post("http://localhost:3000/auth/login", {
+        email: loginData.email,
+        password: loginData.password,
+      });
+      return response.data;
+    },
+
+    onSuccess: (data) => {
+      const decodedToken: DecodedToken = jwtDecode(data.access_token);
+      setUser(decodedToken);
+      setIsLoggedIn(true);
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user_info", JSON.stringify(decodedToken));
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      console.error("Login failed:", error);
+      toast.error(
+        `Login failed. Please check your credentials. ${error.message}`
+      );
+      // Handle error (e.g., show a notification)
+    },
+  });
+
+  const onSubmit = (data: LoginFormInputs) => {
+    console.log("Form submitted:", data);
+    loginMutation.mutate(data);
+  };
+
   return (
     <div className="flex justify-center items-center h-dvh">
       <Card className="mx-auto max-w-sm">
@@ -21,43 +98,53 @@ export function LoginForm() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="m@example.com"
-                required
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="email">Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="m@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                {/* <Link
-                  to=""
-                  className="ml-auto inline-block text-sm underline"
-                >
-                  Forgot your password?
-                </Link> */}
-              </div>
-              <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-              Login
-            </Button>
-            <Button variant="outline" className="w-full">
-              Login with Google
-            </Button>
-          </div>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel htmlFor="password">Password</FormLabel>
+                    <FormControl>
+                      <Input id="password" type="password" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full">
+                Login
+              </Button>
+            </form>
+          </Form>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
+            Don't have an account?{" "}
             <Link to="/signup" className="underline">
               Sign up
             </Link>
           </div>
         </CardContent>
       </Card>
+      <ToastContainer />
     </div>
   );
 }

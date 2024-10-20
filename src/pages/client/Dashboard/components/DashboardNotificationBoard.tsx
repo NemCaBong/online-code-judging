@@ -19,23 +19,7 @@ import {
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
-
-interface Exercise {
-  id: number;
-  slug: string;
-  created_at: string;
-  name: string;
-  classExercises: {
-    due_at: string;
-    class: {
-      id: number;
-      name: string;
-    };
-  }[];
-  userExerciseResult: {
-    status: string;
-  }[];
-}
+import { Exercise } from "../Dashboard";
 
 interface DashboardNotificationBoardProps {
   title: string;
@@ -78,23 +62,26 @@ export default function DashboardNotificationBoard({
                   <TableCell>
                     <div className="font-medium">{exercise.name}</div>
                     <div className="text-sm text-muted-foreground md:inline">
-                      {exercise.classExercises[0].class.name}
+                      {exercise.classes_exercises[0].class.name}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge
                       className="text-xs"
                       variant={
-                        exercise.userExerciseResult[0].status === "done"
+                        exercise.user_exercise_results[0].status === "done"
                           ? "default"
                           : "destructive"
                       }
                     >
-                      {exercise.userExerciseResult[0].status}
+                      {exercise.user_exercise_results[0].status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right">
-                    {format(new Date(exercise.classExercises[0].due_at), "PP")}
+                    {format(
+                      new Date(exercise.classes_exercises[0].due_at),
+                      "PP"
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

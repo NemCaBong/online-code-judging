@@ -15,138 +15,128 @@ import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
 import { ClassesListBoard } from "./components/ClassesListBoard";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import fetchData from "@/utils/fetch-data.utils";
 
-const activityData = [
-  {
-    activity: "classes",
-    value: (8 / 12) * 100,
-    label: "8 / 12",
-    fill: "var(--color-classes)",
-  },
-  {
-    activity: "exercises",
-    value: (46 / 60) * 100,
-    label: "46 / 60",
-    fill: "var(--color-exercises)",
-  },
-  {
-    activity: "challenges",
-    value: (245 / 360) * 100,
-    label: "245 / 360",
-    fill: "var(--color-challenges)",
-  },
-];
+export interface ChartRes {
+  message: string;
+  statusCode: number;
+  done: number;
+  total: number;
+}
 
-const summaryData = {
-  challenges: 245,
-  exercises: 46,
-  classes: 8,
-};
+export interface Exercise {
+  id: number;
+  slug: string;
+  created_at: string;
+  name: string;
+  classes_exercises: {
+    due_at: string;
+    class: {
+      id: number;
+      name: string;
+    };
+  }[];
+  user_exercise_results: {
+    status: string;
+  }[];
+}
 
-const classData = {
-  id: 4,
-  name: "Advanced JavaScript",
-  created_at: "2024-10-13T04:10:11.380Z",
-  slug: "adv-javascript",
-  total_students: 30,
+export interface Class {
+  id: number;
+  name: string;
+  is_done: boolean;
+  created_at: string;
+  slug: string;
+  total_students: number;
   teacher: {
-    id: 2,
-    first_name: "Tuấn",
-    last_name: "Nguyễn",
-    email: "tuan.nguyen@example.com",
-  },
-};
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+}
+interface ClassesResponse {
+  message: string;
+  statusCode: number;
+  classes: Class[];
+}
 
-const classes = [
-  {
-    id: 4,
-    name: "Advanced JavaScript",
-    created_at: "2024-10-13T04:10:11.380Z",
-    slug: "adv-javascript",
-    total_students: 30,
-    teacher: {
-      id: 2,
-      first_name: "Tuấn",
-      last_name: "Nguyễn",
-      email: "tuan.nguyen@example.com",
-    },
-    is_done: true,
-  },
-  {
-    id: 2,
-    name: "Lập trình web",
-    created_at: "2024-10-13T01:05:23.287Z",
-    slug: "lap-trinh-web",
-    total_students: 30,
-    teacher: {
-      id: 2,
-      first_name: "Tuấn",
-      last_name: "Nguyễn",
-      email: "tuan.nguyen@example.com",
-    },
-    is_done: false,
-  },
-];
+interface SoonDueExercisesResponse {
+  message: string;
+  statusCode: number;
+  soon_due_exercises: Exercise[];
+}
 
-const soonDueExercises = [
-  {
-    id: 1,
-    slug: "basic-array-manipulation",
-    created_at: "2024-10-13T01:05:23.287Z",
-    name: "Basic Array Manipulation",
-    classExercises: [
-      {
-        due_at: "2024-10-13T01:15:14.171Z",
-        class: {
-          id: 2,
-          name: "Lập trình web",
-        },
-      },
-    ],
-    userExerciseResult: [
-      {
-        status: "done",
-      },
-    ],
-  },
-  {
-    id: 2,
-    slug: "string-reversal",
-    created_at: "2024-10-13T01:05:23.287Z",
-    name: "String Reversal",
-    classExercises: [
-      {
-        due_at: "2024-10-13T01:15:14.171Z",
-        class: {
-          id: 2,
-          name: "Lập trình web",
-        },
-      },
-    ],
-    userExerciseResult: [
-      {
-        status: "not-done",
-      },
-    ],
-  },
-];
-
-const progressData = {
-  challenges: {
-    done: 1,
-    total: 10,
-  },
-  classes: {
-    done: 0,
-    total: 2,
-  },
-  exercises: {
-    done: 1,
-    total: 2,
-  },
-};
-
+function getFirstThreeClasses(classes: Class[]): (Class | null)[] {
+  if (classes.length < 3) {
+    return [...classes, ...Array(3 - classes.length).fill(null)];
+  }
+  return classes;
+}
 export function Dashboard() {
+  const results = useQueries({
+    queries: [
+      {
+        queryKey: ["challenges"],
+        queryFn: () =>
+          fetchData<ChartRes>(
+            "http://localhost:3000/challenges/info/done-and-total"
+          ),
+      },
+      {
+        queryKey: ["exercises"],
+        queryFn: () =>
+          fetchData<ChartRes>(
+            "http://localhost:3000/exercises/info/done-and-total"
+          ),
+      },
+      {
+        queryKey: ["classes"],
+        queryFn: () =>
+          fetchData<ChartRes>(
+            "http://localhost:3000/classes/info/done-and-total"
+          ),
+      },
+    ],
+  });
+  const {
+    data: soonDueExercises,
+    isLoading: isSoonDueLoading,
+    isError: isSoonDueError,
+  } = useQuery({
+    queryKey: ["soonDueExercises"],
+    queryFn: () =>
+      fetchData<SoonDueExercisesResponse>(
+        "http://localhost:3000/exercises/users/soon-due"
+      ),
+  });
+  const {
+    data: classesList,
+    isLoading: isClassesLoading,
+    isError: isClassesError,
+  } = useQuery({
+    queryKey: ["userClasses"],
+    queryFn: () =>
+      fetchData<ClassesResponse>("http://localhost:3000/classes/users"),
+  });
+
+  const isLoading = results.some((result) => result.isLoading);
+  const isError = results.some((result) => result.isError);
+
+  if (isLoading || isSoonDueLoading || isClassesLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || isSoonDueError || isClassesError) {
+    return <div>Error loading data</div>;
+  }
+
+  const [challengesData, exercisesData, classesData] = results.map(
+    (result) => result.data
+  );
+  const firstThreeClasses = getFirstThreeClasses(classesList?.classes || []);
+
   return (
     <ScrollArea className="h-[100dvh]">
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
@@ -156,9 +146,13 @@ export function Dashboard() {
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 grid-flow-dense">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 grid-flow-dense justify-items-end">
               <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4 w-full max-w-7xl">
-                <DisplayCard className="sm:col-span-2" classInfo={classData} />
-                <DisplayCard classInfo={classData} />
-                <DisplayCard classInfo={classData} />
+                {firstThreeClasses.map((classInfo, index) => (
+                  <DisplayCard
+                    key={index}
+                    classInfo={classInfo}
+                    className={index === 0 ? "col-span-2" : ""}
+                  />
+                ))}
               </div>
               <div className="w-full max-w-7xl">
                 <div className="ml-auto flex items-center gap-2">
@@ -208,7 +202,7 @@ export function Dashboard() {
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
-                <ClassesListBoard classes={classes} />
+                <ClassesListBoard classes={classesList?.classes || []} />
               </div>
             </div>
             <div className="flex flex-wrap gap-4 md:gap-8">
@@ -216,14 +210,23 @@ export function Dashboard() {
                 <DashboardNotificationBoard
                   title="Notifications"
                   description="Recent notifications from your classes"
-                  exercises={soonDueExercises}
+                  exercises={soonDueExercises?.soon_due_exercises || []}
                 />
               </div>
               <div className="flex-1 max-w-2xl min-w-72">
                 <DashboardChart
-                  challenges={progressData.challenges}
-                  classes={progressData.classes}
-                  exercises={progressData.exercises}
+                  challenges={{
+                    done: challengesData?.done || 0,
+                    total: challengesData?.total || 0,
+                  }}
+                  classes={{
+                    done: classesData?.done || 0,
+                    total: classesData?.total || 0,
+                  }}
+                  exercises={{
+                    done: exercisesData?.done || 0,
+                    total: exercisesData?.total || 0,
+                  }}
                 />
               </div>
             </div>

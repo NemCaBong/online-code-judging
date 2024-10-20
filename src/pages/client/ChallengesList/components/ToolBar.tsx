@@ -21,12 +21,12 @@ const statuses = [
     icon: CheckCircledIcon,
   },
   {
-    value: "todo",
+    value: "to-do",
     label: "Todo",
     icon: CircleIcon,
   },
   {
-    value: "not done",
+    value: "not-done",
     label: "Not Done",
     icon: CrossCircledIcon,
   },
@@ -35,17 +35,17 @@ const statuses = [
 const difficulties = [
   {
     label: "Easy",
-    value: "easy",
+    value: "EASY",
     icon: SquarePlus,
   },
   {
     label: "Medium",
-    value: "medium",
+    value: "MEDIUM",
     icon: SquareFunction,
   },
   {
     label: "Hard",
-    value: "hard",
+    value: "HARD",
     icon: SquareSigma,
   },
 ];
@@ -59,16 +59,16 @@ export function DataTableToolbar<TData>({
     <div className="flex items-center justify-between mb-4">
       <div className="flex flex-1 items-center space-x-2">
         <Input
-          placeholder="Filter titles..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter names..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-        {table.getColumn("status") && (
+        {table.getColumn("user_challenge_results") && (
           <DataTableFacetedFilter
-            column={table.getColumn("status")}
+            column={table.getColumn("user_challenge_results")}
             title="Status"
             options={statuses}
           />

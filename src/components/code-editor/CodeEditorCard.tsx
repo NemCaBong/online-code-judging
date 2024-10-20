@@ -20,20 +20,68 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { codeEditorSchema } from "@/utils/code-editor.schemas";
 import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
+import { capitalizeFirstLetter } from "@/utils/string.utils";
 
 type CodeEditorCardProps = {
   onRun: (values: z.infer<typeof codeEditorSchema>) => void;
   onSubmit: (values: z.infer<typeof codeEditorSchema>) => void;
+  challengeDetails: {
+    id: number;
+    language_id: number;
+    boilerplate_code: string;
+  }[];
+  availableLanguages: number[];
 };
 
-export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
+// Function to replace escape sequences
+function formatBoilerplateCode(code: string): string {
+  // Use a mapping of escape sequences to their replacements
+  const escapeSequences: { [key: string]: string } = {
+    "\\n": "\n",
+    "\\t": "\t",
+    "\\r": "\r",
+    "\\\\": "\\",
+    '\\"': '"',
+    "\\'": "'",
+  };
+
+  // Use a regular expression to replace all escape sequences
+  return code.replace(
+    /\\[ntr\\'"]/g,
+    (match) => escapeSequences[match] || match
+  );
+}
+
+export function CodeEditorCard({
+  onRun,
+  onSubmit,
+  challengeDetails,
+  availableLanguages,
+}: CodeEditorCardProps) {
   const form = useForm<z.infer<typeof codeEditorSchema>>({
     resolver: zodResolver(codeEditorSchema),
     defaultValues: {
-      languageId: "63",
-      code: "// Your code here",
+      languageId: availableLanguages[0]?.toString() || "63",
+      code: formatBoilerplateCode(
+        challengeDetails.find(
+          (detail) =>
+            detail.language_id.toString() === availableLanguages[0]?.toString()
+        )?.boilerplate_code || "// Your code here"
+      ),
     },
   });
+
+  const handleLanguageChange = (languageId: string) => {
+    const selectedDetail = challengeDetails.find(
+      (detail) => detail.language_id.toString() === languageId
+    );
+    form.setValue(
+      "code",
+      formatBoilerplateCode(
+        selectedDetail?.boilerplate_code || "// Your code here"
+      )
+    );
+  };
 
   return (
     <Card>
@@ -46,17 +94,24 @@ export function CodeEditorCard({ onRun, onSubmit }: CodeEditorCardProps) {
               name="languageId"
               render={({ field }) => (
                 <Select
-                  onValueChange={field.onChange}
+                  onValueChange={(value) => {
+                    field.onChange(value);
+                    handleLanguageChange(value);
+                  }}
                   defaultValue={field.value}
                 >
                   <SelectTrigger className="w-[120px]">
                     <SelectValue placeholder="Language" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="63">JavaScript</SelectItem>
-                    <SelectItem value="71">Python</SelectItem>
-                    <SelectItem value="54">Java</SelectItem>
-                    <SelectItem value="62">C++</SelectItem>
+                    {availableLanguages.map((languageId) => (
+                      <SelectItem
+                        key={languageId}
+                        value={languageId.toString()}
+                      >
+                        {capitalizeFirstLetter(LanguageIdToTypeMap[languageId])}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               )}

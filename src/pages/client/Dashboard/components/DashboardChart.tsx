@@ -19,22 +19,26 @@ export default function DashboardChart({
   classes,
   exercises,
 }: DashboardChartProps) {
+  const calculatePercentage = (done: number, total: number) => {
+    if (total === 0) return 0; // Avoid division by zero
+    return (done / total) * 100;
+  };
   const activityData = [
     {
       activity: "challenges",
-      value: (challenges.done / challenges.total) * 100,
+      value: calculatePercentage(challenges.done, challenges.total),
       label: `${challenges.done} / ${challenges.total}`,
       fill: "var(--color-challenges)",
     },
     {
       activity: "classes",
-      value: (classes.done / classes.total) * 100,
+      value: calculatePercentage(classes.done, classes.total),
       label: `${classes.done} / ${classes.total}`,
       fill: "var(--color-classes)",
     },
     {
       activity: "exercises",
-      value: (exercises.done / exercises.total) * 100,
+      value: calculatePercentage(exercises.done, exercises.total),
       label: `${exercises.done} / ${exercises.total}`,
       fill: "var(--color-exercises)",
     },

@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import MultipleSelector, { Option } from "@/components/multi-select";
+import MultipleSelector from "@/components/multi-select";
 import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,18 +27,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
-
-// const OPTIONS: Option[] = [
-//   { label: "NextJS", value: "nextjs" },
-//   { label: "React", value: "react" },
-//   { label: "Remix", value: "remix" },
-// ];
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -126,6 +120,14 @@ interface Tag {
 
 type ChallengeData = z.infer<typeof createChallengeSchema>;
 
+interface ChallengeCreationResponse {
+  message: string;
+  statusCode: number;
+  result: {
+    id: number;
+  };
+}
+
 export function AdminCreateChallenge() {
   const form = useForm<z.infer<typeof createChallengeSchema>>({
     resolver: zodResolver(createChallengeSchema),
@@ -148,20 +150,64 @@ export function AdminCreateChallenge() {
   });
 
   // Set up the mutation
-  const mutation = useMutation({
+  const mutation = useMutation<
+    AxiosResponse<ChallengeCreationResponse>,
+    Error,
+    ChallengeData
+  >({
     mutationFn: (newChallenge: ChallengeData) => {
       return axios.post(
         "http://localhost:3000/challenges/create",
-        newChallenge, headers: {
-          Authorization: `Bearer ${getToken()}`,
+        newChallenge,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
         }
       );
     },
-    onSuccess: () => {
-      toast.success("Challenge created successfully");
+    onSuccess: (data) => {
+      const { message, statusCode, result } = data.data;
+      if (!message) {
+        throw new Error("Invalid response from server");
+      }
+      console.log(data);
+      toast.success(message);
+
+      if (statusCode === 201) {
+        const challenge_id = result.id;
+        console.log(challenge_id);
+
+        // Proceed with uploading the test cases file
+        const formData = new FormData();
+        formData.append(
+          "testCasesFile",
+          form.getValues("testCasesFile") as File
+        );
+
+        axios
+          .post(
+            `http://localhost:3000/challenges/upload/test-cases?challenge_id=${challenge_id}`,
+            formData,
+            {
+              headers: {
+                Authorization: `Bearer ${getToken()}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(() => {
+            toast.success("Test cases file uploaded successfully");
+          })
+          .catch((error) => {
+            toast.error("Error uploading test cases file");
+            console.log(error);
+          });
+      }
     },
     onError: (error) => {
       toast.error("Error creating challenge");
+      console.log(error);
     },
   });
 
@@ -215,11 +261,12 @@ export function AdminCreateChallenge() {
     ? data.map((tag) => ({
         label: tag.name,
         value: tag.name.toLowerCase(),
+        id: tag.id,
       }))
     : [];
 
-  // Modify the onSubmit function
   function onSubmit(values: ChallengeData) {
+    // const { testCasesFile, ...rest } = values;
     mutation.mutate(values);
   }
 
@@ -347,6 +394,7 @@ export function AdminCreateChallenge() {
                       </FormItem>
                     )}
                   />
+
                   {/* Boilerplate_code component */}
                   <FormField
                     control={form.control}
@@ -374,112 +422,8 @@ export function AdminCreateChallenge() {
                     )}
                   />
 
-                  {/* Test cases component */}
-                  {/* <div>
-                    <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
-                    <div className="w-full border rounded-md py-2 px-3">
-                      {testCaseFields.map((field, index) => (
-                        <div
-                          key={field.id}
-                          className="flex w-full p-2 flex-wrap gap-4 justify-between items-center"
-                        >
-                          <FormField
-                            control={form.control}
-                            name={`inputAndExpectedOutput.${index}.input`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base">
-                                  Input
-                                </FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    className="w-[40vh]"
-                                    placeholder="Enter input here ...."
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="flex gap-4">
-                            <FormField
-                              control={form.control}
-                              name={`inputAndExpectedOutput.${index}.expected_output`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-base">
-                                    Expected Output
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Textarea
-                                      className="w-[40vh]"
-                                      placeholder="Enter expected output ...."
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
-                            />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              onClick={
-                                // nếu chỉ có 1 test case thì không cho xóa
-                                testCaseFields.length === 1
-                                  ? undefined
-                                  : () => removeTestCase(index)
-                              }
-                              className="mt-8"
-                            >
-                              Xóa
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-                      <Button
-                        type="button"
-                        className="mt-8 m-2"
-                        onClick={() =>
-                          appendTestCase({ input: "", expected_output: "" })
-                        }
-                      >
-                        Add Test Case
-                      </Button>
-                    </div>
-                  </div> */}
-
                   <div>
                     <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
-                    {/* <FormField
-                      control={form.control}
-                      name="testCasesFile"
-                      render={({ field: { onChange, value, ...rest } }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              id="file"
-                              type="file"
-                              accept=".zip"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) {
-                                  onChange(file);
-                                }
-                              }}
-                              {...rest}
-                              className="text-blue-400"
-                            />
-                          </FormControl>
-                          <FormDescription>
-                            Upload a ZIP file containing your test cases
-                          </FormDescription>
-                          {value && <p>Selected file: {value.name}</p>}
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    /> */}
                     <FormField
                       control={form.control}
                       name="testCasesFile"
