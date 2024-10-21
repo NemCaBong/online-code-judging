@@ -20,7 +20,7 @@ export function DisplayCard({ className, classInfo }: DisplayCardProps) {
 
   return (
     <Card
-      className={`${className} flex flex-col h-full`}
+      className={`${className} flex flex-col h-[18.5vh]`}
       x-chunk="dashboard-05-chunk-1"
     >
       <div className="flex-grow">

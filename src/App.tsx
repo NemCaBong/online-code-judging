@@ -31,15 +31,15 @@ function App() {
   }
 
   function adminRouter() {
-    return user.role === "admin" ? <Outlet /> : <Navigate to="/dashboard" />;
+    return user.role === "ADMIN" ? <Outlet /> : <Navigate to="/dashboard" />;
   }
 
-  function teacherRouter() {
-    console.log("Teacher router: ", user.role);
-    console.log("User role: ", user.role === "teacher"); // Add this line
+  // function teacherRouter() {
+  //   console.log("Teacher router: ", user.role);
+  //   console.log("User role: ", user.role === "teacher"); // Add this line
 
-    return user.role === "TEACHER" ? <Outlet /> : <Navigate to="/dashboard" />;
-  }
+  //   return user.role === "TEACHER" ? <Outlet /> : <Navigate to="/dashboard" />;
+  // }
 
   return (
     <ThemeProvider defaultTheme="dark">
@@ -58,7 +58,7 @@ function App() {
           />
           <Route path="/challenges-list" element={<ChallengesList />} />
           <Route path="/classes/exercises" element={<CodingExercise />} />
-          <Route element={teacherRouter()}>
+          <Route element={adminRouter()}>
             <Route path="/admin">
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="classes" element={<AdminClassroom />} />

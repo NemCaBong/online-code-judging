@@ -126,7 +126,7 @@ export function AdminCreateClass() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-xl font-semibold">
-                          Students
+                          Teacher
                         </FormLabel>
                         <FormControl>
                           <Select onValueChange={field.onChange}>
@@ -148,7 +148,7 @@ export function AdminCreateClass() {
                           </Select>
                         </FormControl>
                         <FormDescription>
-                          Add students to this class
+                          Add teacher to this class
                         </FormDescription>
                         <FormMessage />
                       </FormItem>
