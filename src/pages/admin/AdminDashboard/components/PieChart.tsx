@@ -1,11 +1,5 @@
 import { LabelList, Pie, PieChart, ResponsiveContainer } from "recharts";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
@@ -13,62 +7,61 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
+interface PieChartData {
+  easy: number;
+  medium: number;
+  hard: number;
+}
 
 const chartConfig = {
-  visitors: {
-    label: "Visitors",
+  challenges: {
+    label: "Challenges",
   },
-  chrome: {
-    label: "Chrome",
+  easy: {
+    label: "Easy",
     color: "hsl(var(--chart-1))",
   },
-  safari: {
-    label: "Safari",
+  medium: {
+    label: "Medium",
     color: "hsl(var(--chart-2))",
   },
-  firefox: {
-    label: "Firefox",
+  hard: {
+    label: "Hard",
     color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig;
 
-export function PieChartDashboard() {
+export function PieChartDashboard({ data }: { data: PieChartData }) {
+  const chartData = [
+    { difficulty: "easy", challenges: data.easy, fill: "var(--color-easy)" },
+    {
+      difficulty: "medium",
+      challenges: data.medium,
+      fill: "var(--color-medium)",
+    },
+    { difficulty: "hard", challenges: data.hard, fill: "var(--color-hard)" },
+  ];
+
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0">
         <CardTitle className="text-lg">Submissions By Difficulty</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent className="flex-grow flex items-center justify-center">
         <ChartContainer config={chartConfig} className="w-full h-full">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <ChartTooltip
-                content={<ChartTooltipContent nameKey="visitors" hideLabel />}
+                content={<ChartTooltipContent nameKey="challenges" hideLabel />}
               />
               <Pie
                 data={chartData}
-                dataKey="visitors"
+                dataKey="challenges"
                 // innerRadius="60%"
                 outerRadius="90%"
               >
                 <LabelList
-                  dataKey="browser"
+                  dataKey="difficulty"
                   // position="outside"
                   className="fill-foreground text-sm md:text-xs"
                   stroke="none"

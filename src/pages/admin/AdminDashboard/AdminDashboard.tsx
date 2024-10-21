@@ -4,8 +4,97 @@ import { BarChartDashboard } from "./components/BarChart";
 import { PieChartDashboard } from "./components/PieChart";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useQueries, useQuery } from "@tanstack/react-query";
+import fetchData from "@/utils/fetch-data.utils";
+
+interface TotalAndLastMonthRes {
+  total: number;
+  last_month_total: number;
+  message: string;
+  statusCode: number;
+}
+
+export interface TotalChallengeByDifficultyRes {
+  message: string;
+  statusCode: number;
+  total: number;
+}
+export interface StatisticSubmission {
+  month: string;
+  accept: number;
+  total: number;
+}
+interface SubmissionOverQuaterRes {
+  message: string;
+  statusCode: number;
+  statistics: StatisticSubmission[];
+}
 
 export function AdminDashboard() {
+  const results = useQueries({
+    queries: ["classes", "users", "challenges", "exercises"].map(
+      (queryKey) => ({
+        queryKey: [`${queryKey}`],
+        queryFn: () =>
+          fetchData<TotalAndLastMonthRes>(
+            `http://localhost:3000/${queryKey}/info/total-and-last-month`
+          ),
+      })
+    ),
+  });
+
+  const pieChartQueries = useQueries({
+    queries: ["easy", "medium", "hard"].map((queryKey) => ({
+      queryKey: [`${queryKey}`],
+      queryFn: () =>
+        fetchData<TotalAndLastMonthRes>(
+          `http://localhost:3000/challenges/info/total-${queryKey}`
+        ),
+    })),
+  });
+
+  const {
+    data: statisticsData,
+    isLoading: isStatisticsLoading,
+    isError: isStatisticsError,
+  } = useQuery({
+    queryKey: ["statistic"],
+    queryFn: () =>
+      fetchData<SubmissionOverQuaterRes>(
+        "http://localhost:3000/challenges/info/submissions-last-quaterly"
+      ),
+  });
+
+  const isLoading = [...pieChartQueries, ...results].some(
+    (result) => result.isLoading
+  );
+  const isError = [...pieChartQueries, ...results].some(
+    (result) => result.isError
+  );
+  const error = [...pieChartQueries, ...results].find(
+    (result) => result.error
+  )?.error;
+
+  if (isLoading || isStatisticsLoading) {
+    return <p>Loading ...</p>;
+  }
+
+  if (isError || isStatisticsError) {
+    return <p>Error: {error?.message}</p>;
+  }
+
+  const [classes, students, challenges, exercises] = results.map(
+    (result) => result.data
+  );
+
+  const [easy, medium, hard] = pieChartQueries.map((result) => result.data);
+
+  const pieChartData = {
+    easy: easy?.total || 0,
+    medium: medium?.total || 0,
+    hard: hard?.total || 0,
+  };
+
   return (
     <ScrollArea className="h-[100vh]">
       <div className="flex min-h-screen w-full flex-col">
@@ -21,9 +110,15 @@ export function AdminDashboard() {
                 <School className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">12</div>
+                <div className="text-2xl font-bold">{classes?.total || 0}</div>
                 <p className="text-xs text-muted-foreground">
-                  +20.1% from last month
+                  {(classes?.total && classes?.last_month_total
+                    ? ((classes.total - classes.last_month_total) /
+                        classes.last_month_total) *
+                      100
+                    : 0
+                  ).toFixed(1)}
+                  % from last month
                 </p>
               </CardContent>
             </Card>
@@ -35,9 +130,15 @@ export function AdminDashboard() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">153</div>
+                <div className="text-2xl font-bold">{students?.total}</div>
                 <p className="text-xs text-muted-foreground">
-                  +180.1% from last month
+                  {(students?.total && students?.last_month_total
+                    ? ((students.total - students.last_month_total) /
+                        students.last_month_total) *
+                      100
+                    : 0
+                  ).toFixed(1)}{" "}
+                  % from last month
                 </p>
               </CardContent>
             </Card>
@@ -49,9 +150,15 @@ export function AdminDashboard() {
                 <Code className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">230</div>
+                <div className="text-2xl font-bold">{challenges?.total}</div>
                 <p className="text-xs text-muted-foreground">
-                  +19% from last month
+                  {(challenges?.total && challenges?.last_month_total
+                    ? ((challenges.total - challenges.last_month_total) /
+                        challenges.last_month_total) *
+                      100
+                    : 0
+                  ).toFixed(1)}
+                  % from last month
                 </p>
               </CardContent>
             </Card>
@@ -63,16 +170,22 @@ export function AdminDashboard() {
                 <FileJson2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">30</div>
+                <div className="text-2xl font-bold">{exercises?.total}</div>
                 <p className="text-xs text-muted-foreground">
-                  +201 since last hour
+                  {(exercises?.total && exercises?.last_month_total
+                    ? ((exercises.total - exercises.last_month_total) /
+                        exercises.last_month_total) *
+                      100
+                    : 0
+                  ).toFixed(1)}
+                  % since last month
                 </p>
               </CardContent>
             </Card>
           </div>
           <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-2">
-            <PieChartDashboard />
-            <BarChartDashboard />
+            <PieChartDashboard data={pieChartData} />
+            <BarChartDashboard chartData={statisticsData?.statistics || []} />
           </div>
         </main>
       </div>

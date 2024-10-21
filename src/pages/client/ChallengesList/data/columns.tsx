@@ -73,7 +73,7 @@ export const columns: ColumnDef<ChallengeWithUserStatus>[] = [
   {
     accessorKey: "user_challenge_results",
     header: "Status",
-    filterFn: (row, id, value) => {
+    filterFn: (row, _, value) => {
       const status =
         row.original.user_challenge_results[0]?.status || "not-done";
       return value.includes(status);

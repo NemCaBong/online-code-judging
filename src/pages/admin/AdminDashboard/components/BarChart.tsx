@@ -20,31 +20,36 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { StatisticSubmission } from "../AdminDashboard";
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-  { month: "July", desktop: 300, mobile: 69 },
-  { month: "August", desktop: 91, mobile: 150 },
-  { month: "November", desktop: 85, mobile: 99 },
-];
+// const chartData = [
+//   { month: "January", desktop: 186, mobile: 80 },
+//   { month: "February", desktop: 305, mobile: 200 },
+//   { month: "March", desktop: 237, mobile: 120 },
+//   { month: "April", desktop: 73, mobile: 190 },
+//   { month: "May", desktop: 209, mobile: 130 },
+//   { month: "June", desktop: 214, mobile: 140 },
+//   { month: "July", desktop: 300, mobile: 69 },
+//   { month: "August", desktop: 91, mobile: 150 },
+//   { month: "November", desktop: 85, mobile: 99 },
+// ];
 
 const chartConfig = {
-  desktop: {
-    label: "Desktop",
+  accept: {
+    label: "AC Subs",
     color: "hsl(var(--chart-1))",
   },
-  mobile: {
-    label: "Mobile",
+  total: {
+    label: "Total Subs",
     color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
-export function BarChartDashboard() {
+export function BarChartDashboard({
+  chartData,
+}: {
+  chartData: StatisticSubmission[];
+}) {
   return (
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-shrink-0">
@@ -68,13 +73,13 @@ export function BarChartDashboard() {
               <YAxis axisLine={false} tickLine={false} width={30} />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar
-                dataKey="desktop"
-                fill="var(--color-desktop)"
+                dataKey="accept"
+                fill="var(--color-accept)"
                 radius={[4, 4, 0, 0]}
               />
               <Bar
-                dataKey="mobile"
-                fill="var(--color-mobile)"
+                dataKey="total"
+                fill="var(--color-total)"
                 radius={[4, 4, 0, 0]}
               />
             </BarChart>
