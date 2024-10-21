@@ -24,33 +24,121 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import fetchData from "@/utils/fetch-data.utils";
 
-const studentsData: Option[] = [
-  { label: "Nguyễn Văn An", value: "1", id: 1 },
-  { label: "Trần Thị Bình", value: "2", id: 2 },
-  { label: "Lê Hoàng Cường", value: "3", id: 3 },
-  { label: "Phạm Minh Dung", value: "4", id: 4 },
-  { label: "Hoàng Thị Em", value: "5", id: 5 },
-];
+type CreateClass = z.infer<typeof createClassSchema>;
 
-const teachersData: Option[] = [
-  { label: "Nguyễn Văn A", value: "10", id: 10 },
-  { label: "Trần Thị B", value: "8", id: 8 },
-  { label: "Lê Hoàng C", value: "13", id: 13 },
-];
+// const teachersData: Option[] = [
+//   { label: "Nguyễn Văn A", value: "10", id: 10 },
+//   { label: "Trần Thị B", value: "8", id: 8 },
+//   { label: "Lê Hoàng C", value: "13", id: 13 },
+// ];
+
+interface StudentsDataRes {
+  message: string;
+  statusCode: number;
+  students: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  }[];
+}
+
+interface TeachersDataRes {
+  message: string;
+  statusCode: number;
+  teachers: {
+    id: number;
+    first_name: string;
+    last_name: string;
+  }[];
+}
 
 export function AdminCreateClass() {
+  const {
+    data: studentsData,
+    isLoading: isLoadingStudents,
+    isError: isErrorStudents,
+  } = useQuery({
+    queryKey: ["students"],
+    queryFn: () =>
+      fetchData<StudentsDataRes>("http://localhost:3000/users/students/list"),
+  });
+
+  const {
+    data: teachersData,
+    isLoading: isLoadingTeachers,
+    isError: isErrorTeachers,
+  } = useQuery({
+    queryKey: ["teachers"],
+    queryFn: () =>
+      fetchData<TeachersDataRes>("http://localhost:3000/users/teachers/list"),
+  });
+
   const form = useForm<z.infer<typeof createClassSchema>>({
     resolver: zodResolver(createClassSchema),
     defaultValues: {
       name: "",
       students: [],
+      teacher_id: "",
     },
   });
 
+  const createClassMutation = useMutation<
+    AxiosResponse<{ message: string; statusCode: number }>,
+    Error,
+    CreateClass
+  >({
+    mutationFn: (newClass: CreateClass) => {
+      return axios.post("http://localhost:3000/classes/create", newClass, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+    },
+    onSuccess: async (_) => {
+      toast.success("Successfully create a new class.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    },
+    onError: (error) => {
+      toast.error(`Error creating a new class. ${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      console.error("Error running code:", error);
+    },
+  });
+
+  if (isLoadingStudents || isLoadingTeachers) {
+    return <div>Loading...</div>;
+  }
+
+  if (isErrorStudents || isErrorTeachers) {
+    return <div>Error loading students data</div>;
+  }
+
+  const studentOptions: Option[] =
+    studentsData?.students.map((student) => ({
+      label: `${student.first_name} ${student.last_name}`,
+      value: student.id.toString(),
+      id: student.id,
+    })) || [];
+
+  const teacherOptions: Option[] =
+    teachersData?.teachers.map((teacher) => ({
+      label: `${teacher.first_name} ${teacher.last_name}`,
+      value: teacher.id.toString(),
+      id: teacher.id,
+    })) || [];
+
   // Define a submit handler.
   function onSubmit(values: z.infer<typeof createClassSchema>) {
-    console.log(values);
+    createClassMutation.mutate(values);
   }
 
   return (
@@ -100,7 +188,7 @@ export function AdminCreateClass() {
                         </FormLabel>
                         <FormControl>
                           <MultipleSelector
-                            defaultOptions={studentsData}
+                            defaultOptions={studentOptions}
                             {...field}
                             badgeClassName="text-sm"
                             placeholder="Select students ..."
@@ -136,14 +224,20 @@ export function AdminCreateClass() {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              {teachersData.map((teacher) => (
-                                <SelectItem
-                                  key={teacher.id as number}
-                                  value={teacher.value}
-                                >
-                                  {teacher.label}
+                              {teacherOptions.length > 0 ? (
+                                teacherOptions.map((teacher) => (
+                                  <SelectItem
+                                    key={teacher.id as number}
+                                    value={teacher.value}
+                                  >
+                                    {teacher.label}
+                                  </SelectItem>
+                                ))
+                              ) : (
+                                <SelectItem value="" disabled>
+                                  No teachers available
                                 </SelectItem>
-                              ))}
+                              )}
                             </SelectContent>
                           </Select>
                         </FormControl>
@@ -161,6 +255,7 @@ export function AdminCreateClass() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

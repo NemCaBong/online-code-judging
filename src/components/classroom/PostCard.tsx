@@ -9,17 +9,25 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import MDEditor from "@uiw/react-md-editor";
-
-type Post = {
-  content: string;
-};
+import { format } from "date-fns";
 
 export function PostCard({
   className,
+  teacher,
   post,
 }: {
   className?: string;
-  post?: Post;
+  teacher: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+  };
+  post: {
+    id: number;
+    content: string;
+    created_at: string;
+  };
 }) {
   return (
     <div className={className}>
@@ -28,12 +36,19 @@ export function PostCard({
           <div className="flex items-center space-x-4">
             <Avatar>
               <AvatarImage src="/avatars/01.png" />
-              <AvatarFallback>OM</AvatarFallback>
+              <AvatarFallback>
+                {`${teacher.first_name} ${teacher.last_name}`
+                  .split(" ")
+                  .map((chunk) => chunk[0])
+                  .join("")}
+              </AvatarFallback>
             </Avatar>
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-2">
-                  <CardTitle className="leading-1">Phạm Thảo</CardTitle>
+                  <CardTitle className="leading-1">
+                    {teacher.first_name + " " + teacher.last_name}
+                  </CardTitle>
                   <Badge
                     variant="secondary"
                     className="ml-3 leading-1.5 text-xs font-semibold"
@@ -42,16 +57,16 @@ export function PostCard({
                   </Badge>
                 </div>
                 <p className="leading-none text-sm font-normal hidden md:inline">
-                  25/07/2024
+                  {format(new Date(post.created_at), "PPpp")}
                 </p>
               </div>
-              <CardDescription>thaopham@neu.edu.vn</CardDescription>
+              <CardDescription>{teacher.email}</CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="ml-14">
-            <MDEditor.Markdown source={post?.content ?? "# Hello world!"} />
+            <MDEditor.Markdown source={post.content ?? "# Hello world!"} />
           </div>
         </CardContent>
         <CardFooter></CardFooter>

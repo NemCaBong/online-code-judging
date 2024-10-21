@@ -55,6 +55,11 @@ export interface Class {
     last_name: string;
     email: string;
   };
+  posts: {
+    id: number;
+    content: string;
+    created_at: string;
+  }[];
 }
 interface ClassesResponse {
   message: string;

@@ -51,7 +51,7 @@ function App() {
         <Route element={protectedRouter()}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/tasks" element={<TaskBoard />} />
-          <Route path="/classes/*" element={<ClassroomDetail />} />
+          <Route path="/classes/:classSlug" element={<ClassroomDetail />} />
           <Route
             path="/challenges/:challengeSlug"
             element={<CodingChallengeDetail />}
