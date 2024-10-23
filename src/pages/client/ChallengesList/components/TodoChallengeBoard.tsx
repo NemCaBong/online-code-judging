@@ -56,31 +56,30 @@ export default function TodoChallengeBoard({
                   <TableRow key={todo.id}>
                     <TableCell>
                       <div className="font-medium">
-                        <Link to={`/challenges/${todo.slug}`}>{todo.name}</Link>
+                        <Link to={`/challenges/${todo.challenge.slug}`}>
+                          {todo.challenge.name}
+                        </Link>
                       </div>
                       <div className="text-sm text-muted-foreground md:inline">
-                        {todo.name}
+                        {todo.challenge.name}
                       </div>
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge
                         className="text-xs"
                         variant={
-                          todo.difficulty === "MEDIUM"
+                          todo.challenge.difficulty === "MEDIUM"
                             ? "default"
-                            : todo.difficulty === "HARD"
+                            : todo.challenge.difficulty === "HARD"
                             ? "destructive"
                             : "secondary"
                         }
                       >
-                        {todo.difficulty}
+                        {todo.challenge.difficulty}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
-                      {format(
-                        new Date(todo.user_challenge_results[0].created_at),
-                        "PP"
-                      )}
+                      {format(new Date(todo.created_at), "PP")}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PostCard } from "@/components/classroom/PostCard";
+// import { PostCard } from "@/components/classroom/PostCard";
 import { AdminHeader } from "@/common/components/AdminHeader";
 import { Option } from "@/components/multi-select";
 import { AddExercisesDialog } from "./components/AddExercisesDialog";
@@ -8,7 +8,7 @@ import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ScoreChart from "@/components/classroom/ScoreChart";
-import GradedExercises from "@/components/classroom/GradedExercises";
+// import GradedExercises from "@/components/classroom/GradedExercises";
 const exampleExercises: Option[] = [
   {
     id: "0493f2f8-686d-4dcf-8945-9aaa9458de82",
@@ -210,10 +210,11 @@ export function AdminClassroom() {
               </div>
               <div className="grid gap-4 md:grid-cols-1 lg:grid-cols-[2fr_1fr] xl:grid-cols-3 lg:gap-8">
                 <div className="grid auto-rows-max items-start gap-4 xl:col-span-2 lg:gap-8">
-                  <PostCard post={{ content: initialValue }} />
+                  {/* <PostCard post={{ content: initialValue }} /> */}
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
-                  <ScoreChart /> <GradedExercises />
+                  {/* <ScoreChart /> */}
+                  {/* <GradedExercises /> */}
                 </div>
               </div>
               <div className="flex items-center justify-center gap-2 md:hidden">

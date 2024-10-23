@@ -35,6 +35,17 @@ interface RunCodeResponse {
     token: string;
     testCaseId: number;
   }>;
+  statusCode: number;
+}
+
+interface SubmitCodeRes {
+  message: string;
+  result: Array<{
+    token: string;
+    testCaseId: number;
+  }>;
+  user_challenge_id: number;
+  statusCode: number;
 }
 
 interface Submission {
@@ -123,8 +134,8 @@ const runCode = async (
 const submitCode = async (
   values: z.infer<typeof codeEditorSchema>,
   challengeSlug: string
-): Promise<RunCodeResponse> => {
-  const response = await axios.post<RunCodeResponse>(
+): Promise<SubmitCodeRes> => {
+  const response = await axios.post<SubmitCodeRes>(
     `http://localhost:3000/challenges/${challengeSlug}/submit`,
     values,
     {
@@ -176,7 +187,7 @@ export function CodingChallengeDetail() {
   });
 
   const submitCodeMutation = useMutation<
-    RunCodeResponse,
+    SubmitCodeRes,
     Error,
     z.infer<typeof codeEditorSchema>
   >({
@@ -186,7 +197,7 @@ export function CodingChallengeDetail() {
         position: "top-right",
         autoClose: 5000,
       });
-      pollSubmissionResults(data.result);
+      pollSubmissionResults(data.result, data.user_challenge_id);
     },
     onError: (error) => {
       toast.error("Error submitting code. Please try again.", {
@@ -239,7 +250,8 @@ export function CodingChallengeDetail() {
   };
 
   const pollSubmissionResults = (
-    tokens: { token: string; testCaseId: number }[]
+    tokens: { token: string; testCaseId: number }[],
+    user_challenge_id: number
   ) => {
     const pollingInterval = 1500; // Poll every 1.5 seconds
     const timeoutDuration = 10000; // Timeout after 10 seconds
@@ -247,8 +259,8 @@ export function CodingChallengeDetail() {
     const intervalId = setInterval(async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3000/challenges/poll-run",
-          { runPoll: tokens },
+          `http://localhost:3000/challenges/${challengeSlug}/poll-submit/${user_challenge_id}`,
+          { submitPoll: tokens },
           {
             headers: {
               Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,

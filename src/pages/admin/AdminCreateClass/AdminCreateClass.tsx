@@ -31,12 +31,6 @@ import fetchData from "@/utils/fetch-data.utils";
 
 type CreateClass = z.infer<typeof createClassSchema>;
 
-// const teachersData: Option[] = [
-//   { label: "Nguyễn Văn A", value: "10", id: 10 },
-//   { label: "Trần Thị B", value: "8", id: 8 },
-//   { label: "Lê Hoàng C", value: "13", id: 13 },
-// ];
-
 interface StudentsDataRes {
   message: string;
   statusCode: number;
@@ -44,6 +38,7 @@ interface StudentsDataRes {
     id: number;
     first_name: string;
     last_name: string;
+    email: string;
   }[];
 }
 
@@ -124,7 +119,7 @@ export function AdminCreateClass() {
 
   const studentOptions: Option[] =
     studentsData?.students.map((student) => ({
-      label: `${student.first_name} ${student.last_name}`,
+      label: `${student.first_name} ${student.last_name} - ${student.email}`,
       value: student.id.toString(),
       id: student.id,
     })) || [];

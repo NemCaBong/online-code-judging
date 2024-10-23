@@ -1,16 +1,8 @@
-import { TrendingUp } from "lucide-react";
 import { Label, PolarRadiusAxis, RadialBar, RadialBarChart } from "recharts";
-
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 
-const chartData = [{ remain: 1.3, score: 8.7 }];
+// const chartData = [{ remain: 1.3, score: 8.7 }];
 
 const chartConfig = {
   remain: {
@@ -22,7 +14,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function ScoreChart() {
+export default function ScoreChart({ avg_score }: { avg_score: number }) {
+  const chartData = [{ remain: 10 - avg_score, score: avg_score }];
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0">
@@ -82,14 +75,14 @@ export default function ScoreChart() {
           </RadialBarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
+      {/* <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-2 font-medium leading-none">
           Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
           Showing total visitors for the last 6 months
         </div>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 }

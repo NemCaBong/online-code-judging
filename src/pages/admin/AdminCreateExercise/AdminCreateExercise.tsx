@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import MultipleSelector, { Option } from "@/components/multi-select";
+import { Option } from "@/components/multi-select";
 import CodeMirrorEditor, {
   LanguageType,
 } from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
@@ -29,14 +29,21 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlusCircle, X } from "lucide-react";
+import { CalendarIcon, PlusCircle, X } from "lucide-react";
 import { useState } from "react";
-
-const OPTIONS: Option[] = [
-  { label: "NextJS", value: "nextjs" },
-  { label: "React", value: "react" },
-  { label: "Remix", value: "remix" },
-];
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Class } from "@/pages/client/Dashboard/Dashboard";
+import fetchData from "@/utils/fetch-data.utils";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { format } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { toast, ToastContainer } from "react-toastify";
+import axios, { AxiosResponse } from "axios";
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -114,15 +121,28 @@ const LANGUAGE_OPTIONS: Option[] = [
   { label: "JavaScript", value: "javascript" },
   { label: "Python", value: "python" },
   { label: "Java", value: "java" },
-  // Add more languages as needed
+  { label: "C++", value: "cpp" },
 ];
 
+interface ClassesTeacherRes {
+  message: string;
+  statusCode: number;
+  classes: Class[];
+}
+
 export function AdminCreateExercise() {
+  const LANGUAGE_FILE_EXTENSIONS = {
+    javascript: [".js"],
+    python: [".py"],
+    java: [".java"],
+    cpp: [".cpp"],
+  };
+
   const form = useForm<z.infer<typeof createExerciseSchema>>({
     resolver: zodResolver(createExerciseSchema),
     defaultValues: {
       name: "",
-      topics: [],
+      class_id: 0,
       markdownContent: markdownContent,
       boilerplate_codes: [
         {
@@ -131,22 +151,20 @@ export function AdminCreateExercise() {
           fileName: "index.js",
         },
       ],
-      hints: [
-        {
-          hintQuestion: "",
-          hintAnswer: "",
-        },
-      ],
+      due_at: new Date(),
     },
   });
 
   const {
-    fields: hintFields,
-    append: appendHint,
-    remove: removeHint,
-  } = useFieldArray({
-    control: form.control,
-    name: "hints",
+    data: classesTeacherRes,
+    isLoading: isLoadingClassesTeacher,
+    isError: isErrorClassesTeacher,
+  } = useQuery({
+    queryKey: ["classesTeacher"],
+    queryFn: () =>
+      fetchData<ClassesTeacherRes>(
+        "http://localhost:3000/classes/teachers/all"
+      ),
   });
 
   const {
@@ -160,6 +178,40 @@ export function AdminCreateExercise() {
 
   const [activeTab, setActiveTab] = useState("0");
 
+  const createNewExerciseMutation = useMutation<
+    AxiosResponse<{ message: string; statusCode: number }>,
+    Error,
+    z.infer<typeof createExerciseSchema>
+  >({
+    mutationFn: (newExercise: z.infer<typeof createExerciseSchema>) => {
+      return axios.post("http://localhost:3000/exercises/create", newExercise, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
+    },
+    onSuccess: async (_) => {
+      toast.success("Successfully create a new class.", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    },
+    onError: (error) => {
+      toast.error(`Error creating a new class. ${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      console.error("Error running code:", error);
+    },
+  });
+
+  if (isLoadingClassesTeacher) {
+    return <div>Loading...</div>;
+  }
+  if (isErrorClassesTeacher) {
+    return <div>Error</div>;
+  }
+
   const handleAddTab = () => {
     const newIndex = boilerplateFields.length.toString();
     appendBoilerplate({
@@ -171,13 +223,20 @@ export function AdminCreateExercise() {
   };
 
   function onSubmit(values: z.infer<typeof createExerciseSchema>) {
-    console.log(values);
+    createNewExerciseMutation.mutate(values);
   }
 
   const handleRemoveTab = (index: number) => {
     removeBoilerplate(index);
     setActiveTab(Math.max(0, parseInt(activeTab) - 1).toString());
   };
+
+  const classes = classesTeacherRes?.classes || [];
+  const transformedClasses: Option[] = classes.map((classItem) => ({
+    id: classItem.id,
+    label: classItem.name,
+    value: classItem.slug,
+  }));
 
   return (
     <ScrollArea className="h-[100dvh]">
@@ -218,33 +277,44 @@ export function AdminCreateExercise() {
                       </FormItem>
                     )}
                   />
+
+                  {/* Class selection */}
                   <FormField
                     control={form.control}
-                    name="topics"
+                    name="class_id"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="text-xl font-semibold">
-                          Topics
-                        </FormLabel>
-                        <FormControl>
-                          <MultipleSelector
-                            {...field}
-                            defaultOptions={OPTIONS}
-                            placeholder="Select topics ..."
-                            emptyIndicator={
-                              <p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">
-                                No results found.
-                              </p>
-                            }
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Select topics for this challenge
-                        </FormDescription>
-                        <FormMessage />
+                        <FormLabel>Class</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            const selectedClass = transformedClasses.find(
+                              (c) => c.value === value
+                            );
+                            field.onChange(selectedClass?.id);
+                          }}
+                          value={
+                            transformedClasses.find((c) => c.id === field.value)
+                              ?.value
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a class" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {transformedClasses.map((classItem) => (
+                              <SelectItem
+                                key={classItem.value}
+                                value={classItem.value}
+                              >
+                                {classItem.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="markdownContent"
@@ -268,6 +338,7 @@ export function AdminCreateExercise() {
                       </FormItem>
                     )}
                   />
+
                   <div>
                     <h2 className="text-xl font-semibold pb-2">
                       Boilerplate Codes
@@ -322,6 +393,7 @@ export function AdminCreateExercise() {
                                 </FormItem>
                               )}
                             />
+
                             {/* Language selection */}
                             <FormField
                               control={form.control}
@@ -330,7 +402,35 @@ export function AdminCreateExercise() {
                                 <FormItem>
                                   <FormLabel>Language</FormLabel>
                                   <Select
-                                    onValueChange={field.onChange}
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                      // Get current filename
+                                      const currentFileName = form.getValues(
+                                        `boilerplate_codes.${index}.fileName`
+                                      );
+                                      // Get valid extensions for selected language
+                                      const validExtensions =
+                                        LANGUAGE_FILE_EXTENSIONS[
+                                          value as keyof typeof LANGUAGE_FILE_EXTENSIONS
+                                        ];
+                                      // Check if current extension is valid
+                                      const hasValidExtension =
+                                        validExtensions.some((ext) =>
+                                          currentFileName.endsWith(ext)
+                                        );
+
+                                      if (!hasValidExtension) {
+                                        // Set default filename for selected language
+                                        const defaultExt = validExtensions[0];
+                                        const baseName =
+                                          currentFileName.split(".")[0] ||
+                                          "Main";
+                                        form.setValue(
+                                          `boilerplate_codes.${index}.fileName`,
+                                          `${baseName}${defaultExt}`
+                                        );
+                                      }
+                                    }}
                                     defaultValue={field.value}
                                   >
                                     <SelectTrigger>
@@ -365,7 +465,7 @@ export function AdminCreateExercise() {
                                           `boilerplate_codes.${index}.language`
                                         ) as LanguageType
                                       }
-                                      className="h-[300px]"
+                                      className="h-[60vh]"
                                       onChange={(value: string | undefined) =>
                                         field.onChange(value || "")
                                       }
@@ -380,85 +480,55 @@ export function AdminCreateExercise() {
                     </Tabs>
                   </div>
 
-                  {/* Hints */}
-                  <div>
-                    <h2 className="text-xl font-semibold pb-2">Hints</h2>
-                    <div className="w-full border rounded-md py-2 px-3">
-                      {hintFields.map((hint, index) => (
-                        <div
-                          key={hint.id}
-                          className="flex w-full p-2 flex-wrap gap-4 justify-between items-center"
-                        >
-                          <FormField
-                            control={form.control}
-                            name={`hints.${index}.hintQuestion`}
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel className="text-base">
-                                  Hint Question
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    className="w-[40vh] h-11"
-                                    placeholder="Enter hint question here ...."
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <div className="flex gap-4">
-                            <FormField
-                              control={form.control}
-                              name={`hints.${index}.hintAnswer`}
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel className="text-base">
-                                    Hint Answer
-                                  </FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      className="w-[40vh] h-11"
-                                      placeholder="Enter hint answer here ...."
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
+                  {/* due_at component */}
+                  <FormField
+                    control={form.control}
+                    name="due_at"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel className="text-xl font-semibold">
+                          Due At{" "}
+                        </FormLabel>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <FormControl>
+                              <Button
+                                variant={"outline"}
+                                className={cn(
+                                  "w-[240px] pl-3 text-left font-normal",
+                                  !field.value && "text-muted-foreground"
+                                )}
+                              >
+                                {field.value ? (
+                                  format(field.value, "PPP 'at' HH:mm")
+                                ) : (
+                                  <span>Pick a date</span>
+                                )}
+                                <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                              </Button>
+                            </FormControl>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={field.value}
+                              onSelect={(date) => {
+                                if (date) {
+                                  // Set time to 23:59:59
+                                  const dueDate = new Date(date);
+                                  dueDate.setHours(23, 59, 59);
+                                  field.onChange(dueDate);
+                                }
+                              }}
+                              disabled={(date) => date < new Date()}
+                              initialFocus
                             />
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              onClick={
-                                // nếu chỉ có 1 hint thì không cho xóa
-                                hintFields.length === 1
-                                  ? undefined
-                                  : () => removeHint(index)
-                              }
-                              className="mt-8"
-                            >
-                              Xóa
-                            </Button>
-                          </div>
-                        </div>
-                      ))}
-
-                      <Button
-                        type="button"
-                        className="mt-8 m-2"
-                        onClick={() =>
-                          appendHint({ hintQuestion: "", hintAnswer: "" })
-                        }
-                      >
-                        Add Hint
-                      </Button>
-
-                      <FormMessage />
-                    </div>
-                  </div>
-
+                          </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <Button type="submit">Submit</Button>
                 </form>
               </Form>
@@ -466,6 +536,7 @@ export function AdminCreateExercise() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

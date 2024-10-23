@@ -16,22 +16,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
-
-interface Exercise {
-  id: string;
-  slug: string;
-  name: string;
-  score: number;
-}
-
-const exercises: Exercise[] = [
-  { id: "1", slug: "assignment-1", name: "Assignment 1", score: 8.5 },
-  { id: "2", slug: "project-report", name: "Project Report", score: 9.2 },
-  { id: "3", slug: "presentation", name: "Presentation", score: 7.8 },
-  { id: "4", slug: "code-sample", name: "Code Sample", score: 9.5 },
-  { id: "5", slug: "data-analysis", name: "Data Analysis", score: 8.8 },
-  { id: "5", slug: "data-engineering", name: "Data Engineering", score: 5 },
-];
+import { UserExerciseResult } from "@/pages/client/ClassroomDetail/ClassroomDetail";
 
 const getScoreBadge = (score: number) => {
   if (score >= 8) return <Badge>{score} / 10</Badge>;
@@ -39,7 +24,11 @@ const getScoreBadge = (score: number) => {
   return <Badge variant="destructive">{score} / 10</Badge>;
 };
 
-export default function GradedExercises() {
+export default function GradedExercises({
+  gradedUserExerciseRes,
+}: {
+  gradedUserExerciseRes: UserExerciseResult[];
+}) {
   return (
     <Card>
       <CardHeader>
@@ -59,24 +48,33 @@ export default function GradedExercises() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {exercises.map((exercise, index) => (
-                  <TableRow
-                    key={exercise.id}
-                    className={index % 2 === 1 ? "bg-accent" : " "}
-                  >
-                    <TableCell>
-                      <Link
-                        to={`/exercise/${exercise.slug}`}
-                        className="text-foreground hover:text-primary transition-colors duration-200"
-                      >
-                        {exercise.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {getScoreBadge(exercise.score)}
+                {gradedUserExerciseRes.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={2} className="h-24 text-center">
+                      No graded exercises found.
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  gradedUserExerciseRes.map((userExRes) => (
+                    <TableRow key={userExRes.id}>
+                      <TableCell>
+                        <Link
+                          to={`/exercise/${userExRes.exercise.slug}`}
+                          className="text-foreground hover:text-primary transition-colors duration-200"
+                        >
+                          {userExRes.exercise.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {userExRes.score &&
+                          getScoreBadge(parseFloat(userExRes.score))}
+                        {!userExRes.score && (
+                          <Badge variant="secondary">unknown</Badge>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

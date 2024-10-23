@@ -3,6 +3,7 @@ import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import DescriptionTab from "@/components/challenge-exercise/DescriptionTab";
 import { SubmissionResult } from "../CodingChallengeDetail";
+import { useEffect, useState } from "react";
 
 interface ChallengeDescriptionCardProps {
   title: string;
@@ -19,13 +20,34 @@ export default function ChallengeDescriptionCard({
   accordionItems,
   submissionData,
 }: ChallengeDescriptionCardProps) {
+  const [showSubmissionIndicator, setShowSubmissionIndicator] = useState(false);
+
+  useEffect(() => {
+    if (submissionData) {
+      setShowSubmissionIndicator(true);
+    }
+  }, [submissionData]);
+
   return (
     <Card className="grid w-full max-w-7xl border-none h-[91vh]">
       <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
-        <Tabs defaultValue="description" className="w-full h-full">
+        <Tabs
+          defaultValue="description"
+          className="w-full h-full"
+          onValueChange={(value) => {
+            if (value === "submission") {
+              setShowSubmissionIndicator(false);
+            }
+          }}
+        >
           <TabsList className="m-4 mb-0">
             <TabsTrigger value="description">Description</TabsTrigger>
-            <TabsTrigger value="submission">Submission</TabsTrigger>
+            <TabsTrigger value="submission">
+              Submission
+              {submissionData && showSubmissionIndicator && (
+                <span className="ml-2 h-2 w-2 rounded-full bg-blue-500" />
+              )}
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="description">
             <DescriptionTab
@@ -42,7 +64,7 @@ export default function ChallengeDescriptionCard({
                   <div>
                     {!submissionData.errorTestCase && (
                       <p className="text-2xl">
-                        <strong>Message:</strong>
+                        <strong>Message: </strong>
                         <span className="text-green-500">
                           {submissionData.message}
                         </span>
@@ -53,16 +75,28 @@ export default function ChallengeDescriptionCard({
                         <Card className="flex-1 border-none dark:bg-codeEditorDark mt-4 pt-4">
                           <CardContent>
                             <p>
-                              <strong>Average Time:</strong>
-                              {submissionData.averageTime} ms
+                              <strong>Average Time: </strong>
+                              {submissionData.averageTime
+                                ? (
+                                    parseFloat(
+                                      String(submissionData.averageTime)
+                                    ) * 1000
+                                  ).toFixed(2)
+                                : "0.00"}{" "}
+                              ms
                             </p>
                           </CardContent>
                         </Card>
                         <Card className="flex-1 border-none dark:bg-codeEditorDark mt-4 pt-4">
                           <CardContent>
                             <p>
-                              <strong>Average Memory:</strong>
-                              {submissionData.averageMemory} MB
+                              <strong>Average Memory: </strong>
+                              {submissionData.averageMemory
+                                ? (submissionData.averageMemory / 1024).toFixed(
+                                    2
+                                  )
+                                : "0.00"}
+                              MB
                             </p>
                           </CardContent>
                         </Card>
@@ -97,11 +131,13 @@ export default function ChallengeDescriptionCard({
                                   <p>
                                     <strong>Error:</strong>
                                   </p>
-                                  <pre>
-                                    <code>
-                                      {submissionData.submission.stderr}
-                                    </code>
-                                  </pre>
+                                  <ScrollArea className="h-[300px] w-full rounded-md">
+                                    <pre className="whitespace-pre-wrap break-words">
+                                      <code className="text-sm">
+                                        {submissionData.submission.stderr}
+                                      </code>
+                                    </pre>
+                                  </ScrollArea>
                                 </CardContent>
                               </Card>
                             )}

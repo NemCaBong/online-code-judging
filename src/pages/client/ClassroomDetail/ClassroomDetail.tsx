@@ -9,12 +9,42 @@ import ScoreChart from "@/components/classroom/ScoreChart";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import fetchData from "@/utils/fetch-data.utils";
-import { Class } from "../Dashboard/Dashboard";
+import { Class, Exercise } from "../Dashboard/Dashboard";
 
 interface ClassRes {
   message: string;
   statusCode: number;
   class: Class;
+}
+
+interface ExerciseRes {
+  message: string;
+  statusCode: number;
+  assigned_exercises: Exercise[];
+}
+
+export interface UserExerciseResult {
+  id: number;
+  status: string;
+  score: string;
+  evaluation: string;
+  user_id: number;
+  exercise_id: number;
+  class_id: number;
+  submitted_at: Date;
+  exercise: Exercise;
+}
+
+interface GradedExercisesRes {
+  message: string;
+  statusCode: number;
+  graded_exercises: UserExerciseResult[];
+}
+
+interface ScoreChartRes {
+  message: string;
+  statusCode: number;
+  avg_score: number;
 }
 
 export function ClassroomDetail() {
@@ -29,8 +59,48 @@ export function ClassroomDetail() {
       fetchData<ClassRes>(`http://localhost:3000/classes/${classSlug}`),
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading class</div>;
+  const {
+    data: assignedExercisesRes,
+    isLoading: isLoadingAssigned,
+    error: isErrorAssigned,
+  } = useQuery({
+    queryKey: ["exercises", classSlug],
+    queryFn: () =>
+      fetchData<ExerciseRes>(
+        `http://localhost:3000/exercises/users/classes/${classSlug}/assigned`
+      ),
+  });
+
+  const {
+    data: gradedExercisesRes,
+    isLoading: isLoadingGraded,
+    error: isErrorGraded,
+  } = useQuery({
+    queryKey: ["graded-exercises", classSlug],
+    queryFn: () =>
+      fetchData<GradedExercisesRes>(
+        `http://localhost:3000/exercises/users/classes/${classSlug}/graded`
+      ),
+  });
+
+  const {
+    data: scoreChartRes,
+    isLoading: isLoadingScoreChart,
+    error: isErrorScoreChart,
+  } = useQuery({
+    queryKey: ["score-chart", classSlug],
+    queryFn: () =>
+      fetchData<ScoreChartRes>(
+        `http://localhost:3000/exercises/users/classes/${classSlug}/avg-score`
+      ),
+  });
+
+  if (isLoading || isLoadingAssigned || isLoadingGraded || isLoadingScoreChart)
+    return <div>Loading...</div>;
+
+  if (error || isErrorAssigned || isErrorGraded || isErrorScoreChart)
+    return <div>Error loading class</div>;
+
   const classData = classRes?.class;
   if (!classData) return <div>No class available</div>;
 
@@ -57,16 +127,28 @@ export function ClassroomDetail() {
                 <div className="grid auto-rows-max items-start gap-4">
                   {classData.posts && classData.posts.length > 0 && (
                     <>
-                      {classData.posts.map((post) => (
-                        <PostCard teacher={classData.teacher} post={post} />
+                      {classData.posts.map((post, idx) => (
+                        <PostCard
+                          key={idx}
+                          teacher={classData?.teacher || null}
+                          post={post}
+                        />
                       ))}
                     </>
                   )}
                 </div>
                 <div className="grid auto-rows-max items-start gap-4 sm:grid-cols-2 lg:grid-cols-1">
-                  <ScoreChart />
-                  <ExercisesTable />
-                  <GradedExercises />
+                  <ScoreChart avg_score={scoreChartRes?.avg_score || 0} />
+                  <ExercisesTable
+                    assignedExercises={
+                      assignedExercisesRes?.assigned_exercises || []
+                    }
+                  />
+                  <GradedExercises
+                    gradedUserExerciseRes={
+                      gradedExercisesRes?.graded_exercises || []
+                    }
+                  />
                 </div>
               </div>
             </div>

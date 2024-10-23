@@ -63,9 +63,7 @@ export const createExerciseSchema = z.object({
     .max(100, {
       message: "Name must be at most 100 characters long",
     }),
-  topics: z.array(optionSchema).nonempty({
-    message: "Please select at least one topic",
-  }),
+  class_id: z.number().positive(),
   markdownContent: z.string().min(1, {
     message: "Please enter some content",
   }),
@@ -76,18 +74,5 @@ export const createExerciseSchema = z.object({
       fileName: z.string(),
     })
   ),
-  hints: z
-    .array(
-      z.object({
-        hintQuestion: z.string().min(1, {
-          message: "Please enter some hint question",
-        }),
-        hintAnswer: z.string().min(1, {
-          message: "Please enter some hint answer",
-        }),
-      })
-    )
-    .nonempty({
-      message: "Please enter at least one hint",
-    }),
+  due_at: z.coerce.date(),
 });

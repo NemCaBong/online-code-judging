@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsTrigger, TabsContent, TabsList } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Terminal, SquareCheckBig } from "lucide-react";
-// import { sub } from "date-fns";
+import { useEffect, useState } from "react";
 
 interface Submission {
   stderr: string | null;
@@ -41,14 +41,28 @@ export default function TestCase({
   errorTestCase,
   submission,
 }: TestCaseProps) {
-  const activeTab =
-    (submissions && submissions.length > 0) || submission
-      ? "result"
-      : "test-case";
+  const [isRunTestResult, setIsRunTestResult] = useState(false);
+
+  useEffect(() => {
+    if (
+      (submissions && submissions.length > 0) ||
+      submission ||
+      errorTestCase
+    ) {
+      setIsRunTestResult(true);
+    }
+  }, [submissions, submission, errorTestCase]);
 
   return (
     <Card className="h-full border-none">
-      <Tabs defaultValue={activeTab}>
+      <Tabs
+        defaultValue="test-case"
+        onValueChange={(value) => {
+          if (value === "result") {
+            setIsRunTestResult(false);
+          }
+        }}
+      >
         <TabsList
           className="w-full justify-start"
           style={{
@@ -62,6 +76,9 @@ export default function TestCase({
           <TabsTrigger value="result">
             <Terminal className="text-sm pr-2" />
             Result
+            {isRunTestResult && (
+              <span className="ml-2 h-2 w-2 rounded-full bg-blue-500" />
+            )}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="test-case" className="h-[85%]">

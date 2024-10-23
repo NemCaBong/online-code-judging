@@ -28,16 +28,23 @@ export interface ChartRes {
 export interface Exercise {
   id: number;
   slug: string;
+  description: string;
   created_at: string;
   name: string;
-  classes_exercises: {
-    due_at: string;
-    class: {
-      id: number;
-      name: string;
-    };
-  }[];
+  due_at: string;
+  class: {
+    id: number;
+    name: string;
+  };
+  // classes_exercises: {
+  //   due_at: string;
+  //   class: {
+  //     id: number;
+  //     name: string;
+  //   };
+  // }[];
   user_exercise_results: {
+    score: string;
     status: string;
   }[];
 }
@@ -48,14 +55,14 @@ export interface Class {
   is_done: boolean;
   created_at: string;
   slug: string;
-  total_students: number;
-  teacher: {
+  total_students?: number;
+  teacher?: {
     id: number;
     first_name: string;
     last_name: string;
     email: string;
   };
-  posts: {
+  posts?: {
     id: number;
     content: string;
     created_at: string;

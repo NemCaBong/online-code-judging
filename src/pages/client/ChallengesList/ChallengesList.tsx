@@ -10,13 +10,14 @@ import TodoChallengeBoard from "./components/TodoChallengeBoard";
 
 export interface Todo {
   id: number;
-  name: string;
-  difficulty: string;
-  slug: string;
-  user_challenge_results: {
+  created_at: Date;
+  is_done: boolean;
+  challenge: {
     id: number;
-    created_at: Date;
-  }[];
+    name: string;
+    difficulty: "HARD" | "MEDIUM" | "EASY";
+    slug: string;
+  };
 }
 
 interface TodoRes {

@@ -62,26 +62,33 @@ export default function DashboardNotificationBoard({
                   <TableCell>
                     <div className="font-medium">{exercise.name}</div>
                     <div className="text-sm text-muted-foreground md:inline">
-                      {exercise.classes_exercises[0].class.name}
+                      {exercise.class.name}
                     </div>
                   </TableCell>
                   <TableCell className="text-center">
-                    <Badge
-                      className="text-xs"
-                      variant={
-                        exercise.user_exercise_results[0].status === "done"
-                          ? "default"
-                          : "destructive"
-                      }
-                    >
-                      {exercise.user_exercise_results[0].status}
-                    </Badge>
+                    {exercise.user_exercise_results.length === 0 && (
+                      <Badge className="text-xs" variant="destructive">
+                        not-done
+                      </Badge>
+                    )}
+                    {exercise.user_exercise_results[0]?.status && (
+                      <Badge
+                        className="text-xs"
+                        variant={
+                          exercise.user_exercise_results[0].status === "done"
+                            ? "secondary"
+                            : exercise.user_exercise_results[0].status ===
+                              "graded"
+                            ? "default"
+                            : "destructive"
+                        }
+                      >
+                        {exercise.user_exercise_results[0].status}
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {format(
-                      new Date(exercise.classes_exercises[0].due_at),
-                      "PP"
-                    )}
+                    {format(new Date(exercise.due_at), "PP")}
                   </TableCell>
                 </TableRow>
               ))}

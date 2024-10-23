@@ -22,7 +22,7 @@ export function PostCard({
     first_name: string;
     last_name: string;
     email: string;
-  };
+  } | null;
   post: {
     id: number;
     content: string;
@@ -37,17 +37,21 @@ export function PostCard({
             <Avatar>
               <AvatarImage src="/avatars/01.png" />
               <AvatarFallback>
-                {`${teacher.first_name} ${teacher.last_name}`
-                  .split(" ")
-                  .map((chunk) => chunk[0])
-                  .join("")}
+                {teacher
+                  ? `${teacher.first_name} ${teacher.last_name}`
+                      .split(" ")
+                      .map((chunk) => chunk[0])
+                      .join("")
+                  : "U"}
               </AvatarFallback>
             </Avatar>
             <div className="w-full">
               <div className="flex justify-between">
                 <div className="flex gap-2">
                   <CardTitle className="leading-1">
-                    {teacher.first_name + " " + teacher.last_name}
+                    {teacher
+                      ? teacher.first_name + " " + teacher.last_name
+                      : "Unknown"}
                   </CardTitle>
                   <Badge
                     variant="secondary"
@@ -60,7 +64,9 @@ export function PostCard({
                   {format(new Date(post.created_at), "PPpp")}
                 </p>
               </div>
-              <CardDescription>{teacher.email}</CardDescription>
+              <CardDescription>
+                {teacher?.email || "No email available"}
+              </CardDescription>
             </div>
           </div>
         </CardHeader>
