@@ -25,6 +25,30 @@ export interface ChartRes {
   done: number;
   total: number;
 }
+export interface UserExerciseResults {
+  score: string;
+  status: string;
+  evaluation: string;
+  user_id: number;
+  exercise_id: number;
+  class_id: number;
+  submitted_at: string;
+  id: number;
+  user_exercise_details?: {
+    id: number;
+    user_exercise_id: number;
+    code: string;
+    file_name: string;
+    language_id: number;
+  }[];
+  user?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    email: string;
+    role: string;
+  };
+}
 
 export interface Exercise {
   id: number;
@@ -43,23 +67,7 @@ export interface Exercise {
     language_id: LanguageId;
     file_name: string;
   }[];
-  user_exercise_results: {
-    score: string;
-    status: string;
-    evaluation: string;
-    user_id: number;
-    exercise_id: number;
-    class_id: number;
-    submitted_at: string;
-    id: number;
-    user_exercise_details?: {
-      id: number;
-      user_exercise_id: number;
-      code: string;
-      file_name: string;
-      language_id: number;
-    }[];
-  }[];
+  user_exercise_results: UserExerciseResults[];
 }
 
 export interface Class {

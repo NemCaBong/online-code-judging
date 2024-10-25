@@ -65,7 +65,10 @@ function App() {
             <Route path="/admin">
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="classes" element={<AdminClassroom />} />
-              <Route path="classes/grading" element={<AdminGradingPage />} />
+              <Route
+                path="classes/:classSlug/grading"
+                element={<AdminGradingPage />}
+              />
               <Route
                 path="create-challenge"
                 element={<AdminCreateChallenge />}

@@ -50,7 +50,10 @@ export default function ExerciseEditor({
   onSubmit,
   userExerciseResults,
 }: ExerciseEditorProps) {
-  const isSubmitted = userExerciseResults.length > 0;
+  const isSubmitted =
+    (userExerciseResults.length > 0 &&
+      userExerciseResults[0].status === "submitted") ||
+    userExerciseResults[0].status == "graded";
 
   return (
     <Card>

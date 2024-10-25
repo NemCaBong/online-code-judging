@@ -27,15 +27,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuCheckboxItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import { ArrowDownWideNarrow, ListFilter } from "lucide-react";
-import {
   Form,
   FormControl,
   FormField,
@@ -47,18 +38,160 @@ import { useForm } from "react-hook-form";
 import { gradingExerciseSchema } from "./schemas/grading.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useParams } from "react-router-dom";
+import fetchData from "@/utils/fetch-data.utils";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  Exercise,
+  UserExerciseResults,
+} from "@/pages/client/Dashboard/Dashboard";
+import {
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+  Select,
+} from "@/components/ui/select";
+import { useEffect, useState } from "react";
+import { format, formatDistanceToNow } from "date-fns";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+
+interface ExercisesOfClassRes {
+  message: string;
+  statusCode: number;
+  exercises: Exercise[];
+}
+
+interface UserExerciseResultsRes {
+  message: string;
+  statusCode: number;
+  user_exercise_results: UserExerciseResults[];
+  class: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+}
 
 export function AdminGradingPage() {
+  const { classSlug } = useParams();
+  const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(
+    null
+  );
+  const [selectedResult, setSelectedResult] =
+    useState<UserExerciseResults | null>(null);
+
+  const {
+    data: exercisesOfClass,
+    isLoading: isLoadingExercisesOfClass,
+    isError: isErrorExercisesOfClass,
+  } = useQuery({
+    queryKey: ["exercisesOfClass", classSlug],
+    queryFn: () =>
+      fetchData<ExercisesOfClassRes>(
+        `http://localhost:3000/exercises/classes/${classSlug}/get-all`
+      ),
+  });
+
+  const {
+    data: userExerciseResultsRes,
+    isLoading: isLoadingUserExerciseResultsRes,
+    isError: isErrorUserExerciseResultsRes,
+    refetch: refetchExerciseDetails,
+  } = useQuery({
+    queryKey: ["exerciseDetails", selectedExerciseId],
+    queryFn: () =>
+      fetchData<UserExerciseResultsRes>(
+        `http://localhost:3000/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results`
+      ),
+    enabled: !!selectedExerciseId,
+  });
+
   const gradingExerciseForm = useForm<z.infer<typeof gradingExerciseSchema>>({
     resolver: zodResolver(gradingExerciseSchema),
     defaultValues: {
-      code: "Hahahahahaha",
-      review: "",
+      score: "",
+      evaluation: "",
     },
   });
 
+  const evaluateExerciseMutation = useMutation({
+    mutationFn: (values: z.infer<typeof gradingExerciseSchema>) =>
+      axios
+        .post(
+          `http://localhost:3000/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results/${selectedResult?.id}/evaluate`,
+          {
+            evaluation: values.evaluation,
+            score: values.score,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        )
+        .then((response) => {
+          return response.data;
+        }),
+    onSuccess: () => {
+      toast.success("Exercise graded successfully");
+      gradingExerciseForm.reset({ evaluation: "", score: "" });
+      refetchExerciseDetails();
+    },
+    onError: (error) => {
+      toast.error(`Error grading exercise: ${error.message}`);
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    if (exercisesOfClass && exercisesOfClass.exercises.length > 0) {
+      setSelectedExerciseId(exercisesOfClass.exercises[0].id.toString());
+    }
+  }, [exercisesOfClass]);
+
+  useEffect(() => {
+    if (
+      userExerciseResultsRes &&
+      userExerciseResultsRes.user_exercise_results.length > 0
+    ) {
+      setSelectedResult(userExerciseResultsRes.user_exercise_results[0]);
+    }
+  }, [userExerciseResultsRes]);
+
+  if (isLoadingExercisesOfClass || isLoadingUserExerciseResultsRes) {
+    return <div>Loading...</div>;
+  }
+
+  if (isErrorExercisesOfClass || isErrorUserExerciseResultsRes) {
+    return <div>Error</div>;
+  }
+
+  const handleSelectChange = (exerciseId: string) => {
+    setSelectedExerciseId(exerciseId);
+    refetchExerciseDetails();
+  };
+  const handleSelectResult = (result: UserExerciseResults) => {
+    setSelectedResult(result);
+    gradingExerciseForm.reset({ evaluation: "", score: "" });
+  };
+
   function onGradingExercise(values: z.infer<typeof gradingExerciseSchema>) {
     console.log(values);
+    if (!selectedResult) {
+      toast.error("Cannot grade exercise without selecting a submission");
+      return;
+    }
+    if (!gradingExerciseForm.getValues().score) {
+      toast.error("Score must be at least 0");
+      return;
+    }
+    gradingExerciseForm.reset({ evaluation: "", score: "" });
+    evaluateExerciseMutation.mutate(values);
   }
 
   return (
@@ -77,153 +210,137 @@ export function AdminGradingPage() {
                           Exercises List
                         </CardTitle>
                         <CardDescription className="text-base">
-                          All Exercises On Class [class_name]
+                          Exercises in class{" "}
+                          {userExerciseResultsRes?.class.name || ""}
                         </CardDescription>
                       </div>
                       <div className="flex gap-4">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="sm" className="h-7 gap-1 text-sm">
-                              <ListFilter className="h-3.5 w-3.5" />
-                              <span className="sr-only sm:not-sr-only">
-                                Filter
-                              </span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Filter by</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuCheckboxItem checked>
-                              Fulfilled
-                            </DropdownMenuCheckboxItem>
-                            <DropdownMenuCheckboxItem>
-                              Declined
-                            </DropdownMenuCheckboxItem>
-                            <DropdownMenuCheckboxItem>
-                              Refunded
-                            </DropdownMenuCheckboxItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button size="sm" className="h-7 gap-1 text-sm">
-                              <ArrowDownWideNarrow className="h-3.5 w-3.5" />
-                              <span className="sr-only sm:not-sr-only">
-                                Sort
-                              </span>
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuCheckboxItem checked>
-                              ASC
-                            </DropdownMenuCheckboxItem>
-                            <DropdownMenuCheckboxItem>
-                              DESC
-                            </DropdownMenuCheckboxItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                        <Select
+                          defaultValue={selectedExerciseId || undefined}
+                          onValueChange={(value) => handleSelectChange(value)}
+                        >
+                          <SelectTrigger className="w-[240px]">
+                            <SelectValue placeholder="Select an exercise" />
+                          </SelectTrigger>
+                          {exercisesOfClass &&
+                          exercisesOfClass.exercises &&
+                          exercisesOfClass.exercises.length > 0 ? (
+                            <SelectContent>
+                              {exercisesOfClass.exercises.map((exercise) => (
+                                <SelectItem
+                                  key={exercise.id}
+                                  value={exercise.id.toString()}
+                                >
+                                  {exercise.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          ) : (
+                            <SelectContent>
+                              <SelectItem value="no-exercises" disabled>
+                                No exercises available
+                              </SelectItem>
+                            </SelectContent>
+                          )}
+                        </Select>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex flex-col gap-4">
-                        {[...Array(15)].map((_, index) => (
-                          <button
-                            // key={item.id}
-                            key={index}
-                            className={cn(
-                              "flex flex-col items-start gap-2 rounded-lg border text-left text-sm transition-all hover:bg-muted/40 p-4"
-                              // mail.selected === item.id && "bg-muted"
-                            )}
-                            // onClick={() =>
-                            //   setMail({
-                            //     ...mail,
-                            //     selected: item.id,
-                            //   })
-                            // }
-                          >
-                            <div className="flex w-full flex-col gap-1">
-                              <div className="flex items-center">
-                                <div className="flex items-center gap-2">
-                                  <div className="font-semibold">
-                                    Nguyễn Minh Hoàng
-                                  </div>
-                                  {/* {!item.read && (
-                                <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-                              )} */}
-                                  <span className="flex h-2 w-2 rounded-full bg-blue-600" />
-                                </div>
-                                <div
-                                  className={cn(
-                                    "ml-auto text-xs"
-                                    // mail.selected === item.id
-                                    //   ? "text-foreground"
-                                    //   : "text-muted-foreground"
-                                  )}
-                                >
-                                  {/* {formatDistanceToNow(new Date(item.date), {
-                                addSuffix: true,
-                              })} */}
-                                  almost 2 years ago
-                                </div>
-                              </div>
-                              <div className="text-xs font-medium">
-                                nemcabong@gmail.com
-                              </div>
-                            </div>
-                            <div className="line-clamp-2 text-xs text-muted-foreground">
-                              {/* {item.text.substring(0, 300)} */}
-                              The short details of the problems are display
-                              here.
-                            </div>
-                            {/* {item.labels.length ? (
-                          <div className="flex items-center gap-2">
-                            {item.labels.map((label) => (
-                              <Badge
-                                key={label}
-                                variant={getBadgeVariantFromLabel(label)}
+                      {userExerciseResultsRes &&
+                      userExerciseResultsRes?.user_exercise_results &&
+                      userExerciseResultsRes.user_exercise_results.length ===
+                        0 ? (
+                        <p>Don't have any exercise submitted yet</p>
+                      ) : (
+                        <div className="flex flex-col gap-4">
+                          {userExerciseResultsRes?.user_exercise_results?.map(
+                            (item) => (
+                              <button
+                                key={item.id}
+                                className={cn(
+                                  "flex flex-col items-start gap-2 rounded-lg border text-left text-sm transition-all hover:bg-muted/40 p-4",
+                                  selectedResult?.id === item.id && "bg-muted"
+                                )}
+                                onClick={() => handleSelectResult(item)}
                               >
-                                {label}
-                              </Badge>
-                            ))}
-                          </div>
-                        ) : null} */}
-                            <div className="flex items-center gap-2">
-                              <Badge variant="secondary">AC</Badge>
-                              <Badge>Challenge</Badge>
-                              <Badge>Exercise</Badge>
-                              <Badge variant="destructive">TLE</Badge>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
+                                <div className="flex w-full flex-col gap-1">
+                                  <div className="flex items-center">
+                                    <div className="flex items-center gap-2">
+                                      {item.user ? (
+                                        <div className="font-semibold">
+                                          {item.user.first_name}{" "}
+                                          {item.user.last_name}
+                                        </div>
+                                      ) : (
+                                        <div className="font-semibold">
+                                          Unknown User
+                                        </div>
+                                      )}
+                                      {!(item.status === "graded") && (
+                                        <span className="flex h-2 w-2 rounded-full bg-blue-600" />
+                                      )}
+                                    </div>
+                                    <div
+                                      className={cn(
+                                        "ml-auto text-xs",
+                                        selectedResult?.id === item.id
+                                          ? "text-foreground"
+                                          : "text-muted-foreground"
+                                      )}
+                                    >
+                                      {item.submitted_at
+                                        ? formatDistanceToNow(
+                                            new Date(item.submitted_at),
+                                            {
+                                              addSuffix: true,
+                                            }
+                                          )
+                                        : "Not done yet"}
+                                    </div>
+                                  </div>
+                                  <div className="text-xs font-medium">
+                                    {item.user && item.user.email
+                                      ? item.user.email
+                                      : "Unknown email"}
+                                  </div>
+                                </div>
+                                <div className="line-clamp-2 text-xs text-muted-foreground">
+                                  {item.evaluation
+                                    ? item.evaluation.substring(0, 300)
+                                    : "No description"}
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge>Exercise</Badge>
+                                  <Badge
+                                    variant={
+                                      item.status === "graded"
+                                        ? "default"
+                                        : item.status === "submitted"
+                                        ? "secondary"
+                                        : "destructive"
+                                    }
+                                  >
+                                    {item.status}
+                                  </Badge>
+                                  <div
+                                    className={cn(
+                                      "ml-auto text-xs font-semibold",
+                                      parseFloat(item.score) >= 8
+                                        ? "text-green-600"
+                                        : parseFloat(item.score) >= 5
+                                        ? "text-yellow-600"
+                                        : "text-red-600"
+                                    )}
+                                  >
+                                    Score: {item.score ?? "N/A"}
+                                  </div>
+                                </div>
+                              </button>
+                            )
+                          )}
+                        </div>
+                      )}
                     </CardContent>
-                    {/* <CardFooter>
-                    {" "}
-                    <Accordion type="single" collapsible className="w-full">
-                      <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It adheres to the WAI-ARIA design pattern.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it styled?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It comes with default styles that matches the
-                          other components&apos; aesthetic.
-                        </AccordionContent>
-                      </AccordionItem>
-                      <AccordionItem value="item-3">
-                        <AccordionTrigger>Is it animated?</AccordionTrigger>
-                        <AccordionContent>
-                          Yes. It's animated by default, but you can disable it
-                          if you prefer.
-                        </AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  </CardFooter> */}
                   </Card>
                 </ScrollArea>
               </div>
@@ -238,42 +355,86 @@ export function AdminGradingPage() {
                       <div className="flex items-start">
                         <div className="flex items-start gap-4 text-base">
                           <Avatar>
-                            <AvatarImage alt="Nguyen Minh Hoang" />
-                            <AvatarFallback>NM</AvatarFallback>
+                            <AvatarImage
+                              alt={
+                                (selectedResult?.user?.first_name ||
+                                  "Unknown User") +
+                                  " " +
+                                  selectedResult?.user?.last_name || ""
+                              }
+                            />
+                            <AvatarFallback>
+                              {selectedResult?.user?.first_name?.charAt(0) ||
+                                "U" +
+                                  selectedResult?.user?.last_name?.charAt(0) ||
+                                "U"}
+                            </AvatarFallback>
                           </Avatar>
                           <div className="grid gap-1">
-                            <div className="font-semibold text-lg">
-                              Nguyễn Minh Hoàng
+                            <div className="font-semibold text-md">
+                              {(selectedResult?.user?.first_name ||
+                                "Unknown User") +
+                                " " +
+                                selectedResult?.user?.last_name || ""}{" "}
                             </div>
                             <div className="line-clamp-1 text-base">
-                              nemcabong@gmail.com
+                              {selectedResult?.user?.email || "Unknown email"}
                             </div>
                             {/* <div className="line-clamp-1 text-sm">11218459</div> */}
                           </div>
                         </div>
                         <div className="ml-auto text-sm text-muted-foreground">
-                          {/* {format(new Date(mail.date), "PPpp")} */}
-                          Oct 22, 2023, 9:00:00 AM
+                          {selectedResult?.submitted_at
+                            ? format(
+                                new Date(selectedResult.submitted_at),
+                                "PPpp"
+                              )
+                            : "Not done yet"}
                         </div>
                       </div>
                     </CardHeader>
                     <CardContent className="h-[60vh] pb-0">
-                      <FormField
-                        control={gradingExerciseForm.control}
-                        name="code"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormControl>
-                              <CodeMirrorEditor
-                                language="javascript"
-                                className="h-[56vh]"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      {selectedResult &&
+                      selectedResult.user_exercise_details &&
+                      selectedResult.user_exercise_details.length > 0 ? (
+                        <Tabs
+                          defaultValue={
+                            selectedResult.user_exercise_details[0].file_name
+                          }
+                        >
+                          <TabsList>
+                            {selectedResult.user_exercise_details.map(
+                              (detail) => (
+                                <TabsTrigger
+                                  key={detail.id}
+                                  value={detail.file_name}
+                                >
+                                  {detail.file_name}
+                                </TabsTrigger>
+                              )
+                            )}
+                          </TabsList>
+                          {selectedResult.user_exercise_details.map(
+                            (detail) => (
+                              <TabsContent
+                                key={detail.id}
+                                value={detail.file_name}
+                              >
+                                <CodeMirrorEditor
+                                  value={detail.code}
+                                  language={
+                                    LanguageIdToTypeMap[detail.language_id]
+                                  }
+                                  className="h-[53vh]"
+                                  editable={false}
+                                />
+                              </TabsContent>
+                            )
+                          )}
+                        </Tabs>
+                      ) : (
+                        <p>No code details available.</p>
+                      )}
                     </CardContent>
                     <Separator />
                     <CardFooter className="block h-[19.5vh] pb-0">
@@ -281,13 +442,15 @@ export function AdminGradingPage() {
                         <div className="grid gap-4">
                           <FormField
                             control={gradingExerciseForm.control}
-                            name="review"
+                            name="evaluation"
                             render={({ field }) => (
                               <FormItem>
                                 <FormControl>
                                   <Textarea
                                     className="p-4 h-[8vh] resize-none"
-                                    placeholder={`Review Nguyễn Minh Hoàng's submission...`}
+                                    placeholder={`Review ${
+                                      selectedResult?.user?.first_name || "User"
+                                    }'s submission...`}
                                     {...field}
                                   />
                                 </FormControl>
@@ -317,18 +480,13 @@ export function AdminGradingPage() {
                                     </DialogHeader>
                                     <div className="grid gap-4 py-4">
                                       <div className="grid grid-cols-4 items-center gap-4">
-                                        {/* <Label
-                                        htmlFor="score"
-                                        className="text-right"
-                                      >
-                                        Score
-                                      </Label> */}
                                         <FormLabel className="text-right">
                                           Score
                                         </FormLabel>
                                         <Input
                                           id="score"
                                           className="col-span-3"
+                                          type="number"
                                           {...field}
                                         />
                                       </div>
@@ -362,6 +520,7 @@ export function AdminGradingPage() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

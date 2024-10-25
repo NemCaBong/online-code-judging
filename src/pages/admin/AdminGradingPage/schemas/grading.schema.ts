@@ -21,12 +21,8 @@ export const gradingSubmittedExerciseSchema = z.object({
 });
 
 export const gradingExerciseSchema = z.object({
-  score: z.coerce
-    .number()
-    .min(0, { message: "Score must be at least 0" })
-    .max(10, { message: "Score must be at most 10" }),
-  code: z.string().min(10, { message: "Code must be at least 10 characters" }),
-  review: z
+  score: z.string(),
+  evaluation: z
     .string()
     .min(10, { message: "Review must be at least 10 characters" }),
 });

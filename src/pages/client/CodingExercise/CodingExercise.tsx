@@ -118,9 +118,11 @@ export function CodingExercise() {
   });
 
   const codes = (
-    exerciseRes?.exercise.user_exercise_results[0]?.user_exercise_details ||
-    exerciseRes?.exercise.exercise_details ||
-    []
+    exerciseRes?.exercise.user_exercise_results[0]?.status === "submitted" ||
+    exerciseRes?.exercise.user_exercise_results[0]?.status === "graded"
+      ? exerciseRes?.exercise.user_exercise_results[0]?.user_exercise_details ||
+        []
+      : exerciseRes?.exercise.exercise_details || []
   ).map((detail) => ({
     id: detail.id,
     language_id: detail.language_id,
@@ -140,11 +142,12 @@ export function CodingExercise() {
   useEffect(() => {
     if (exerciseRes) {
       form.reset({
-        codes: (
-          exerciseRes?.exercise.user_exercise_results[0]
-            ?.user_exercise_details ||
-          exerciseRes?.exercise.exercise_details ||
-          []
+        codes: (exerciseRes?.exercise.user_exercise_results[0]?.status ===
+          "submitted" ||
+        exerciseRes?.exercise.user_exercise_results[0]?.status === "graded"
+          ? exerciseRes?.exercise.user_exercise_results[0]
+              ?.user_exercise_details || []
+          : exerciseRes?.exercise.exercise_details || []
         ).map((detail) => ({
           id: detail.id,
           language_id: detail.language_id,
