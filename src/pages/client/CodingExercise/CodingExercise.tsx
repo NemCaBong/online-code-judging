@@ -1,7 +1,7 @@
 import { Header } from "@/common/components/Header";
 import { Sidebar } from "@/common/components/Sidebar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ExerciseFormSchemaType,
@@ -10,117 +10,173 @@ import {
 import OutputCard from "./components/OutputCard";
 import ExerciseEditor from "./components/ExerciseEditor";
 import ExerciseDescriptionCard from "./components/ExerciseDescriptionCard";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import fetchData from "@/utils/fetch-data.utils";
+import { Exercise } from "../Dashboard/Dashboard";
+import { useParams } from "react-router-dom";
+import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+
+interface IExerciseRes {
+  message: string;
+  statusCode: number;
+  exercise: Exercise;
+}
+
+interface RunExerciseRes {
+  message: string;
+  statusCode: number;
+  result: {
+    stdout: string | null;
+    time: string;
+    memory: number;
+    stderr: string | null;
+    token: string;
+    compile_output: string | null;
+    message: string | null;
+    status: {
+      id: number;
+      description: string;
+    };
+  };
+}
+
+interface ISuccessRes {
+  message: string;
+  statusCode: number;
+}
 
 export function CodingExercise() {
-  const markdownContent = `
-# Markdown \`syntax guide\`
-Here is some \`inline code\` with the word \`markdown\` inside it.
+  const { classSlug, exerciseId } = useParams();
+  const {
+    data: exerciseRes,
+    isLoading: isLoadingExercise,
+    isError: isErrorExercise,
+    refetch: refetchExercise,
+  } = useQuery({
+    queryKey: ["exercise"],
+    queryFn: () =>
+      fetchData<IExerciseRes>(
+        `http://localhost:3000/classes/${classSlug}/exercises/${exerciseId}`
+      ),
+  });
 
-## Headers
-
-# This is a Heading h1
-## This is a Heading h2
-###### This is a Heading h6
-
-## Emphasis
-
-*This text will be italic*  
-_This will also be italic_
-
-**This text will be bold**  
-__This will also be bold__
-
-_You **can** combine them_
-
-## Lists
-
-### Unordered
-
-* Item 1
-* Item 2
-* Item 2a
-* Item 2b
-
-### Ordered
-
-1. Item 1
-2. Item 2
-3. Item 3
-    1. Item 3a
-    2. Item 3b
-
-## Images
-
-![This is an alt text.](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxqglKDy3Z9-zDvnfRFQIGeQft28uRVTHoGQ&s "This is a sample image.")
-
-## Links
-
-You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
-
-## Blockquotes
-
-> Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
->
->> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
-
-## Tables
-
-| Left columns  | Right columns |
-| ------------- |:-------------:|
-| left foo      | right foo     |
-| left bar      | right bar     |
-| left baz      | right baz     |
-
-## Blocks of code
-
-\`\`\`javascript
-import React from "react";
-import ReactDOM from "react-dom";
-import MEDitor from '@uiw/react-md-editor';
-\`\`\`
-
-## Inline code
-
-This web site is using \`markedjs/marked\`.
-`;
-
-  const boilerplateCodes = [
-    {
-      language: "javascript",
-      code: "console.log('Hello from JavaScript!');",
-      fileName: "index.js",
+  const runCodeMutation = useMutation({
+    mutationFn: (values: ExerciseFormSchemaType) =>
+      axios
+        .post<RunExerciseRes>(
+          `http://localhost:3000/exercises/${exerciseId}/run`,
+          { codes: values.codes },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        )
+        .then((response) => {
+          return response.data;
+        }),
+    onSuccess: (_) => {
+      toast.success("Code run successfully");
     },
-    {
-      language: "python",
-      code: "print('Hello from Python!')",
-      fileName: "main.py",
+    onError: (error) => {
+      toast.error(`Error running code: ${error.message}`);
     },
-    {
-      language: "java",
-      code: 'public class Main {\n  public static void main(String[] args) {\n    System.out.println("Hello from Java!");\n  }\n}',
-      fileName: "Main.java",
+  });
+
+  const submitExerciseCodeMutation = useMutation({
+    mutationFn: (values: ExerciseFormSchemaType) =>
+      axios
+        .post<ISuccessRes>(
+          `http://localhost:3000/exercises/${exerciseId}/classes/${classSlug}/submit`,
+          { codes: values.codes },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log("submitData: ", response.data);
+          return response.data;
+        }),
+    onSuccess: (data) => {
+      toast.success(
+        "Submission successful, you must wait for teacher to grade your submission"
+      );
+      console.log("Submission successfully:", data);
+      refetchExercise();
     },
-  ];
+    onError: (error) => {
+      toast.error(`Error submit code: ${error.message}. Try again later!`);
+      console.error("Error submitting code: ", error);
+    },
+  });
+
+  const codes = (
+    exerciseRes?.exercise.user_exercise_results[0]?.user_exercise_details ||
+    exerciseRes?.exercise.exercise_details ||
+    []
+  ).map((detail) => ({
+    id: detail.id,
+    language_id: detail.language_id,
+    boilerplate_code:
+      "boilerplate_code" in detail ? detail.boilerplate_code : detail.code,
+    file_name:
+      detail.file_name || `main.${LanguageIdToTypeMap[detail.language_id]}`,
+  }));
 
   const form = useForm<ExerciseFormSchemaType>({
     resolver: zodResolver(exerciseFormSchema),
     defaultValues: {
-      codes: boilerplateCodes,
+      codes,
     },
   });
-  const { fields: codesFields } = useFieldArray({
-    control: form.control,
-    name: "codes",
-  });
+
+  useEffect(() => {
+    if (exerciseRes) {
+      form.reset({
+        codes: (
+          exerciseRes?.exercise.user_exercise_results[0]
+            ?.user_exercise_details ||
+          exerciseRes?.exercise.exercise_details ||
+          []
+        ).map((detail) => ({
+          id: detail.id,
+          language_id: detail.language_id,
+          boilerplate_code:
+            "boilerplate_code" in detail
+              ? detail.boilerplate_code
+              : detail.code,
+          file_name:
+            detail.file_name ||
+            `main.${LanguageIdToTypeMap[detail.language_id]}`,
+        })),
+      });
+    }
+  }, [exerciseRes, form]);
+
+  if (isLoadingExercise) {
+    return <div>Loading...</div>;
+  }
+  if (isErrorExercise) {
+    return <div>Error...</div>;
+  }
+  if (!exerciseRes) {
+    return <div>No exercise found</div>;
+  }
 
   function onRun(values: ExerciseFormSchemaType) {
-    console.log("Running code:", values);
-    // Send data to backend for running
+    runCodeMutation.mutate(values);
   }
 
   function onSubmit(values: ExerciseFormSchemaType) {
+    submitExerciseCodeMutation.mutate(values);
     console.log("Submitting code:", values);
-    // Send data to backend for submission
   }
 
   return (
@@ -132,25 +188,24 @@ This web site is using \`markedjs/marked\`.
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
               <ExerciseDescriptionCard
-                title="12. Two Sums"
-                description="Easy question on LeetCode"
-                markdownContent={markdownContent}
-                accordionItems={[
-                  {
-                    trigger: "Is it accessible?",
-                    content: "Yes. It adheres to the WAI-ARIA design pattern.",
-                  },
-                  {
-                    trigger: "Is it styled?",
-                    content:
-                      "Yes. It comes with default styles that matches the other components' aesthetic.",
-                  },
-                  {
-                    trigger: "Is it animated?",
-                    content:
-                      "Yes. It's animated by default, but you can disable it if you prefer.",
-                  },
-                ]}
+                title={exerciseRes.exercise.name}
+                markdownContent={exerciseRes.exercise.description}
+                evaluationContent={
+                  exerciseRes.exercise.user_exercise_results[0]?.evaluation ||
+                  "No evaluation available"
+                }
+                score={exerciseRes.exercise.user_exercise_results[0]?.score}
+                userStatus={
+                  (exerciseRes.exercise.user_exercise_results.length > 0 &&
+                    exerciseRes.exercise?.user_exercise_results[0]?.status) ||
+                  "not-done"
+                }
+                submittedAt={
+                  (exerciseRes.exercise.user_exercise_results.length > 0 &&
+                    exerciseRes.exercise?.user_exercise_results[0]
+                      ?.submitted_at) ||
+                  undefined
+                }
               />
             </div>
             <div className="flex flex-col justify-between h-full min-h-[50vh] gap-2">
@@ -158,13 +213,27 @@ This web site is using \`markedjs/marked\`.
                 form={form}
                 onRun={onRun}
                 onSubmit={onSubmit}
-                codesFields={codesFields}
+                codesFields={codes}
+                userExerciseResults={exerciseRes.exercise.user_exercise_results}
               />
-              <OutputCard />
+              <OutputCard
+                isLoading={runCodeMutation.isPending}
+                output={
+                  runCodeMutation.data?.result.stderr ||
+                  runCodeMutation.data?.result.stdout ||
+                  runCodeMutation.data?.result.compile_output ||
+                  undefined
+                }
+                isError={!!runCodeMutation.data?.result.stderr}
+                time={runCodeMutation.data?.result.time}
+                memory={runCodeMutation.data?.result.memory}
+                status={runCodeMutation.data?.result.status}
+              />
             </div>
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

@@ -80,9 +80,9 @@ interface PollRunResponse {
 export interface SubmissionResult {
   message: string;
   statusCode: number;
-  averageTime?: number; // Optional, present only in success responses
-  averageMemory?: number; // Optional, present only in success responses
-  error?: string; // Optional, present only in error responses
+  averageTime?: number;
+  averageMemory?: number;
+  error?: string;
   submission?: Submission;
   errorTestCase?: {
     id: number;
@@ -101,7 +101,7 @@ function useChallengeDetails(challengeSlug: string) {
         `http://localhost:3000/challenges/${challengeSlug}`,
         {
           headers: {
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -123,7 +123,7 @@ const runCode = async (
     },
     {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     }
   );
@@ -140,7 +140,7 @@ const submitCode = async (
     values,
     {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     }
   );
@@ -263,7 +263,7 @@ export function CodingChallengeDetail() {
           { submitPoll: tokens },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           }
         );
@@ -370,6 +370,7 @@ export function CodingChallengeDetail() {
                 challengeDetails={challenge?.challenge_details || []}
                 availableLanguages={availableLanguages}
               />
+
               {/* Bottom right column */}
               <TestCase
                 testCases={challenge.test_cases}

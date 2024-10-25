@@ -7,8 +7,9 @@ import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import ScoreChart from "@/components/classroom/ScoreChart";
+// import ScoreChart from "@/components/classroom/ScoreChart";
 // import GradedExercises from "@/components/classroom/GradedExercises";
+
 const exampleExercises: Option[] = [
   {
     id: "0493f2f8-686d-4dcf-8945-9aaa9458de82",
@@ -216,12 +217,6 @@ export function AdminClassroom() {
                   {/* <ScoreChart /> */}
                   {/* <GradedExercises /> */}
                 </div>
-              </div>
-              <div className="flex items-center justify-center gap-2 md:hidden">
-                <Button variant="outline" size="sm">
-                  Discard
-                </Button>
-                <Button size="sm">Save Product</Button>
               </div>
             </div>
           </main>

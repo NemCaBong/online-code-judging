@@ -289,6 +289,20 @@ export default function TestCase({
                         </CardContent>
                       </Card>
                     )}
+                    {submission.compile_output && (
+                      <Card className="border-none dark:bg-codeEditorDark mt-4">
+                        <CardContent className="pt-3">
+                          <p>
+                            <strong>Compile Error:</strong>
+                          </p>
+                          <pre>
+                            <code className="text-sm">
+                              {submission.compile_output}
+                            </code>
+                          </pre>
+                        </CardContent>
+                      </Card>
+                    )}
                   </div>
                 ) : (
                   <p>No results available.</p>

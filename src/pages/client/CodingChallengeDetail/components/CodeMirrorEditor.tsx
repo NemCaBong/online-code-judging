@@ -32,11 +32,13 @@ interface CodeMirrorEditorProps {
   className?: string;
   value: string;
   onChange?: (value: string) => void;
+  editable?: boolean;
 }
 const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
   language,
   className,
   value,
+  editable = true,
   onChange,
 }) => {
   return (
@@ -52,6 +54,7 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
         EditorView.lineWrapping,
       ]}
       onChange={onChange}
+      editable={editable}
     />
   );
 };

@@ -1,3 +1,4 @@
+// src/pages/client/CodingExercise/components/ExerciseEditor.tsx
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,27 +9,38 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import CodeMirrorEditor, {
-  LanguageType,
-} from "../../CodingChallengeDetail/components/CodeMirrorEditor";
+import CodeMirrorEditor from "../../CodingChallengeDetail/components/CodeMirrorEditor";
 import { ExerciseFormSchemaType } from "../schemas/code.schema";
-import { FieldArrayWithId, UseFormReturn } from "react-hook-form";
+import { UseFormReturn } from "react-hook-form";
+import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
 
 interface ExerciseEditorProps {
   form: UseFormReturn<ExerciseFormSchemaType>;
-  codesFields: FieldArrayWithId<
-    {
-      codes: {
-        language: string;
-        code: string;
-        fileName: string;
-      }[];
-    },
-    "codes",
-    "id"
-  >[];
+  codesFields: {
+    id: number;
+    file_name: string;
+    language_id: number;
+    boilerplate_code: string;
+  }[];
   onRun: (values: ExerciseFormSchemaType) => void;
   onSubmit: (values: ExerciseFormSchemaType) => void;
+  userExerciseResults: {
+    score: string;
+    status: string;
+    evaluation: string;
+    user_id: number;
+    exercise_id: number;
+    class_id: number;
+    submitted_at: string;
+    id: number;
+    user_exercise_details?: {
+      id: number;
+      user_exercise_id: number;
+      code: string;
+      file_name: string;
+      language_id: number;
+    }[];
+  }[];
 }
 
 export default function ExerciseEditor({
@@ -36,72 +48,92 @@ export default function ExerciseEditor({
   codesFields,
   onRun,
   onSubmit,
+  userExerciseResults,
 }: ExerciseEditorProps) {
+  const isSubmitted = userExerciseResults.length > 0;
+
   return (
     <Card>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+          }}
+        >
           <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle>Code Editor</CardTitle>
             <div className="flex gap-4">
               <Button
+                disabled={isSubmitted}
                 type="button"
                 className="text-xs"
-                onClick={form.handleSubmit(onRun)}
+                onClick={() => {
+                  const formValues = form.getValues();
+                  onRun(formValues);
+                }}
               >
                 Run
               </Button>
               <Button
+                disabled={isSubmitted}
                 type="submit"
                 className="text-xs"
                 variant="secondary"
-                onClick={form.handleSubmit(onSubmit)}
+                onClick={() => {
+                  const formValues = form.getValues();
+                  onSubmit(formValues);
+                }}
               >
                 Submit
               </Button>
             </div>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue={codesFields[0].fileName}>
-              <FormField
-                control={form.control}
-                name="codes"
-                render={() => (
-                  <FormItem>
-                    <FormControl>
-                      <TabsList>
-                        {codesFields.map((field) => (
-                          <TabsTrigger key={field.id} value={field.fileName}>
-                            {field.fileName}
-                          </TabsTrigger>
-                        ))}
-                      </TabsList>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              {codesFields.map((field, index) => (
-                <TabsContent key={field.id} value={field.fileName}>
-                  <FormField
-                    control={form.control}
-                    name={`codes.${index}.code`}
-                    render={({ field: codeField }) => (
-                      <FormItem>
-                        <FormControl>
-                          <CodeMirrorEditor
-                            value={codeField.value}
-                            onChange={codeField.onChange}
-                            language={field.language as LanguageType}
-                            className="h-[40vh]"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </TabsContent>
-              ))}
-            </Tabs>
+            {codesFields.length <= 0 ? (
+              <p>No exercise details found. Try again later!</p>
+            ) : (
+              <Tabs defaultValue={codesFields[0].file_name}>
+                <FormField
+                  control={form.control}
+                  name="codes"
+                  render={() => (
+                    <FormItem>
+                      <FormControl>
+                        <TabsList>
+                          {codesFields.map((field) => (
+                            <TabsTrigger key={field.id} value={field.file_name}>
+                              {field.file_name}
+                            </TabsTrigger>
+                          ))}
+                        </TabsList>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                {codesFields.map((field, index) => (
+                  <TabsContent key={field.id} value={field.file_name}>
+                    <FormField
+                      control={form.control}
+                      name={`codes.${index}.boilerplate_code`}
+                      render={({ field: codeField }) => (
+                        <FormItem>
+                          <FormControl>
+                            <CodeMirrorEditor
+                              value={codeField.value}
+                              onChange={codeField.onChange}
+                              language={LanguageIdToTypeMap[field.language_id]}
+                              className="h-[40vh]"
+                              editable={!isSubmitted}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </TabsContent>
+                ))}
+              </Tabs>
+            )}
           </CardContent>
         </form>
       </Form>

@@ -17,6 +17,7 @@ import { ClassesListBoard } from "./components/ClassesListBoard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import fetchData from "@/utils/fetch-data.utils";
+import { LanguageId } from "@/common/types/language-id.type";
 
 export interface ChartRes {
   message: string;
@@ -36,16 +37,28 @@ export interface Exercise {
     id: number;
     name: string;
   };
-  // classes_exercises: {
-  //   due_at: string;
-  //   class: {
-  //     id: number;
-  //     name: string;
-  //   };
-  // }[];
+  exercise_details?: {
+    id: number;
+    boilerplate_code: string;
+    language_id: LanguageId;
+    file_name: string;
+  }[];
   user_exercise_results: {
     score: string;
     status: string;
+    evaluation: string;
+    user_id: number;
+    exercise_id: number;
+    class_id: number;
+    submitted_at: string;
+    id: number;
+    user_exercise_details?: {
+      id: number;
+      user_exercise_id: number;
+      code: string;
+      file_name: string;
+      language_id: number;
+    }[];
   }[];
 }
 
@@ -86,6 +99,7 @@ function getFirstThreeClasses(classes: Class[]): (Class | null)[] {
   }
   return classes;
 }
+
 export function Dashboard() {
   const results = useQueries({
     queries: [

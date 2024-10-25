@@ -141,6 +141,25 @@ export default function ChallengeDescriptionCard({
                                 </CardContent>
                               </Card>
                             )}
+                            {submissionData.submission.compile_output && (
+                              <Card className="border-none dark:bg-codeEditorDark mt-4">
+                                <CardContent className="pt-3">
+                                  <p>
+                                    <strong>Compile Error:</strong>
+                                  </p>
+                                  <ScrollArea className="h-[300px] w-full rounded-md">
+                                    <pre className="whitespace-pre-wrap break-words">
+                                      <code className="text-sm">
+                                        {
+                                          submissionData.submission
+                                            .compile_output
+                                        }
+                                      </code>
+                                    </pre>
+                                  </ScrollArea>
+                                </CardContent>
+                              </Card>
+                            )}
                             <Card className="border-none dark:bg-codeEditorDark mt-4">
                               <CardContent className="pt-3">
                                 <p>
