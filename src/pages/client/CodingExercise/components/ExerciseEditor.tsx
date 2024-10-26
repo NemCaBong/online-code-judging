@@ -52,8 +52,10 @@ export default function ExerciseEditor({
 }: ExerciseEditorProps) {
   const isSubmitted =
     (userExerciseResults.length > 0 &&
-      userExerciseResults[0].status === "submitted") ||
-    userExerciseResults[0].status == "graded";
+      (userExerciseResults[0].status === "submitted" ||
+        userExerciseResults[0].status == "graded")) ||
+    false;
+  const cannotBeSubmitted = codesFields.length <= 0;
 
   return (
     <Card>
@@ -67,7 +69,7 @@ export default function ExerciseEditor({
             <CardTitle>Code Editor</CardTitle>
             <div className="flex gap-4">
               <Button
-                disabled={isSubmitted}
+                disabled={isSubmitted || cannotBeSubmitted}
                 type="button"
                 className="text-xs"
                 onClick={() => {
@@ -78,7 +80,7 @@ export default function ExerciseEditor({
                 Run
               </Button>
               <Button
-                disabled={isSubmitted}
+                disabled={isSubmitted || cannotBeSubmitted}
                 type="submit"
                 className="text-xs"
                 variant="secondary"

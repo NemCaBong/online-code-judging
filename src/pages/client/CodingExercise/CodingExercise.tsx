@@ -182,6 +182,8 @@ export function CodingExercise() {
     console.log("Submitting code:", values);
   }
 
+  console.log("exerciseRes", exerciseRes);
+
   return (
     <ScrollArea className="h-[100dvh]">
       <div className="flex flex-col min-h-screen w-full bg-muted/40">
