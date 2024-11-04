@@ -23,6 +23,7 @@ export default function DashboardChart({
     if (total === 0) return 0; // Avoid division by zero
     return (done / total) * 100;
   };
+
   const activityData = [
     {
       activity: "challenges",
@@ -76,7 +77,7 @@ export default function DashboardChart({
             barSize={32}
             barGap={2}
           >
-            <XAxis type="number" dataKey="value" hide />
+            <XAxis type="number" dataKey="value" hide domain={[0, 100]} />
             <YAxis
               dataKey="activity"
               type="category"

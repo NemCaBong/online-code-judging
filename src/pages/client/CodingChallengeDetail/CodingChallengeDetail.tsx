@@ -93,6 +93,28 @@ export interface SubmissionResult {
   }; // Optional, present only in error responses
 }
 
+export interface UserChallengeRes {
+  id: number;
+  challenge_id?: number;
+  user_id?: number;
+  status: string;
+  created_at: string;
+  code: string;
+  language_id: number;
+  time: string | null;
+  status_id: number;
+  message: string;
+  memory: number | null;
+  stderr: string | null;
+  stdout: string | null;
+  compile_output: string | null;
+  error_testcase: {
+    id: number;
+    input: string;
+    expected_output: string;
+  } | null;
+}
+
 function useChallengeDetails(challengeSlug: string) {
   return useQuery({
     queryKey: ["challenge", challengeSlug],
@@ -150,6 +172,7 @@ const submitCode = async (
 export function CodingChallengeDetail() {
   const { challengeSlug } = useParams<{ challengeSlug: string }>();
   const [pollData, setPollData] = useState<PollRunResponse | null>(null);
+  const [historySub, setHistorySub] = useState<UserChallengeRes | null>(null);
   const [submissionData, setSubmissionData] = useState<SubmissionResult | null>(
     null
   );
@@ -360,6 +383,8 @@ export function CodingChallengeDetail() {
                 markdownContent={challenge?.description || ""}
                 accordionItems={accordionItems}
                 submissionData={submissionData}
+                onChooseHistory={setHistorySub}
+                historySub={historySub}
               />
             </div>
             {/* Right column */}

@@ -19,11 +19,11 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import MDEditor from "@uiw/react-md-editor";
-import { postSchema } from "../schemas/post.schema";
 import { z } from "zod";
 import { useEffect, useState } from "react";
+import { addPostSchema } from "../schemas/add-post.schema";
 
-type PostFormValues = z.infer<typeof postSchema>;
+type PostFormValues = z.infer<typeof addPostSchema>;
 
 // const allowedFileTypes = [
 //   "application/zip",
@@ -106,7 +106,11 @@ alert(message);
 This web site is using \`markedjs/marked\`.
 `;
 
-export function PostDialog() {
+export function AddPostDialog({
+  onSubmitPost,
+}: {
+  onSubmitPost: (values: PostFormValues) => void;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   // const [fileError, setFileError] = useState<string | null>(null);
 
@@ -117,13 +121,14 @@ export function PostDialog() {
   }, [isOpen]);
 
   const postForm = useForm<PostFormValues>({
-    resolver: zodResolver(postSchema),
+    resolver: zodResolver(addPostSchema),
     defaultValues: {
       content: initialValue,
     },
   });
 
   function onPosting(values: PostFormValues) {
+    onSubmitPost(values);
     console.log("Form submitted:", values);
     // Handle form submission here
   }

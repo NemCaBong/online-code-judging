@@ -4,9 +4,16 @@ import { Header } from "@/common/components/Header";
 import { DataTable } from "./components/DataTable";
 import SummaryChart from "./components/SummaryChart";
 import fetchData from "@/utils/fetch-data.utils";
-import { useQueries, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { ChartRes } from "../Dashboard/Dashboard";
 import TodoChallengeBoard from "./components/TodoChallengeBoard";
+import axios, { AxiosResponse } from "axios";
+import { toast, ToastContainer } from "react-toastify";
 
 export interface Todo {
   id: number;
@@ -46,6 +53,8 @@ interface ChallengesWithUserStatusRes {
 }
 
 export function ChallengesList() {
+  const queryClient = useQueryClient();
+
   const results = useQueries({
     queries: ["easy", "medium", "hard"].map((difficulty) => ({
       queryKey: ["challengeData", difficulty],
@@ -78,6 +87,38 @@ export function ChallengesList() {
       ),
   });
 
+  const markTodoMutation = useMutation<
+    AxiosResponse<{ message: string; statusCode: number }>,
+    Error,
+    number
+  >({
+    mutationFn: (challengeId: number) => {
+      return axios.post(
+        `http://localhost:3000/todo/add?challengeId=${challengeId}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["challenges"] });
+      queryClient.invalidateQueries({ queryKey: ["to-do"] });
+      toast.success("Successfully added challenge to todo list", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    },
+    onError: (error) => {
+      toast.error(`Error adding challenge to todo list: ${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    },
+  });
+
   const isLoading = results.some((result) => result.isLoading);
   const isError = results.some((result) => result.isError);
   const error = results.find((result) => result.error)?.error;
@@ -94,11 +135,20 @@ export function ChallengesList() {
 
   const [easyData, mediumData, hardData] = results.map((res) => res.data);
 
+  function handleMarkTodo(challengeId: number) {
+    toast.info("Adding challenge to todo list ...", {
+      position: "top-right",
+      autoClose: 3000,
+    });
+    markTodoMutation.mutate(challengeId);
+  }
+
   const summaryData = {
     easy: easyData?.done || 0,
     medium: mediumData?.done || 0,
     hard: hardData?.done || 0,
   };
+
   const activityData = [
     {
       activity: "easy",
@@ -131,7 +181,10 @@ export function ChallengesList() {
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8 lg:grid-cols-3 xl:grid-cols-3 grid-flow-dense">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 lg:col-span-2 grid-flow-dense justify-items-end">
               <div className="w-full max-w-7xl">
-                <DataTable challenges={challengesList?.challenges || []} />
+                <DataTable
+                  onMarkedTodo={handleMarkTodo}
+                  challenges={challengesList?.challenges || []}
+                />
               </div>
             </div>
             <div className="flex flex-wrap gap-4 md:gap-8">
@@ -152,6 +205,7 @@ export function ChallengesList() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

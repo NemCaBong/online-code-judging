@@ -41,7 +41,7 @@ export default function TestCase({
   errorTestCase,
   submission,
 }: TestCaseProps) {
-  const [isRunTestResult, setIsRunTestResult] = useState(false);
+  const [activeTab, setActiveTab] = useState("test-case");
 
   useEffect(() => {
     if (
@@ -49,7 +49,7 @@ export default function TestCase({
       submission ||
       errorTestCase
     ) {
-      setIsRunTestResult(true);
+      setActiveTab("result");
     }
   }, [submissions, submission, errorTestCase]);
 
@@ -57,10 +57,9 @@ export default function TestCase({
     <Card className="h-full border-none">
       <Tabs
         defaultValue="test-case"
+        value={activeTab}
         onValueChange={(value) => {
-          if (value === "result") {
-            setIsRunTestResult(false);
-          }
+          setActiveTab(value);
         }}
       >
         <TabsList
@@ -76,9 +75,9 @@ export default function TestCase({
           <TabsTrigger value="result">
             <Terminal className="text-sm pr-2" />
             Result
-            {isRunTestResult && (
+            {/* {isRunTestResult && (
               <span className="ml-2 h-2 w-2 rounded-full bg-blue-500" />
-            )}
+            )} */}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="test-case" className="h-[85%]">

@@ -57,7 +57,7 @@ export default function SummaryChart({
             barSize={32}
             barGap={2}
           >
-            <XAxis type="number" dataKey="value" hide />
+            <XAxis type="number" dataKey="value" hide domain={[0, 100]} />
             <YAxis
               dataKey="activity"
               type="category"

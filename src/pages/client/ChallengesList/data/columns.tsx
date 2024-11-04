@@ -6,7 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { DataTableRowActions } from "../components/RowActions";
 import { ChallengeWithUserStatus } from "../ChallengesList";
 
-export const columns: ColumnDef<ChallengeWithUserStatus>[] = [
+export const columns = (
+  onMarkedTodo: (challengeId: number) => void
+): ColumnDef<ChallengeWithUserStatus>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -168,6 +170,11 @@ export const columns: ColumnDef<ChallengeWithUserStatus>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: () => <DataTableRowActions />,
+    cell: ({ row }) => (
+      <DataTableRowActions
+        challenge={row.original}
+        onMarkedTodo={onMarkedTodo}
+      />
+    ),
   },
 ];

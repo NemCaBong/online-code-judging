@@ -5,11 +5,19 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ChallengeWithUserStatus } from "../ChallengesList";
+import { ArrowUpRight, ListTodo } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export function DataTableRowActions() {
+export function DataTableRowActions({
+  challenge,
+  onMarkedTodo,
+}: {
+  challenge: ChallengeWithUserStatus;
+  onMarkedTodo: (challengeId: number) => void;
+}) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -22,14 +30,16 @@ export function DataTableRowActions() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => onMarkedTodo(challenge.id)}>
+          Marked As Todo <ListTodo className="ml-auto h-4 w-4" />
+        </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          <Link to={`/challenges/${challenge.slug}`} className="flex w-full">
+            Go to
+            <ArrowUpRight className="ml-auto h-4 w-4" />
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

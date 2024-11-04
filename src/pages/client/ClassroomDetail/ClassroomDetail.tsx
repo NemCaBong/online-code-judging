@@ -6,10 +6,16 @@ import GradedExercises from "@/components/classroom/GradedExercises";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ExercisesTable from "@/components/classroom/ExerciseTable";
 import ScoreChart from "@/components/classroom/ScoreChart";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Link, useParams } from "react-router-dom";
 import fetchData from "@/utils/fetch-data.utils";
 import { Class, Exercise } from "../Dashboard/Dashboard";
+import { Button } from "@/components/ui/button";
+import { AddPostDialog } from "./components/AddPostDialog";
+import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/auth.context";
 
 interface ClassRes {
   message: string;
@@ -49,10 +55,12 @@ interface ScoreChartRes {
 
 export function ClassroomDetail() {
   const { classSlug } = useParams();
+  const { user } = useContext(AuthContext);
   const {
     data: classRes,
     isLoading,
     error,
+    refetch: refetchClass,
   } = useQuery({
     queryKey: ["class", classSlug],
     queryFn: () =>
@@ -95,6 +103,31 @@ export function ClassroomDetail() {
       ),
   });
 
+  const addPostMutation = useMutation({
+    mutationFn: (newPost: { content: string }) =>
+      axios
+        .post(
+          `http://localhost:3000/posts/create?classSlug=${classSlug}`,
+          newPost,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            },
+          }
+        )
+        .then((res) => {
+          return res.data;
+        }),
+    onSuccess: () => {
+      toast.success("Post created successfully!");
+      refetchClass();
+    },
+    onError: (error) => {
+      toast.error(`Error creating post: ${error.message}`);
+      console.log(error);
+    },
+  });
+
   if (isLoading || isLoadingAssigned || isLoadingGraded || isLoadingScoreChart)
     return <div>Loading...</div>;
 
@@ -122,6 +155,23 @@ export function ClassroomDetail() {
                 >
                   {classData.is_done ? "Closed" : "On-going"}
                 </Badge>
+                {["TEACHER"].includes(user?.role) && (
+                  <div className="hidden items-center gap-2 md:ml-auto md:flex">
+                    <Link
+                      to={`/admin/create-exercise`}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      <Button variant="secondary">Add Exercise</Button>
+                    </Link>
+                    <Link to={`/admin/classes/${classSlug}/grading`}>
+                      <Button variant="secondary" className="h-10 py-4">
+                        Grade Exercises
+                      </Button>
+                    </Link>
+                    <AddPostDialog onSubmitPost={addPostMutation.mutate} />
+                  </div>
+                )}
               </div>
               <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
                 <div className="grid auto-rows-max items-start gap-4">
@@ -155,6 +205,7 @@ export function ClassroomDetail() {
           </main>
         </div>
       </div>
+      <ToastContainer />
     </ScrollArea>
   );
 }

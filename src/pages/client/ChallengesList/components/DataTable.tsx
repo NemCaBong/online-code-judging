@@ -32,8 +32,10 @@ import { ChallengeWithUserStatus } from "../ChallengesList";
 
 export function DataTable({
   challenges,
+  onMarkedTodo,
 }: {
   challenges: ChallengeWithUserStatus[];
+  onMarkedTodo: (challengeId: number) => void;
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -45,7 +47,7 @@ export function DataTable({
 
   const table = useReactTable({
     data: challenges,
-    columns,
+    columns: columns(onMarkedTodo),
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
