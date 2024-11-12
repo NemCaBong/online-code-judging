@@ -28,9 +28,16 @@ export const createChallengeSchema = z.object({
   markdownContent: z.string().min(1, {
     message: "Please enter some content",
   }),
-  boilerplate_code: z.string().min(10, {
-    message: "Please enter some boilerplate code",
-  }),
+  boilerplate_codes: z.array(
+    z.object({
+      language: z.string().min(1, {
+        message: "Please select a language",
+      }),
+      code: z.string().min(1, {
+        message: "Please enter some code",
+      }),
+    })
+  ),
   testCasesFile: z
     .instanceof(File)
     .refine((file) => file.type === "application/zip", {

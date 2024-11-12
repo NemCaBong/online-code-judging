@@ -63,8 +63,8 @@ export function ClassesListBoard({ classes }: ClassesListBoardProps) {
                       </div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      {classInfo.teacher.first_name}{" "}
-                      {classInfo.teacher.last_name}
+                      {classInfo.teacher?.first_name}{" "}
+                      {classInfo.teacher?.last_name}
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
                       {classInfo.is_done ? (

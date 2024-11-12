@@ -113,74 +113,74 @@ const exampleExercises: Option[] = [
   },
 ];
 
-const initialValue = `# Markdown syntax guide
+// const initialValue = `# Markdown syntax guide
 
-## Headers
+// ## Headers
 
-# This is a Heading h1
-## This is a Heading h2
-###### This is a Heading h6
+// # This is a Heading h1
+// ## This is a Heading h2
+// ###### This is a Heading h6
 
-## Emphasis
+// ## Emphasis
 
-*This text will be italic*  
-_This will also be italic_
+// *This text will be italic*
+// _This will also be italic_
 
-**This text will be bold**  
-__This will also be bold__
+// **This text will be bold**
+// __This will also be bold__
 
-_You **can** combine them_
+// _You **can** combine them_
 
-## Lists
+// ## Lists
 
-### Unordered
+// ### Unordered
 
-* Item 1
-* Item 2
-* Item 2a
-* Item 2b
+// * Item 1
+// * Item 2
+// * Item 2a
+// * Item 2b
 
-### Ordered
+// ### Ordered
 
-1. Item 1
-2. Item 2
-3. Item 3
-    1. Item 3a
-    2. Item 3b
+// 1. Item 1
+// 2. Item 2
+// 3. Item 3
+//     1. Item 3a
+//     2. Item 3b
 
-## Images
+// ## Images
 
-![Placeholder image](https://via.placeholder.com/300x200 "This is a placeholder image")
+// ![Placeholder image](https://via.placeholder.com/300x200 "This is a placeholder image")
 
-## Links
+// ## Links
 
-You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
+// You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
 
-## Blockquotes
+// ## Blockquotes
 
-> Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
->
->> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
+// > Markdown is a lightweight markup language with plain-text-formatting syntax, created in 2004 by John Gruber with Aaron Swartz.
+// >
+// >> Markdown is often used to format readme files, for writing messages in online discussion forums, and to create rich text using a plain text editor.
 
-## Tables
+// ## Tables
 
-| Left columns  | Right columns |
-| ------------- |:-------------:|
-| left foo      | right foo     |
-| left bar      | right bar     |
-| left baz      | right baz     |
+// | Left columns  | Right columns |
+// | ------------- |:-------------:|
+// | left foo      | right foo     |
+// | left bar      | right bar     |
+// | left baz      | right baz     |
 
-## Blocks of code
+// ## Blocks of code
 
-\`\`\`
-let message = 'Hello world';
-alert(message);
-\`\`\`
+// \`\`\`
+// let message = 'Hello world';
+// alert(message);
+// \`\`\`
 
-## Inline code
+// ## Inline code
 
-This web site is using \`markedjs/marked\`.
-`;
+// This web site is using \`markedjs/marked\`.
+// `;
 
 export function AdminClassroom() {
   return (

@@ -16,7 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import MultipleSelector from "@/components/multi-select";
-import CodeMirrorEditor from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
+import CodeMirrorEditor, {
+  LanguageType,
+} from "@/pages/client/CodingChallengeDetail/components/CodeMirrorEditor";
 import "@/common/styles/MDEditor.css";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -33,6 +35,8 @@ import "react-toastify/dist/ReactToastify.css";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
+import { useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -106,12 +110,6 @@ import MEDitor from '@uiw/react-md-editor';
 This web site is using \`markedjs/marked\`.
 `;
 
-// Assuming you have a function or a way to get the token
-const getToken = () => {
-  // Replace this with your actual token retrieval logic
-  return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ";
-};
-
 // Define the type for the tags
 interface Tag {
   id: number;
@@ -129,13 +127,20 @@ interface ChallengeCreationResponse {
 }
 
 export function AdminCreateChallenge() {
+  const [activeTab, setActiveTab] = useState("0");
+
   const form = useForm<z.infer<typeof createChallengeSchema>>({
     resolver: zodResolver(createChallengeSchema),
     defaultValues: {
       name: "",
       tags: [],
       markdownContent: markdownContent,
-      boilerplate_code: "",
+      boilerplate_codes: [
+        { language: "javascript", code: "" },
+        { language: "java", code: "" },
+        { language: "python", code: "" },
+        { language: "cpp", code: "" },
+      ],
       testCasesFile: undefined,
       hints: [
         {
@@ -161,7 +166,7 @@ export function AdminCreateChallenge() {
         newChallenge,
         {
           headers: {
-            Authorization: `Bearer ${getToken()}`,
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
           },
         }
       );
@@ -191,7 +196,7 @@ export function AdminCreateChallenge() {
             formData,
             {
               headers: {
-                Authorization: `Bearer ${getToken()}`,
+                Authorization: `Bearer ${localStorage.getItem("access_token")}`,
                 "Content-Type": "multipart/form-data",
               },
             }
@@ -220,12 +225,16 @@ export function AdminCreateChallenge() {
     name: "hints",
   });
 
+  const { fields: boilerplateFields } = useFieldArray({
+    control: form.control,
+    name: "boilerplate_codes",
+  });
+
   // Define the query function
   const fetchTags = async (): Promise<Tag[]> => {
-    const token = getToken();
     const response = await axios.get("http://localhost:3000/tags/list", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },
     });
     return response.data.tags;
@@ -267,6 +276,7 @@ export function AdminCreateChallenge() {
 
   function onSubmit(values: ChallengeData) {
     // const { testCasesFile, ...rest } = values;
+    console.log(values);
     mutation.mutate(values);
   }
 
@@ -396,7 +406,7 @@ export function AdminCreateChallenge() {
                   />
 
                   {/* Boilerplate_code component */}
-                  <FormField
+                  {/* <FormField
                     control={form.control}
                     name="boilerplate_code"
                     render={({ field }) => (
@@ -420,7 +430,58 @@ export function AdminCreateChallenge() {
                         <FormMessage />
                       </FormItem>
                     )}
-                  />
+                  /> */}
+
+                  <div>
+                    <h2 className="text-xl font-semibold pb-2">
+                      Boilerplate Codes
+                    </h2>
+                    <Tabs value={activeTab} onValueChange={setActiveTab}>
+                      <TabsList>
+                        {boilerplateFields.map((field, index) => (
+                          <TabsTrigger key={field.id} value={index.toString()}>
+                            {field.language.charAt(0).toUpperCase() +
+                              field.language.slice(1)}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                      {boilerplateFields.map((field, index) => (
+                        <TabsContent key={field.id} value={index.toString()}>
+                          <div className="space-y-4">
+                            {/* Code editor */}
+                            <FormField
+                              control={form.control}
+                              name={`boilerplate_codes.${index}.code`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  {/* <FormLabel>
+                                    {boilerplateFields[
+                                      index
+                                    ].language.toUpperCase()}{" "}
+                                    Code
+                                  </FormLabel> */}
+                                  <FormControl>
+                                    <CodeMirrorEditor
+                                      value={field.value}
+                                      language={
+                                        boilerplateFields[index]
+                                          .language as LanguageType
+                                      }
+                                      className="h-[60vh]"
+                                      onChange={(value) =>
+                                        field.onChange(value || "")
+                                      }
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                        </TabsContent>
+                      ))}
+                    </Tabs>
+                  </div>
 
                   <div>
                     <h2 className="text-xl font-semibold pb-2">Test Cases</h2>
