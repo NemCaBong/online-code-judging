@@ -42,7 +42,7 @@ function App() {
   // }
 
   return (
-    <ThemeProvider defaultTheme="dark">
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes>
         <Route element={rejectedRouter()}>
           <Route path="/login" element={<LoginForm />} />
@@ -61,14 +61,15 @@ function App() {
             path="/classes/:classSlug/exercises/:exerciseId"
             element={<CodingExercise />}
           />
+          <Route
+            path="classes/:classSlug/grading"
+            element={<AdminGradingPage />}
+          />
           <Route element={adminRouter()}>
             <Route path="/admin">
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="classes" element={<AdminClassroom />} />
-              <Route
-                path="classes/:classSlug/grading"
-                element={<AdminGradingPage />}
-              />
+
               <Route
                 path="create-challenge"
                 element={<AdminCreateChallenge />}

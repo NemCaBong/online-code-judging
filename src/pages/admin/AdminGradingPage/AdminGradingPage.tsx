@@ -58,6 +58,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { ENV } from "@/config/env.config";
 
 interface ExercisesOfClassRes {
   message: string;
@@ -76,6 +77,12 @@ interface UserExerciseResultsRes {
   };
 }
 
+interface ExerciseRes {
+  message: string;
+  statusCode: number;
+  exercise: Exercise;
+}
+
 export function AdminGradingPage() {
   const { classSlug } = useParams();
   const [selectedExerciseId, setSelectedExerciseId] = useState<string | null>(
@@ -92,7 +99,7 @@ export function AdminGradingPage() {
     queryKey: ["exercisesOfClass", classSlug],
     queryFn: () =>
       fetchData<ExercisesOfClassRes>(
-        `http://localhost:3000/exercises/classes/${classSlug}/get-all`
+        `${ENV.API_URL}/exercises/classes/${classSlug}/get-all`
       ),
   });
 
@@ -105,8 +112,20 @@ export function AdminGradingPage() {
     queryKey: ["exerciseDetails", selectedExerciseId],
     queryFn: () =>
       fetchData<UserExerciseResultsRes>(
-        `http://localhost:3000/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results`
+        `${ENV.API_URL}/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results`
       ),
+    enabled: !!selectedExerciseId,
+  });
+
+  const {
+    data: exerciseRes,
+    isLoading: isLoadingExerciseRes,
+    isError: isErrorExerciseRes,
+    refetch: refetchExercise,
+  } = useQuery({
+    queryKey: ["exercise", selectedExerciseId],
+    queryFn: () =>
+      fetchData<ExerciseRes>(`${ENV.API_URL}/exercises/${selectedExerciseId}`),
     enabled: !!selectedExerciseId,
   });
 
@@ -122,7 +141,7 @@ export function AdminGradingPage() {
     mutationFn: (values: z.infer<typeof gradingExerciseSchema>) =>
       axios
         .post(
-          `http://localhost:3000/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results/${selectedResult?.id}/evaluate`,
+          `${ENV.API_URL}/exercises/${selectedExerciseId}/classes/${classSlug}/user-exercise-results/${selectedResult?.id}/evaluate`,
           {
             evaluation: values.evaluation,
             score: values.score,
@@ -163,17 +182,26 @@ export function AdminGradingPage() {
     }
   }, [userExerciseResultsRes]);
 
-  if (isLoadingExercisesOfClass || isLoadingUserExerciseResultsRes) {
+  if (
+    isLoadingExercisesOfClass ||
+    isLoadingUserExerciseResultsRes ||
+    isLoadingExerciseRes
+  ) {
     return <div>Loading...</div>;
   }
 
-  if (isErrorExercisesOfClass || isErrorUserExerciseResultsRes) {
+  if (
+    isErrorExercisesOfClass ||
+    isErrorUserExerciseResultsRes ||
+    isErrorExerciseRes
+  ) {
     return <div>Error</div>;
   }
 
   const handleSelectChange = (exerciseId: string) => {
     setSelectedExerciseId(exerciseId);
     refetchExerciseDetails();
+    refetchExercise();
   };
   const handleSelectResult = (result: UserExerciseResults) => {
     setSelectedResult(result);
@@ -194,6 +222,38 @@ export function AdminGradingPage() {
     evaluateExerciseMutation.mutate(values);
   }
 
+  const handleExportToZip = async () => {
+    if (!selectedExerciseId) {
+      toast.error("Please select an exercise to export.");
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${ENV.API_URL}/exercises/export-to-zip?exerciseId=${selectedExerciseId}`,
+        {
+          responseType: "blob", // Important for downloading files
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        }
+      );
+
+      // Create a link element to download the file
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `exercises_${selectedExerciseId}.zip`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      toast.error(`Error exporting exercise: ${error.message ?? "Unknown"}`);
+      console.error(error);
+    }
+  };
+
   return (
     <ScrollArea className="h-[100dvh]">
       <div className="flex min-h-screen w-full flex-col">
@@ -206,15 +266,17 @@ export function AdminGradingPage() {
                   <Card className="border-hidden">
                     <CardHeader className="flex flex-row justify-between items-center pb-7">
                       <div>
-                        <CardTitle className="text-xl">
+                        <CardTitle className="text-base">
                           Exercises List
                         </CardTitle>
-                        <CardDescription className="text-base">
-                          Exercises in class{" "}
-                          {userExerciseResultsRes?.class.name || ""}
+                        <CardDescription className="text-sm">
+                          In {userExerciseResultsRes?.class.name || ""}
                         </CardDescription>
                       </div>
                       <div className="flex gap-4">
+                        <Button onClick={handleExportToZip}>
+                          Export to zip
+                        </Button>
                         <Select
                           defaultValue={selectedExerciseId || undefined}
                           onValueChange={(value) => handleSelectChange(value)}
@@ -298,10 +360,23 @@ export function AdminGradingPage() {
                                         : "Not done yet"}
                                     </div>
                                   </div>
-                                  <div className="text-xs font-medium">
-                                    {item.user && item.user.email
-                                      ? item.user.email
-                                      : "Unknown email"}
+                                  <div className="flex items-center">
+                                    <div className="text-xs font-medium">
+                                      {item.user && item.user.email
+                                        ? item.user.email
+                                        : "Unknown email"}
+                                    </div>
+                                    <div className="ml-auto text-xs">
+                                      Due:{" "}
+                                      {exerciseRes?.exercise.due_at
+                                        ? format(
+                                            new Date(
+                                              exerciseRes.exercise.due_at
+                                            ),
+                                            "PPpp"
+                                          )
+                                        : "No due date"}
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="line-clamp-2 text-xs text-muted-foreground">
@@ -309,8 +384,7 @@ export function AdminGradingPage() {
                                     ? item.evaluation.substring(0, 300)
                                     : "No description"}
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  <Badge>Exercise</Badge>
+                                <div className="flex items-center justify-between gap-2">
                                   <Badge
                                     variant={
                                       item.status === "graded"
@@ -324,7 +398,7 @@ export function AdminGradingPage() {
                                   </Badge>
                                   <div
                                     className={cn(
-                                      "ml-auto text-xs font-semibold",
+                                      "text-xs font-semibold",
                                       parseFloat(item.score) >= 8
                                         ? "text-green-600"
                                         : parseFloat(item.score) >= 5

@@ -3,3 +3,13 @@
   font-size: 12px;
   font-weight: 600;
 }
+
+.cm-line {
+  line-height: 1.5; /* Đảm bảo chiều cao dòng không quá lớn */
+  padding: 0 4px; /* Tùy chỉnh khoảng cách nội dung */
+}
+
+.cm-gutter {
+  font-size: 12px; /* Kích thước số dòng */
+  line-height: 1.5; /* Đảm bảo khoảng cách dòng */
+}

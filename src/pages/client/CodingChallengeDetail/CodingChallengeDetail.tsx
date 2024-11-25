@@ -11,6 +11,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import ChallengeDescriptionCard from "./components/ChallengeDescriptionCard";
+import { ENV } from "@/config/env.config";
 
 interface Challenge {
   id: number;
@@ -120,7 +121,7 @@ function useChallengeDetails(challengeSlug: string) {
     queryKey: ["challenge", challengeSlug],
     queryFn: async (): Promise<Challenge> => {
       const response = await axios.get(
-        `http://localhost:3000/challenges/${challengeSlug}`,
+        `${ENV.API_URL}/challenges/${challengeSlug}`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`,
@@ -138,7 +139,7 @@ const runCode = async (
   testCaseIds: number[]
 ): Promise<RunCodeResponse> => {
   const response = await axios.post<RunCodeResponse>(
-    `http://localhost:3000/challenges/${challengeSlug}/run`,
+    `${ENV.API_URL}/challenges/${challengeSlug}/run`,
     {
       ...values,
       testCaseIds,
@@ -158,7 +159,7 @@ const submitCode = async (
   challengeSlug: string
 ): Promise<SubmitCodeRes> => {
   const response = await axios.post<SubmitCodeRes>(
-    `http://localhost:3000/challenges/${challengeSlug}/submit`,
+    `${ENV.API_URL}/challenges/${challengeSlug}/submit`,
     values,
     {
       headers: {
@@ -194,7 +195,7 @@ export function CodingChallengeDetail() {
       return runCode(values, challengeSlug as string, testCaseIds);
     },
     onSuccess: async (data) => {
-      toast.success("Code ran successfully! Check the results.", {
+      toast.success("Code is running ...", {
         position: "top-right",
         autoClose: 5000,
       });
@@ -216,7 +217,7 @@ export function CodingChallengeDetail() {
   >({
     mutationFn: (values) => submitCode(values, challengeSlug as string),
     onSuccess: (data) => {
-      toast.success("Code submitted successfully! Check the results.", {
+      toast.success("Code submitted! Check the results.", {
         position: "top-right",
         autoClose: 5000,
       });
@@ -235,11 +236,11 @@ export function CodingChallengeDetail() {
     const intervalId = setInterval(async () => {
       try {
         const response = await axios.post(
-          "http://localhost:3000/challenges/poll-run",
+          `${ENV.API_URL}/challenges/poll-run`,
           { runPoll: tokens },
           {
             headers: {
-              Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im5lbWNhYm9uZ0BnbWFpbC5jb20iLCJpZCI6MSwicm9sZSI6IlNUVURFTlQiLCJpYXQiOjE3Mjg4NzE2NzEsImV4cCI6MTczMTQ2MzY3MX0.GJ-1sGA2jL9woEsakC1U25oAr-88g7dOHQfJuqbs9HQ`,
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
             },
           }
         );
@@ -282,7 +283,7 @@ export function CodingChallengeDetail() {
     const intervalId = setInterval(async () => {
       try {
         const response = await axios.post(
-          `http://localhost:3000/challenges/${challengeSlug}/poll-submit/${user_challenge_id}`,
+          `${ENV.API_URL}/challenges/${challengeSlug}/poll-submit/${user_challenge_id}`,
           { submitPoll: tokens },
           {
             headers: {
@@ -351,7 +352,7 @@ export function CodingChallengeDetail() {
       draggable: true,
       progress: undefined,
     });
-
+    console.log("Values: ", values);
     runCodeMutation.mutate(values);
   }
 
@@ -374,7 +375,7 @@ export function CodingChallengeDetail() {
       <div className="flex flex-col min-h-screen w-full bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:py-4 sm:pl-14 sm:gap-4">
-          <Header />
+          <Header pathString="challenges" />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
               <ChallengeDescriptionCard

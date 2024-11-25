@@ -7,9 +7,15 @@ import { cpp } from "@codemirror/lang-cpp";
 import { markdown } from "@codemirror/lang-markdown";
 import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { Extension } from "@codemirror/state";
-import { EditorView, keymap } from "@codemirror/view";
+import {
+  EditorView,
+  highlightActiveLineGutter,
+  keymap,
+  lineNumbers,
+} from "@codemirror/view";
 import { autocompletion, completionKeymap } from "@codemirror/autocomplete";
 import "../styles/codemirror.css";
+import { indentUnit } from "@codemirror/language";
 
 // Define the type for languages
 export type LanguageType =
@@ -52,6 +58,9 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
         autocompletion(),
         keymap.of(completionKeymap),
         EditorView.lineWrapping,
+        indentUnit.of("    "),
+        lineNumbers(),
+        highlightActiveLineGutter(),
       ]}
       onChange={onChange}
       editable={editable}

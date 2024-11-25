@@ -53,8 +53,9 @@ export default function ExerciseEditor({
   const isSubmitted =
     (userExerciseResults.length > 0 &&
       (userExerciseResults[0].status === "submitted" ||
-        userExerciseResults[0].status == "graded")) ||
+        userExerciseResults[0].status === "graded")) ||
     false;
+  console.log("isSubmitted: ", userExerciseResults.length > 0);
   const cannotBeSubmitted = codesFields.length <= 0;
 
   return (

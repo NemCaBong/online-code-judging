@@ -27,21 +27,21 @@ export function AdminHeader() {
           to="/admin/create-challenge"
           className="text-foreground transition-colors hover:text-foreground"
         >
-          Challenges
+          Challenge
         </Link>
         <Link
-          to="/admin/exercises"
+          to="/admin/create-exercise"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Exercises
+          Exercise
         </Link>
-        <Link
-          to="#"
+        {/* <Link
+          to="/admin/create-exercise"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Products
-        </Link>
-        <Link
+        </Link> */}
+        {/* <Link
           to="#"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
@@ -52,7 +52,7 @@ export function AdminHeader() {
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Analytics
-        </Link>
+        </Link> */}
       </nav>
       <Sheet>
         <SheetTrigger asChild>
@@ -70,32 +70,20 @@ export function AdminHeader() {
               <Package2 className="h-6 w-6" />
               <span className="sr-only">Online Code Judge</span>
             </Link>
-            <Link to="#" className="hover:text-foreground">
+            <Link to="/admin/dashboard" className="hover:text-foreground">
               Dashboard
             </Link>
             <Link
-              to="#"
+              to="/admin/create-challenge"
               className="text-muted-foreground hover:text-foreground"
             >
-              Orders
+              Challenge
             </Link>
             <Link
-              to="#"
+              to="/admin/create-exercise"
               className="text-muted-foreground hover:text-foreground"
             >
-              Products
-            </Link>
-            <Link
-              to="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Customers
-            </Link>
-            <Link
-              to="#"
-              className="text-muted-foreground hover:text-foreground"
-            >
-              Analytics
+              Exercise
             </Link>
           </nav>
         </SheetContent>
@@ -106,7 +94,7 @@ export function AdminHeader() {
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
               type="search"
-              placeholder="Search products..."
+              placeholder="Search ..."
               className="pl-8 sm:w-[300px] md:w-[200px] lg:w-[300px]"
             />
           </div>

@@ -14,6 +14,9 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import MDEditor from "@uiw/react-md-editor";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.css";
+import remarkMath from "remark-math";
 
 export default function DescriptionTab({
   title,
@@ -36,6 +39,8 @@ export default function DescriptionTab({
         <MDEditor.Markdown
           source={markdownContent}
           style={{ fontSize: "14px" }}
+          rehypePlugins={[rehypeKatex]}
+          remarkPlugins={[remarkMath]}
         />
       </CardContent>
       {accordionItems && (

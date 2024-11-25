@@ -7,6 +7,7 @@ import { UserChallengeRes } from "../CodingChallengeDetail";
 import fetchData from "@/utils/fetch-data.utils";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import { ENV } from "@/config/env.config";
 
 interface HistoryRes {
   message: string;
@@ -28,7 +29,7 @@ export default function HistoryCard({
     queryKey: ["history"],
     queryFn: async (): Promise<HistoryRes> =>
       fetchData<HistoryRes>(
-        `http://localhost:3000/challenges/${challengeSlug}/user-challenge-results/all`
+        `${ENV.API_URL}/challenges/${challengeSlug}/user-challenge-results/all`
       ),
   });
 

@@ -18,6 +18,7 @@ import { LanguageIdToTypeMap } from "@/common/constants/supported-language";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useEffect } from "react";
+import { ENV } from "@/config/env.config";
 
 interface IExerciseRes {
   message: string;
@@ -59,7 +60,7 @@ export function CodingExercise() {
     queryKey: ["exercise"],
     queryFn: () =>
       fetchData<IExerciseRes>(
-        `http://localhost:3000/classes/${classSlug}/exercises/${exerciseId}`
+        `${ENV.API_URL}/classes/${classSlug}/exercises/${exerciseId}`
       ),
   });
 
@@ -67,7 +68,7 @@ export function CodingExercise() {
     mutationFn: (values: ExerciseFormSchemaType) =>
       axios
         .post<RunExerciseRes>(
-          `http://localhost:3000/exercises/${exerciseId}/run`,
+          `${ENV.API_URL}/exercises/${exerciseId}/run`,
           { codes: values.codes },
           {
             headers: {
@@ -91,7 +92,7 @@ export function CodingExercise() {
     mutationFn: (values: ExerciseFormSchemaType) =>
       axios
         .post<ISuccessRes>(
-          `http://localhost:3000/exercises/${exerciseId}/classes/${classSlug}/submit`,
+          `${ENV.API_URL}/exercises/${exerciseId}/classes/${classSlug}/submit`,
           { codes: values.codes },
           {
             headers: {
@@ -189,7 +190,7 @@ export function CodingExercise() {
       <div className="flex flex-col min-h-screen w-full bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:py-4 sm:pl-14 sm:gap-4">
-          <Header />
+          <Header pathString={`classes/${classSlug}/exercises`} />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
               <ExerciseDescriptionCard

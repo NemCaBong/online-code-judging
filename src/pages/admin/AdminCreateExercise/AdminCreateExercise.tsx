@@ -44,6 +44,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { toast, ToastContainer } from "react-toastify";
 import axios, { AxiosResponse } from "axios";
+import { ENV } from "@/config/env.config";
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -162,9 +163,7 @@ export function AdminCreateExercise() {
   } = useQuery({
     queryKey: ["classesTeacher"],
     queryFn: () =>
-      fetchData<ClassesTeacherRes>(
-        "http://localhost:3000/classes/teachers/all"
-      ),
+      fetchData<ClassesTeacherRes>(`${ENV.API_URL}/classes/teachers/all`),
   });
 
   const {
@@ -184,7 +183,7 @@ export function AdminCreateExercise() {
     z.infer<typeof createExerciseSchema>
   >({
     mutationFn: (newExercise: z.infer<typeof createExerciseSchema>) => {
-      return axios.post("http://localhost:3000/exercises/create", newExercise, {
+      return axios.post(`${ENV.API_URL}/exercises/create`, newExercise, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

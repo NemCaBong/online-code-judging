@@ -16,6 +16,7 @@ import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import { useContext } from "react";
 import { AuthContext } from "@/contexts/auth.context";
+import { ENV } from "@/config/env.config";
 
 interface ClassRes {
   message: string;
@@ -63,8 +64,7 @@ export function ClassroomDetail() {
     refetch: refetchClass,
   } = useQuery({
     queryKey: ["class", classSlug],
-    queryFn: () =>
-      fetchData<ClassRes>(`http://localhost:3000/classes/${classSlug}`),
+    queryFn: () => fetchData<ClassRes>(`${ENV.API_URL}/classes/${classSlug}`),
   });
 
   const {
@@ -75,7 +75,7 @@ export function ClassroomDetail() {
     queryKey: ["exercises", classSlug],
     queryFn: () =>
       fetchData<ExerciseRes>(
-        `http://localhost:3000/exercises/users/classes/${classSlug}/assigned`
+        `${ENV.API_URL}/exercises/users/classes/${classSlug}/assigned`
       ),
   });
 
@@ -87,7 +87,7 @@ export function ClassroomDetail() {
     queryKey: ["graded-exercises", classSlug],
     queryFn: () =>
       fetchData<GradedExercisesRes>(
-        `http://localhost:3000/exercises/users/classes/${classSlug}/graded`
+        `${ENV.API_URL}/exercises/users/classes/${classSlug}/graded`
       ),
   });
 
@@ -99,22 +99,18 @@ export function ClassroomDetail() {
     queryKey: ["score-chart", classSlug],
     queryFn: () =>
       fetchData<ScoreChartRes>(
-        `http://localhost:3000/exercises/users/classes/${classSlug}/avg-score`
+        `${ENV.API_URL}/exercises/users/classes/${classSlug}/avg-score`
       ),
   });
 
   const addPostMutation = useMutation({
     mutationFn: (newPost: { content: string }) =>
       axios
-        .post(
-          `http://localhost:3000/posts/create?classSlug=${classSlug}`,
-          newPost,
-          {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-            },
-          }
-        )
+        .post(`${ENV.API_URL}/posts/create?classSlug=${classSlug}`, newPost, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+          },
+        })
         .then((res) => {
           return res.data;
         }),
@@ -142,7 +138,7 @@ export function ClassroomDetail() {
       <div className="flex min-h-screen w-full flex-col bg-muted/40">
         <Sidebar />
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
-          <Header pathString="classroom/hello/world/damn" />
+          <Header pathString="classroom" />
           <main className="grid flex-1 items-start gap-4 p-2 sm:px-4 md:px-6 lg:px-8">
             <div className="mx-auto grid w-full max-w-[1600px] flex-1 auto-rows-max gap-4">
               <div className="flex items-center gap-4">

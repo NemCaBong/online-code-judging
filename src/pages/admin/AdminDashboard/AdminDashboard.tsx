@@ -6,6 +6,7 @@ import { AdminHeader } from "@/common/components/AdminHeader";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import fetchData from "@/utils/fetch-data.utils";
+import { ENV } from "@/config/env.config";
 
 interface TotalAndLastMonthRes {
   total: number;
@@ -37,7 +38,7 @@ export function AdminDashboard() {
         queryKey: [`${queryKey}`],
         queryFn: () =>
           fetchData<TotalAndLastMonthRes>(
-            `http://localhost:3000/${queryKey}/info/total-and-last-month`
+            `${ENV.API_URL}/${queryKey}/info/total-and-last-month`
           ),
       })
     ),
@@ -48,7 +49,7 @@ export function AdminDashboard() {
       queryKey: [`${queryKey}`],
       queryFn: () =>
         fetchData<TotalAndLastMonthRes>(
-          `http://localhost:3000/challenges/info/total-${queryKey}`
+          `${ENV.API_URL}/challenges/info/total-${queryKey}`
         ),
     })),
   });
@@ -61,7 +62,7 @@ export function AdminDashboard() {
     queryKey: ["statistic"],
     queryFn: () =>
       fetchData<SubmissionOverQuaterRes>(
-        "http://localhost:3000/challenges/info/submissions-last-quaterly"
+        `${ENV.API_URL}/challenges/info/submissions-last-quaterly`
       ),
   });
 

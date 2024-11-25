@@ -37,6 +37,7 @@ import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ENV } from "@/config/env.config";
 
 const markdownContent = `
 # Markdown \`syntax guide\`
@@ -161,15 +162,11 @@ export function AdminCreateChallenge() {
     ChallengeData
   >({
     mutationFn: (newChallenge: ChallengeData) => {
-      return axios.post(
-        "http://localhost:3000/challenges/create",
-        newChallenge,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-          },
-        }
-      );
+      return axios.post(`${ENV.API_URL}/challenges/create`, newChallenge, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+        },
+      });
     },
     onSuccess: (data) => {
       const { message, statusCode, result } = data.data;
@@ -192,7 +189,7 @@ export function AdminCreateChallenge() {
 
         axios
           .post(
-            `http://localhost:3000/challenges/upload/test-cases?challenge_id=${challenge_id}`,
+            `${ENV.API_URL}/challenges/upload/test-cases?challenge_id=${challenge_id}`,
             formData,
             {
               headers: {
@@ -232,7 +229,7 @@ export function AdminCreateChallenge() {
 
   // Define the query function
   const fetchTags = async (): Promise<Tag[]> => {
-    const response = await axios.get("http://localhost:3000/tags/list", {
+    const response = await axios.get(`${ENV.API_URL}/tags/list`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
       },

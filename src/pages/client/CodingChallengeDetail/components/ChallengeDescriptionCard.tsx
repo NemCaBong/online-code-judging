@@ -146,8 +146,8 @@ export default function ChallengeDescriptionCard({
                                   <p>
                                     <strong>Your Output:</strong>
                                   </p>
-                                  <pre>
-                                    <code>
+                                  <pre className="whitespace-pre-wrap break-words">
+                                    <code className="text-sm">
                                       {submissionData.submission.stdout}
                                     </code>
                                   </pre>
@@ -220,8 +220,8 @@ export default function ChallengeDescriptionCard({
                                 <p>
                                   <strong>Input:</strong>
                                 </p>
-                                <pre>
-                                  <code>
+                                <pre className="whitespace-pre-wrap break-words">
+                                  <code className="text-sm">
                                     {submissionData.errorTestCase.input}
                                   </code>
                                 </pre>
@@ -232,8 +232,8 @@ export default function ChallengeDescriptionCard({
                                 <p>
                                   <strong>Expected Output:</strong>
                                 </p>
-                                <pre>
-                                  <code>
+                                <pre className="whitespace-pre-wrap break-words">
+                                  <code className="text-sm">
                                     {
                                       submissionData.errorTestCase
                                         .expected_output

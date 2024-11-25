@@ -5,7 +5,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip.tsx";
-import { CodeXml, Settings, School, Swords, BellDot } from "lucide-react";
+import { CodeXml, Settings, Swords } from "lucide-react";
 
 export function Sidebar() {
   return (
@@ -22,7 +22,7 @@ export function Sidebar() {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                to="/challenges"
+                to="/challenges-list"
                 className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <Swords className="h-5 w-5" />
@@ -31,7 +31,7 @@ export function Sidebar() {
             </TooltipTrigger>
             <TooltipContent side="right">Challenges</TooltipContent>
           </Tooltip>
-          <Tooltip>
+          {/* <Tooltip>
             <TooltipTrigger asChild>
               <Link
                 to="/classes"
@@ -54,30 +54,6 @@ export function Sidebar() {
               </Link>
             </TooltipTrigger>
             <TooltipContent side="right">Tasks</TooltipContent>
-          </Tooltip>
-          {/* <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-              >
-                <Users2 className="h-5 w-5" />
-                <span className="sr-only">Customers</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Customers</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Link
-                to="#"
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
-              >
-                <LineChart className="h-5 w-5" />
-                <span className="sr-only">Analytics</span>
-              </Link>
-            </TooltipTrigger>
-            <TooltipContent side="right">Analytics</TooltipContent>
           </Tooltip> */}
         </TooltipProvider>
       </nav>

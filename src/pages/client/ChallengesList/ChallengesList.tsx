@@ -14,6 +14,7 @@ import { ChartRes } from "../Dashboard/Dashboard";
 import TodoChallengeBoard from "./components/TodoChallengeBoard";
 import axios, { AxiosResponse } from "axios";
 import { toast, ToastContainer } from "react-toastify";
+import { ENV } from "@/config/env.config";
 
 export interface Todo {
   id: number;
@@ -60,7 +61,7 @@ export function ChallengesList() {
       queryKey: ["challengeData", difficulty],
       queryFn: () =>
         fetchData<ChartRes>(
-          `http://localhost:3000/challenges/info/done-and-total-${difficulty}`
+          `${ENV.API_URL}/challenges/info/done-and-total-${difficulty}`
         ),
     })),
   });
@@ -71,8 +72,7 @@ export function ChallengesList() {
     isError: isTodoError,
   } = useQuery({
     queryKey: ["to-do"],
-    queryFn: () =>
-      fetchData<TodoRes>("http://localhost:3000/challenges/to-do/all"),
+    queryFn: () => fetchData<TodoRes>(`${ENV.API_URL}/challenges/to-do/all`),
   });
 
   const {
@@ -83,7 +83,7 @@ export function ChallengesList() {
     queryKey: ["challenges"],
     queryFn: () =>
       fetchData<ChallengesWithUserStatusRes>(
-        "http://localhost:3000/challenges/users/list"
+        `${ENV.API_URL}/challenges/users/list`
       ),
   });
 
@@ -94,7 +94,7 @@ export function ChallengesList() {
   >({
     mutationFn: (challengeId: number) => {
       return axios.post(
-        `http://localhost:3000/todo/add?challengeId=${challengeId}`,
+        `${ENV.API_URL}/todo/add?challengeId=${challengeId}`,
         null,
         {
           headers: {

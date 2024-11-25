@@ -18,6 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useQueries, useQuery } from "@tanstack/react-query";
 import fetchData from "@/utils/fetch-data.utils";
 import { LanguageId } from "@/common/types/language-id.type";
+import { ENV } from "@/config/env.config";
 
 export interface ChartRes {
   message: string;
@@ -105,7 +106,7 @@ function getFirstThreeClasses(classes: Class[]): (Class | null)[] {
   if (classes.length < 3) {
     return [...classes, ...Array(3 - classes.length).fill(null)];
   }
-  return classes;
+  return classes.slice(0, 3);
 }
 
 export function Dashboard() {
@@ -114,23 +115,17 @@ export function Dashboard() {
       {
         queryKey: ["challenges"],
         queryFn: () =>
-          fetchData<ChartRes>(
-            "http://localhost:3000/challenges/info/done-and-total"
-          ),
+          fetchData<ChartRes>(`${ENV.API_URL}/challenges/info/done-and-total`),
       },
       {
         queryKey: ["exercises"],
         queryFn: () =>
-          fetchData<ChartRes>(
-            "http://localhost:3000/exercises/info/done-and-total"
-          ),
+          fetchData<ChartRes>(`${ENV.API_URL}/exercises/info/done-and-total`),
       },
       {
         queryKey: ["classes"],
         queryFn: () =>
-          fetchData<ChartRes>(
-            "http://localhost:3000/classes/info/done-and-total"
-          ),
+          fetchData<ChartRes>(`${ENV.API_URL}/classes/info/done-and-total`),
       },
     ],
   });
@@ -142,7 +137,7 @@ export function Dashboard() {
     queryKey: ["soonDueExercises"],
     queryFn: () =>
       fetchData<SoonDueExercisesResponse>(
-        "http://localhost:3000/exercises/users/soon-due"
+        `${ENV.API_URL}/exercises/users/soon-due`
       ),
   });
   const {
@@ -151,8 +146,7 @@ export function Dashboard() {
     isError: isClassesError,
   } = useQuery({
     queryKey: ["userClasses"],
-    queryFn: () =>
-      fetchData<ClassesResponse>("http://localhost:3000/classes/users"),
+    queryFn: () => fetchData<ClassesResponse>(`${ENV.API_URL}/classes/users`),
   });
 
   const isLoading = results.some((result) => result.isLoading);

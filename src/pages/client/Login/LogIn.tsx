@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast, ToastContainer } from "react-toastify";
+import { ENV } from "@/config/env.config";
 
 // Define a Zod schema for the form
 const loginSchema = z.object({
@@ -59,7 +60,7 @@ export function LoginForm() {
 
   const loginMutation = useMutation<LoginResponse, Error, LoginFormInputs>({
     mutationFn: async (loginData) => {
-      const response = await axios.post("http://localhost:3000/auth/login", {
+      const response = await axios.post(`${ENV.API_URL}/auth/login`, {
         email: loginData.email,
         password: loginData.password,
       });

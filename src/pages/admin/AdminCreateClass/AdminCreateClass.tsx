@@ -28,6 +28,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import fetchData from "@/utils/fetch-data.utils";
+import { ENV } from "@/config/env.config";
 
 type CreateClass = z.infer<typeof createClassSchema>;
 
@@ -60,7 +61,7 @@ export function AdminCreateClass() {
   } = useQuery({
     queryKey: ["students"],
     queryFn: () =>
-      fetchData<StudentsDataRes>("http://localhost:3000/users/students/list"),
+      fetchData<StudentsDataRes>(`${ENV.API_URL}/users/students/list`),
   });
 
   const {
@@ -70,7 +71,7 @@ export function AdminCreateClass() {
   } = useQuery({
     queryKey: ["teachers"],
     queryFn: () =>
-      fetchData<TeachersDataRes>("http://localhost:3000/users/teachers/list"),
+      fetchData<TeachersDataRes>(`${ENV.API_URL}/users/teachers/list`),
   });
 
   const form = useForm<z.infer<typeof createClassSchema>>({
@@ -88,7 +89,7 @@ export function AdminCreateClass() {
     CreateClass
   >({
     mutationFn: (newClass: CreateClass) => {
-      return axios.post("http://localhost:3000/classes/create", newClass, {
+      return axios.post(`${ENV.API_URL}/classes/create`, newClass, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         },

@@ -22,12 +22,9 @@ import {
   CircleUserRound,
   Home,
   LineChart,
-  Package,
   Package2,
   PanelLeft,
   Search,
-  ShoppingCart,
-  Users2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useMemo } from "react";
@@ -44,11 +41,23 @@ export function Header({ pathString }: HeaderProps) {
     const pathnames = pathString.split("/").filter((x) => x);
     return [
       { href: "/dashboard", label: "Dashboard" },
-      ...pathnames.map((name, index) => {
-        const href = `/${pathnames.slice(0, index + 1).join("/")}`;
-        const label = name.charAt(0).toUpperCase() + name.slice(1);
-        return { href, label };
-      }),
+      ...pathnames
+        .map((name, index) => {
+          // Check if the current segment is preceded by "classes"
+          if (index > 0 && pathnames[index - 1] === "classes") {
+            const href = `/${pathnames.slice(index - 1, index + 1).join("/")}`;
+            const label = name.charAt(0).toUpperCase() + name.slice(1);
+            return { href, label };
+          }
+
+          // Skip "classes" and "exercises" in the breadcrumb
+          if (name === "classes") return null;
+
+          const href = `/${pathnames.slice(0, index + 1).join("/")}`;
+          const label = name.charAt(0).toUpperCase() + name.slice(1);
+          return { href, label };
+        })
+        .filter(Boolean), // Remove null entries
     ];
   }, [pathString]);
 
@@ -77,7 +86,7 @@ export function Header({ pathString }: HeaderProps) {
               <Home className="h-5 w-5" />
               Dashboard
             </Link>
-            <Link
+            {/* <Link
               to="#"
               className="flex items-center gap-4 px-2.5 text-foreground"
             >
@@ -90,14 +99,14 @@ export function Header({ pathString }: HeaderProps) {
             >
               <Package className="h-5 w-5" />
               Products
-            </Link>
-            <Link
+            </Link> */}
+            {/* <Link
               to="#"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
               <Users2 className="h-5 w-5" />
               Customers
-            </Link>
+            </Link> */}
             <Link
               to="#"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
@@ -113,9 +122,11 @@ export function Header({ pathString }: HeaderProps) {
         <Breadcrumb>
           <BreadcrumbList>
             {breadcrumbs.length === 1 ? (
-              <BreadcrumbItem>
-                <BreadcrumbPage>{breadcrumbs[0].label}</BreadcrumbPage>
-              </BreadcrumbItem>
+              breadcrumbs[0] && (
+                <BreadcrumbItem>
+                  <BreadcrumbPage>{breadcrumbs[0].label}</BreadcrumbPage>
+                </BreadcrumbItem>
+              )
             ) : breadcrumbs.length === 2 ? (
               breadcrumbs.map((item, index) => (
                 <React.Fragment key={index}>
@@ -125,11 +136,11 @@ export function Header({ pathString }: HeaderProps) {
                     </BreadcrumbSeparator>
                   )}
                   <BreadcrumbItem>
-                    {index === breadcrumbs.length - 1 ? (
+                    {item && index === breadcrumbs.length - 1 ? (
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink href={item.href}>
-                        {item.label}
+                      <BreadcrumbLink href={item?.href}>
+                        {item?.label}
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
@@ -137,11 +148,13 @@ export function Header({ pathString }: HeaderProps) {
               ))
             ) : (
               <>
-                <BreadcrumbItem>
-                  <BreadcrumbLink href={breadcrumbs[0].href}>
-                    {breadcrumbs[0].label}
-                  </BreadcrumbLink>
-                </BreadcrumbItem>
+                {breadcrumbs[0] && (
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={breadcrumbs[0].href}>
+                      {breadcrumbs[0].label}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                )}
                 {breadcrumbs.length > 3 && (
                   <>
                     <BreadcrumbSeparator className="list-none">
@@ -158,7 +171,7 @@ export function Header({ pathString }: HeaderProps) {
                         <DropdownMenuContent align="start">
                           {breadcrumbs.slice(1, -2).map((item, index) => (
                             <DropdownMenuItem key={index}>
-                              <Link to={item.href}>{item.label}</Link>
+                              <Link to={item?.href || "#"}>{item?.label}</Link>
                             </DropdownMenuItem>
                           ))}
                         </DropdownMenuContent>
@@ -172,11 +185,11 @@ export function Header({ pathString }: HeaderProps) {
                       <ChevronRightIcon className="h-4 w-4" />
                     </BreadcrumbSeparator>
                     <BreadcrumbItem>
-                      {index === breadcrumbs.slice(-2).length - 1 ? (
+                      {item && index === breadcrumbs.slice(-2).length - 1 ? (
                         <BreadcrumbPage>{item.label}</BreadcrumbPage>
                       ) : (
-                        <BreadcrumbLink href={item.href}>
-                          {item.label}
+                        <BreadcrumbLink href={item?.href}>
+                          {item?.label}
                         </BreadcrumbLink>
                       )}
                     </BreadcrumbItem>
