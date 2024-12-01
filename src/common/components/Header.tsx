@@ -135,8 +135,8 @@ export function Header({ pathString }: HeaderProps) {
                     {item && index === breadcrumbs.length - 1 ? (
                       <BreadcrumbPage>{item.label}</BreadcrumbPage>
                     ) : (
-                      <BreadcrumbLink href={item?.href}>
-                        {item?.label}
+                      <BreadcrumbLink>
+                        <Link to={item?.href || "#"}>{item?.label}</Link>
                       </BreadcrumbLink>
                     )}
                   </BreadcrumbItem>
@@ -146,8 +146,10 @@ export function Header({ pathString }: HeaderProps) {
               <>
                 {breadcrumbs[0] && (
                   <BreadcrumbItem>
-                    <BreadcrumbLink href={breadcrumbs[0].href}>
-                      {breadcrumbs[0].label}
+                    <BreadcrumbLink>
+                      <Link to={breadcrumbs[0].href}>
+                        {breadcrumbs[0].label}
+                      </Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
                 )}
@@ -184,8 +186,8 @@ export function Header({ pathString }: HeaderProps) {
                       {item && index === breadcrumbs.slice(-2).length - 1 ? (
                         <BreadcrumbPage>{item.label}</BreadcrumbPage>
                       ) : (
-                        <BreadcrumbLink href={item?.href}>
-                          {item?.label}
+                        <BreadcrumbLink>
+                          <Link to={item?.href || "#"}>{item?.label}</Link>
                         </BreadcrumbLink>
                       )}
                     </BreadcrumbItem>

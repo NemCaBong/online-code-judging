@@ -28,7 +28,7 @@ export interface ChartRes {
 }
 export interface UserExerciseResults {
   score: string;
-  status: string;
+  status: "done" | "graded" | "not-done" | "overdue";
   evaluation: string;
   user_id: number;
   exercise_id: number;

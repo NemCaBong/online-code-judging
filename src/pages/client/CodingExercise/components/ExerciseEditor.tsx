@@ -26,7 +26,7 @@ interface ExerciseEditorProps {
   onSubmit: (values: ExerciseFormSchemaType) => void;
   userExerciseResults: {
     score: string;
-    status: string;
+    status: "done" | "graded" | "not-done" | "overdue";
     evaluation: string;
     user_id: number;
     exercise_id: number;
@@ -52,7 +52,7 @@ export default function ExerciseEditor({
 }: ExerciseEditorProps) {
   const isSubmitted =
     (userExerciseResults.length > 0 &&
-      (userExerciseResults[0].status === "submitted" ||
+      (userExerciseResults[0].status === "done" ||
         userExerciseResults[0].status === "graded")) ||
     false;
   console.log("isSubmitted: ", userExerciseResults.length > 0);

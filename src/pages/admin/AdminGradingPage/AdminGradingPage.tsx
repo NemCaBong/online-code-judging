@@ -389,7 +389,7 @@ export function AdminGradingPage() {
                                     variant={
                                       item.status === "graded"
                                         ? "default"
-                                        : item.status === "submitted"
+                                        : item.status === "done"
                                         ? "secondary"
                                         : "destructive"
                                     }

@@ -120,7 +120,7 @@ export function CodingExercise() {
   });
 
   const codes = (
-    exerciseRes?.exercise.user_exercise_results[0]?.status === "submitted" ||
+    exerciseRes?.exercise.user_exercise_results[0]?.status === "done" ||
     exerciseRes?.exercise.user_exercise_results[0]?.status === "graded"
       ? exerciseRes?.exercise.user_exercise_results[0]?.user_exercise_details ||
         []
@@ -145,7 +145,7 @@ export function CodingExercise() {
     if (exerciseRes) {
       form.reset({
         codes: (exerciseRes?.exercise.user_exercise_results[0]?.status ===
-          "submitted" ||
+          "done" ||
         exerciseRes?.exercise.user_exercise_results[0]?.status === "graded"
           ? exerciseRes?.exercise.user_exercise_results[0]
               ?.user_exercise_details || []
