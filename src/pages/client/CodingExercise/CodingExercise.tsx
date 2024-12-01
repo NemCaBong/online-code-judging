@@ -84,6 +84,7 @@ export function CodingExercise() {
       toast.success("Code run successfully");
     },
     onError: (error) => {
+      console.log(error);
       toast.error(`Error running code: ${error.message}`);
     },
   });

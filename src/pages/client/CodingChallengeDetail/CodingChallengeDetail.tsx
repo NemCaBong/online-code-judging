@@ -199,7 +199,9 @@ export function CodingChallengeDetail() {
         position: "top-right",
         autoClose: 5000,
       });
-      startPolling(data.result);
+      setTimeout(() => {
+        startPolling(data.result);
+      }, 1500);
     },
     onError: (error) => {
       toast.error("Error running code. Please try again.", {
@@ -221,7 +223,10 @@ export function CodingChallengeDetail() {
         position: "top-right",
         autoClose: 5000,
       });
-      pollSubmissionResults(data.result, data.user_challenge_id);
+      setTimeout(() => {
+        pollSubmissionResults(data.result, data.user_challenge_id);
+      }, 1500);
+      // pollSubmissionResults(data.result, data.user_challenge_id);
     },
     onError: (error) => {
       toast.error("Error submitting code. Please try again.", {
@@ -380,7 +385,10 @@ export function CodingChallengeDetail() {
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
               <ChallengeDescriptionCard
                 title={challenge?.name || ""}
-                description="Easy question on LeetCode"
+                description={`${
+                  challenge.difficulty.charAt(0) +
+                  challenge.difficulty.toLowerCase().slice(1)
+                } question`}
                 markdownContent={challenge?.description || ""}
                 accordionItems={accordionItems}
                 submissionData={submissionData}

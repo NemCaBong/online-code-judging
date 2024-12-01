@@ -26,8 +26,10 @@ const getScoreBadge = (score: number) => {
 
 export default function GradedExercises({
   gradedUserExerciseRes,
+  classSlug,
 }: {
   gradedUserExerciseRes: UserExerciseResult[];
+  classSlug: string;
 }) {
   return (
     <Card>
@@ -59,7 +61,7 @@ export default function GradedExercises({
                     <TableRow key={userExRes.id}>
                       <TableCell>
                         <Link
-                          to={`/exercise/${userExRes.exercise.slug}`}
+                          to={`/classes/${classSlug}/exercises/${userExRes.exercise.id}`}
                           className="text-foreground hover:text-primary transition-colors duration-200"
                         >
                           {userExRes.exercise.name}

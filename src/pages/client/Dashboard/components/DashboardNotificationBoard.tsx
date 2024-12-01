@@ -32,6 +32,7 @@ export default function DashboardNotificationBoard({
   description,
   exercises,
 }: DashboardNotificationBoardProps) {
+  const displayViewAll = false;
   return (
     <Card className="xl:col-span-2 max-w-2xl min-w-72">
       <CardHeader className="flex flex-row items-center">
@@ -39,11 +40,15 @@ export default function DashboardNotificationBoard({
           <CardTitle>{title}</CardTitle>
           <CardDescription>{description}</CardDescription>
         </div>
-        <Button asChild size="sm" className="ml-auto gap-1">
-          <Link to="/tasks">
-            View All
-            <ArrowUpRight className="h-4 w-4" />
-          </Link>
+        <Button asChild size="sm" className="ml-auto gap-1" disabled={true}>
+          {displayViewAll ? (
+            <Link to="/tasks">
+              View All
+              <ArrowUpRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            "View All"
+          )}
         </Button>
       </CardHeader>
       <ScrollArea className="h-[50vh]">
@@ -60,7 +65,14 @@ export default function DashboardNotificationBoard({
               {exercises.map((exercise) => (
                 <TableRow key={exercise.id}>
                   <TableCell>
-                    <div className="font-medium">{exercise.name}</div>
+                    <div className="font-medium">
+                      <Link
+                        to={`/classes/${exercise.class.slug}/exercises/${exercise.id}`}
+                        className="text-foreground hover:text-primary transition-colors duration-200"
+                      >
+                        {exercise.name}
+                      </Link>
+                    </div>
                     <div className="text-sm text-muted-foreground md:inline">
                       {exercise.class.name}
                     </div>
@@ -88,7 +100,7 @@ export default function DashboardNotificationBoard({
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {format(new Date(exercise.due_at), "PP")}
+                    {format(new Date(exercise.due_at), "dd-MM-yyyy")}
                   </TableCell>
                 </TableRow>
               ))}

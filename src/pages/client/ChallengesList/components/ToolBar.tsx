@@ -3,11 +3,7 @@ import { Table } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DataTableFacetedFilter } from "../../../../components/data-table/FacetedFilter";
-import {
-  CheckCircledIcon,
-  CircleIcon,
-  CrossCircledIcon,
-} from "@radix-ui/react-icons";
+import { CheckCircledIcon, CrossCircledIcon } from "@radix-ui/react-icons";
 import { SquareFunction, SquarePlus, SquareSigma } from "lucide-react";
 
 interface DataTableToolbarProps<TData> {
@@ -19,11 +15,6 @@ const statuses = [
     value: "done",
     label: "Done",
     icon: CheckCircledIcon,
-  },
-  {
-    value: "to-do",
-    label: "Todo",
-    icon: CircleIcon,
   },
   {
     value: "not-done",

@@ -17,6 +17,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
 import { Class } from "../Dashboard";
+import { Link } from "react-router-dom";
 
 interface ClassesListBoardProps {
   classes: Class[] | [];
@@ -57,10 +58,15 @@ export function ClassesListBoard({ classes }: ClassesListBoardProps) {
                     key={classInfo.id}
                   >
                     <TableCell>
-                      <div className="font-medium">{classInfo.name}</div>
-                      <div className="hidden text-sm text-muted-foreground md:inline">
-                        {classInfo.slug}
-                      </div>
+                      <Link
+                        to={`/classes/${classInfo.slug}`}
+                        className="text-foreground hover:text-primary transition-colors duration-200"
+                      >
+                        <div className="font-medium">{classInfo.name}</div>
+                        <div className="hidden text-sm text-muted-foreground md:inline">
+                          {classInfo.slug}
+                        </div>
+                      </Link>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
                       {classInfo.teacher?.first_name}{" "}
@@ -79,7 +85,7 @@ export function ClassesListBoard({ classes }: ClassesListBoardProps) {
                       {classInfo.total_students}
                     </TableCell>
                     <TableCell className="text-right">
-                      {format(new Date(classInfo.created_at), "PP")}
+                      {format(new Date(classInfo.created_at), "dd-MM-yyyy")}
                     </TableCell>
                   </TableRow>
                 ))}

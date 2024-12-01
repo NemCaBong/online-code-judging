@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card.tsx";
 import { format } from "date-fns";
 import { Class } from "../Dashboard";
+import { Link } from "react-router-dom";
 
 interface DisplayCardProps {
   className?: string;
@@ -25,7 +26,14 @@ export function DisplayCard({ className, classInfo }: DisplayCardProps) {
     >
       <div className="flex-grow">
         <CardHeader className="pb-0 flex justify-between">
-          <CardTitle className="text-xl">{classInfo?.name || ""}</CardTitle>
+          <CardTitle className="text-xl">
+            <Link
+              to={classInfo?.slug ? `/classes/${classInfo.slug}` : "#"}
+              className="text-foreground hover:text-primary transition-colors duration-200"
+            >
+              {classInfo?.name || ""}
+            </Link>
+          </CardTitle>
           <div className="text-sm text-muted-foreground">{formattedDate}</div>
         </CardHeader>
         <CardContent></CardContent>

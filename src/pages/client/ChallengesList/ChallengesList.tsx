@@ -41,12 +41,13 @@ export interface ChallengeWithUserStatus {
   slug: string;
   created_at: Date;
   user_challenge_results: {
-    status: "done" | "to-do" | "not-done";
+    status: "done" | "pending" | "not-done" | "failed" | "todo";
   }[];
   tags: { id: number; name: string }[];
   total_attempts: number;
   accepted_results: number;
 }
+
 interface ChallengesWithUserStatusRes {
   message: string;
   statusCode: number;
@@ -111,8 +112,8 @@ export function ChallengesList() {
         autoClose: 5000,
       });
     },
-    onError: (error) => {
-      toast.error(`Error adding challenge to todo list: ${error}`, {
+    onError: () => {
+      toast.error(`Already added challenge to todo list`, {
         position: "top-right",
         autoClose: 5000,
       });

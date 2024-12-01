@@ -43,7 +43,7 @@ export default function OutputCard({
           ) : (
             <>
               {output ? (
-                <Card className="dark:bg-codeEditorDark p-2 mb-4">
+                <Card className="dark:bg-codeEditorDark p-2 mb-4 max-w-[75vh]">
                   <pre className="whitespace-pre-wrap break-words">
                     <code
                       className={`inline-block min-w-0 w-full text-sm ${

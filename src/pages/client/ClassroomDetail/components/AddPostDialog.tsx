@@ -181,7 +181,7 @@ export function AddPostDialog({
                       textareaProps={{
                         placeholder: "Write your post content here...",
                       }}
-                      className="border border-input bg-background"
+                      className="border border-input bg-background text-sm"
                       value={field.value}
                       onChange={(value: string | undefined) =>
                         field.onChange(value || "")

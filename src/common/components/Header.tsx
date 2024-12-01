@@ -16,26 +16,41 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb.tsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ChevronRightIcon,
   CircleUserRound,
-  Home,
-  LineChart,
-  Package2,
+  CodeXml,
+  LogOut,
   PanelLeft,
   Search,
+  ShieldCheck,
+  Swords,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import React from "react";
 import { DotsHorizontalIcon } from "@radix-ui/react-icons";
+import { AuthContext } from "@/contexts/auth.context";
 
 interface HeaderProps {
   pathString?: string;
 }
 
 export function Header({ pathString }: HeaderProps) {
+  const navigate = useNavigate();
+  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_info");
+    setIsLoggedIn(false);
+    setUser(null);
+    navigate("/login");
+    window.location.reload();
+  };
+
   const breadcrumbs = useMemo(() => {
     if (!pathString) return [{ href: "/dashboard", label: "Dashboard" }];
     const pathnames = pathString.split("/").filter((x) => x);
@@ -76,44 +91,25 @@ export function Header({ pathString }: HeaderProps) {
               to="/dashboard"
               className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
             >
-              <Package2 className="h-5 w-5 transition-all group-hover:scale-110" />
+              <CodeXml className="h-5 w-5 transition-all group-hover:scale-110" />
               <span className="sr-only">Online Code Judging</span>
             </Link>
             <Link
-              to="#"
+              to="/challenges"
               className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
             >
-              <Home className="h-5 w-5" />
-              Dashboard
+              <Swords className="h-5 w-5" />
+              Challenges
             </Link>
-            {/* <Link
-              to="#"
-              className="flex items-center gap-4 px-2.5 text-foreground"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              Orders
-            </Link>
-            <Link
-              to="#"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-            >
-              <Package className="h-5 w-5" />
-              Products
-            </Link> */}
-            {/* <Link
-              to="#"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-            >
-              <Users2 className="h-5 w-5" />
-              Customers
-            </Link> */}
-            <Link
-              to="#"
-              className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-            >
-              <LineChart className="h-5 w-5" />
-              Settings
-            </Link>
+            {user.role === "ADMIN" && (
+              <Link
+                to="/admin/dashboard"
+                className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+              >
+                <ShieldCheck className="h-5 w-5" />
+                To Admin
+              </Link>
+            )}
           </nav>
         </SheetContent>
       </Sheet>
@@ -220,22 +216,22 @@ export function Header({ pathString }: HeaderProps) {
               name="Avatar"
               className="overflow-hidden rounded-full"
             />
-            {/* <img
-              src="/placeholder-user.jpg"
-              width="36"
-              height="36"
-              alt="Avatar"
-              className="overflow-hidden rounded-full"
-            /> */}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-36">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem>Support</DropdownMenuItem>
+          {user.role === "ADMIN" && (
+            <DropdownMenuItem>
+              <Link to="/admin/dashboard">To Admin</Link>
+              <ShieldCheck className="h-4 w-4 ml-auto" />
+            </DropdownMenuItem>
+          )}
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>
+            Logout
+            <LogOut className="h-4 w-4 ml-auto" />
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

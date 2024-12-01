@@ -56,7 +56,10 @@ export default function TodoChallengeBoard({
                   <TableRow key={todo.id}>
                     <TableCell>
                       <div className="font-medium">
-                        <Link to={`/challenges/${todo.challenge.slug}`}>
+                        <Link
+                          to={`/challenges/${todo.challenge.slug}`}
+                          className="text-foreground hover:text-primary transition-colors duration-200"
+                        >
                           {todo.challenge.name}
                         </Link>
                       </div>

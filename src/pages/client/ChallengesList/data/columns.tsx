@@ -1,10 +1,16 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, Check, ClipboardList, X } from "lucide-react";
+import { ArrowUpDown, CircleCheckBig, RotateCw } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { DataTableRowActions } from "../components/RowActions";
 import { ChallengeWithUserStatus } from "../ChallengesList";
+import { Link } from "react-router-dom";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 export const columns = (
   onMarkedTodo: (challengeId: number) => void
@@ -55,7 +61,12 @@ export const columns = (
       return (
         <div>
           <div className="font-medium">
-            {challenge.id}. {challenge.name}
+            <Link
+              to={`/challenges/${challenge.slug}`}
+              className="text-foreground hover:text-primary transition-colors duration-200"
+            >
+              {challenge.id}. {challenge.name}
+            </Link>
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
             {displayTags.map((tag, index) => (
@@ -85,11 +96,26 @@ export const columns = (
         row.original.user_challenge_results[0]?.status || "not-done";
       return (
         <div className="flex justify-center">
-          {status === "done" && <Check className="h-5 w-5 text-green-500" />}
-          {status === "to-do" && (
-            <ClipboardList className="h-5 w-5 text-yellow-500" />
+          {status === "done" && (
+            <HoverCard>
+              <HoverCardTrigger>
+                <CircleCheckBig className="h-4 w-4 text-green-500" />
+              </HoverCardTrigger>
+              <HoverCardContent className="w-20">
+                <p>Done</p>
+              </HoverCardContent>
+            </HoverCard>
           )}
-          {status === "not-done" && <X className="h-5 w-5 text-red-500" />}
+          {(status === "failed" || status === "pending") && (
+            <HoverCard>
+              <HoverCardTrigger>
+                <RotateCw className="h-4 w-4 text-pink-400" />
+              </HoverCardTrigger>
+              <HoverCardContent className="w-22">
+                <p>Attempted</p>
+              </HoverCardContent>
+            </HoverCard>
+          )}
         </div>
       );
     },
@@ -162,8 +188,6 @@ export const columns = (
       return difficultyOrder[diffA] - difficultyOrder[diffB];
     },
     filterFn: (row, columnName, filterValue) => {
-      console.log(filterValue);
-      console.log(row.getValue(columnName));
       return filterValue.includes(row.getValue(columnName));
     },
   },

@@ -7,8 +7,6 @@ import { AddExercisesDialog } from "./components/AddExercisesDialog";
 import { PostDialog } from "./components/PostDialog";
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-// import ScoreChart from "@/components/classroom/ScoreChart";
-// import GradedExercises from "@/components/classroom/GradedExercises";
 
 const exampleExercises: Option[] = [
   {
@@ -213,10 +211,7 @@ export function AdminClassroom() {
                 <div className="grid auto-rows-max items-start gap-4 xl:col-span-2 lg:gap-8">
                   {/* <PostCard post={{ content: initialValue }} /> */}
                 </div>
-                <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1">
-                  {/* <ScoreChart /> */}
-                  {/* <GradedExercises /> */}
-                </div>
+                <div className="grid auto-rows-max items-start gap-4 lg:gap-8 md:grid-cols-2 lg:grid-cols-1"></div>
               </div>
             </div>
           </main>

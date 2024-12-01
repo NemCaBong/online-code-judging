@@ -61,6 +61,7 @@ export interface Exercise {
   class: {
     id: number;
     name: string;
+    slug: string;
   };
   exercise_details?: {
     id: number;
@@ -90,6 +91,7 @@ export interface Class {
     created_at: string;
   }[];
 }
+
 interface ClassesResponse {
   message: string;
   statusCode: number;

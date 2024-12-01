@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,10 +9,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { CircleUser, CodeXml, Menu, Package2, Search } from "lucide-react";
+import { CircleUser, CodeXml, Gauge, LogOut, Menu, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { useContext } from "react";
+import { AuthContext } from "@/contexts/auth.context";
 
 export function AdminHeader() {
+  const navigate = useNavigate();
+  const { setUser, setIsLoggedIn } = useContext(AuthContext);
+
+  const logout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_info");
+    setIsLoggedIn(false);
+    setUser(null);
+    navigate("/login");
+    window.location.reload();
+  };
+
   return (
     <header className="top-0 flex h-16 items-center gap-4 border-b bg-background px-4 md:px-6">
       <nav className="hidden flex-col gap-6 text-lg font-medium md:flex md:flex-row md:items-center md:gap-5 md:text-sm lg:gap-6">
@@ -30,17 +44,17 @@ export function AdminHeader() {
           Challenge
         </Link>
         <Link
-          to="/admin/create-exercise"
+          to="/create-exercise"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
           Exercise
         </Link>
-        {/* <Link
-          to="/admin/create-exercise"
+        <Link
+          to="/admin/create-class"
           className="text-muted-foreground transition-colors hover:text-foreground"
         >
-          Products
-        </Link> */}
+          Class
+        </Link>
         {/* <Link
           to="#"
           className="text-muted-foreground transition-colors hover:text-foreground"
@@ -64,14 +78,11 @@ export function AdminHeader() {
         <SheetContent side="left">
           <nav className="grid gap-6 text-lg font-medium">
             <Link
-              to="#"
+              to="/admin/dashboard"
               className="flex items-center gap-2 text-lg font-semibold"
             >
-              <Package2 className="h-6 w-6" />
+              <CodeXml className="h-6 w-6" />
               <span className="sr-only">Online Code Judge</span>
-            </Link>
-            <Link to="/admin/dashboard" className="hover:text-foreground">
-              Dashboard
             </Link>
             <Link
               to="/admin/create-challenge"
@@ -84,6 +95,12 @@ export function AdminHeader() {
               className="text-muted-foreground hover:text-foreground"
             >
               Exercise
+            </Link>
+            <Link
+              to="/admin/create-class"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Class
             </Link>
           </nav>
         </SheetContent>
@@ -99,9 +116,6 @@ export function AdminHeader() {
             />
           </div>
         </form>
-        {/* <div className="ml-auto flex-1 sm:flex-initial">
-          <h1 className="text-xl font-semibold">Admin</h1>
-        </div> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="icon" className="rounded-full">
@@ -109,13 +123,18 @@ export function AdminHeader() {
               <span className="sr-only">Toggle user menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-36">
             <DropdownMenuLabel>My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link to={"/dashboard"}>To Dashboard</Link>
+              <Gauge className="ml-auto h-4 w-4" />
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Logout</DropdownMenuItem>
+            <DropdownMenuItem onClick={logout}>
+              Logout
+              <LogOut className="h-4 w-4 ml-auto" />
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

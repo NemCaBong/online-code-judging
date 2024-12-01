@@ -38,7 +38,7 @@ export default function DescriptionTab({
       <CardContent>
         <MDEditor.Markdown
           source={markdownContent}
-          style={{ fontSize: "14px" }}
+          className="text-sm"
           rehypePlugins={[rehypeKatex]}
           remarkPlugins={[remarkMath]}
         />

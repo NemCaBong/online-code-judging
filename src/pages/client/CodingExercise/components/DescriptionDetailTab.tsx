@@ -47,10 +47,7 @@ export default function DescriptionDetailTab({
         </div>
       </CardHeader>
       <CardContent>
-        <MDEditor.Markdown
-          source={markdownContent}
-          style={{ fontSize: "14px" }}
-        />
+        <MDEditor.Markdown source={markdownContent} className="text-sm" />
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

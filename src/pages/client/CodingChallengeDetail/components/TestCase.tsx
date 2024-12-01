@@ -89,10 +89,7 @@ export default function TestCase({
             <ScrollArea className="h-[24vh]">
               <Card className="h-full border-none pt-3">
                 <CardContent className="h-full">
-                  <Tabs
-                    defaultValue={`tab-${testCases[0]?.id}`}
-                    className="w-full h-full"
-                  >
+                  <Tabs defaultValue={`tab-1`} className="w-full h-full">
                     <ScrollArea className="w-full">
                       <TabsList className="inline-flex w-max">
                         {testCases.map((_, idx) => (

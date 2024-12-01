@@ -72,7 +72,10 @@ export function PostCard({
         </CardHeader>
         <CardContent className="grid gap-6">
           <div className="ml-14">
-            <MDEditor.Markdown source={post.content ?? "# Hello world!"} />
+            <MDEditor.Markdown
+              source={post.content ?? "# Hello world!"}
+              className="text-sm"
+            />
           </div>
         </CardContent>
         <CardFooter></CardFooter>

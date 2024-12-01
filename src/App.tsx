@@ -19,9 +19,6 @@ import { AuthContext } from "./contexts/auth.context";
 
 function App() {
   const { user, isLoggedIn } = useContext(AuthContext);
-  console.log(user);
-  console.log(isLoggedIn);
-
   function protectedRouter() {
     return isLoggedIn ? <Outlet /> : <Navigate to="/login" />;
   }
@@ -34,13 +31,9 @@ function App() {
     return user.role === "ADMIN" ? <Outlet /> : <Navigate to="/dashboard" />;
   }
 
-  // function teacherRouter() {
-  //   console.log("Teacher router: ", user.role);
-  //   console.log("User role: ", user.role === "teacher"); // Add this line
-
-  //   return user.role === "TEACHER" ? <Outlet /> : <Navigate to="/dashboard" />;
-  // }
-
+  function teacherRouter() {
+    return user.role === "TEACHER" ? <Outlet /> : <Navigate to="/dashboard" />;
+  }
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Routes>
@@ -56,7 +49,7 @@ function App() {
             path="/challenges/:challengeSlug"
             element={<CodingChallengeDetail />}
           />
-          <Route path="/challenges-list" element={<ChallengesList />} />
+          <Route path="/challenges" element={<ChallengesList />} />
           <Route
             path="/classes/:classSlug/exercises/:exerciseId"
             element={<CodingExercise />}
@@ -65,20 +58,25 @@ function App() {
             path="classes/:classSlug/grading"
             element={<AdminGradingPage />}
           />
+          {/* Teacher routes */}
+          <Route element={teacherRouter()}>
+            <Route path="create-exercise" element={<AdminCreateExercise />} />
+          </Route>
+
+          {/* Admin routes */}
           <Route element={adminRouter()}>
             <Route path="/admin">
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="classes" element={<AdminClassroom />} />
-
               <Route
                 path="create-challenge"
                 element={<AdminCreateChallenge />}
               />
-              <Route path="create-exercise" element={<AdminCreateExercise />} />
               <Route path="create-class" element={<AdminCreateClass />} />
             </Route>
           </Route>
         </Route>
+
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </ThemeProvider>

@@ -190,7 +190,7 @@ export function AdminCreateExercise() {
       });
     },
     onSuccess: async (_) => {
-      toast.success("Successfully create a new class.", {
+      toast.success("Successfully create a new exercise for your class.", {
         position: "top-right",
         autoClose: 5000,
       });

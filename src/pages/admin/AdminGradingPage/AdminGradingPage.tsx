@@ -273,15 +273,15 @@ export function AdminGradingPage() {
                           In {userExerciseResultsRes?.class.name || ""}
                         </CardDescription>
                       </div>
-                      <div className="flex gap-4">
-                        <Button onClick={handleExportToZip}>
+                      <div className="flex flex-col sm:flex-row gap-4">
+                        <Button onClick={handleExportToZip} className="w-28">
                           Export to zip
                         </Button>
                         <Select
                           defaultValue={selectedExerciseId || undefined}
                           onValueChange={(value) => handleSelectChange(value)}
                         >
-                          <SelectTrigger className="w-[240px]">
+                          <SelectTrigger className="w-56">
                             <SelectValue placeholder="Select an exercise" />
                           </SelectTrigger>
                           {exercisesOfClass &&

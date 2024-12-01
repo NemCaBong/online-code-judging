@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Sidebar } from "@/common/components/Sidebar";
 import { Header } from "@/common/components/Header";
-import { PostCard } from "../../../components/classroom/PostCard";
+import { PostCard } from "@/components/classroom/PostCard";
 import GradedExercises from "@/components/classroom/GradedExercises";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ExercisesTable from "@/components/classroom/ExerciseTable";
@@ -153,14 +153,16 @@ export function ClassroomDetail() {
                 </Badge>
                 {["TEACHER"].includes(user?.role) && (
                   <div className="hidden items-center gap-2 md:ml-auto md:flex">
-                    <Link
-                      to={`/admin/create-exercise`}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <Button variant="secondary">Add Exercise</Button>
-                    </Link>
-                    <Link to={`/admin/classes/${classSlug}/grading`}>
+                    <Button variant="secondary">
+                      <Link
+                        to="/create-exercise"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        Add Exercise
+                      </Link>
+                    </Button>
+                    <Link to={`/classes/${classSlug}/grading`}>
                       <Button variant="secondary" className="h-10 py-4">
                         Grade Exercises
                       </Button>
@@ -189,12 +191,16 @@ export function ClassroomDetail() {
                     assignedExercises={
                       assignedExercisesRes?.assigned_exercises || []
                     }
+                    classSlug={classSlug || ""}
                   />
-                  <GradedExercises
-                    gradedUserExerciseRes={
-                      gradedExercisesRes?.graded_exercises || []
-                    }
-                  />
+                  {user.role === "STUDENT" && (
+                    <GradedExercises
+                      gradedUserExerciseRes={
+                        gradedExercisesRes?.graded_exercises || []
+                      }
+                      classSlug={classSlug || ""}
+                    />
+                  )}
                 </div>
               </div>
             </div>
