@@ -327,22 +327,16 @@ export function AdminCreateExercise() {
                           Markdown Content
                         </FormLabel>
                         <FormControl>
-                          <div
-                            style={{
-                              overflow: "auto",
-                            }}
-                          >
-                            <MDEditor
-                              overflow={true}
-                              value={field.value}
-                              // visibleDragbar={false}
-                              height="100%"
-                              onChange={(value: string | undefined) =>
-                                field.onChange(value || "")
-                              }
-                              className="w-full text-sm"
-                            />
-                          </div>
+                          <MDEditor
+                            overflow={true}
+                            value={field.value}
+                            visibleDragbar={false}
+                            height="100%"
+                            onChange={(value: string | undefined) =>
+                              field.onChange(value || "")
+                            }
+                            className="w-full text-sm"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
