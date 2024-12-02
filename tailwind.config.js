@@ -79,15 +79,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    function ({ addComponents }) {
-      addComponents({
-        ".wmde-markdown pre": {
-          overflow: "auto",
-          whiteSpace: "pre-wrap",
-        },
-      });
-    },
-  ],
+  plugins: [import("tailwindcss-animate")],
 };

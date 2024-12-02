@@ -31,8 +31,8 @@ export default function ExerciseDescriptionCard({
   }, [userStatus]);
 
   return (
-    <Card className="grid w-full max-w-7xl border-none h-[91vh]">
-      <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow">
+    <Card className="grid w-full max-w-7xl border-none h-[91vh] overflow-auto">
+      <ScrollArea className="max-h-[91vh] dark:border-zinc-800 rounded-xl border border-zinc-200 shadow w-full max-w-7xl overflow-auto">
         <Tabs
           value={activeTab}
           onValueChange={setActiveTab}

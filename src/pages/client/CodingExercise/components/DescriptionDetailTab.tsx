@@ -21,7 +21,7 @@ export default function DescriptionDetailTab({
   submittedAt?: string;
 }) {
   return (
-    <Card className="border-none">
+    <Card className="border-none w-full whitespace-normal max-w-full pr-4 overflow-auto">
       <CardHeader>
         <div className="flex justify-between items-center">
           <CardTitle>
@@ -47,7 +47,11 @@ export default function DescriptionDetailTab({
         </div>
       </CardHeader>
       <CardContent>
-        <MDEditor.Markdown source={markdownContent} className="text-sm" />
+        <MDEditor.Markdown
+          source={markdownContent}
+          className="text-sm"
+          style={{ overflow: "auto", overflowX: "auto" }}
+        />
       </CardContent>
       <CardFooter></CardFooter>
     </Card>
