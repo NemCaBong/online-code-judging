@@ -8,7 +8,6 @@ import {
 import MDEditor from "@uiw/react-md-editor";
 import { Badge } from "@/components/ui/badge";
 import { format } from "date-fns";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function DescriptionDetailTab({
   title,
@@ -48,9 +47,7 @@ export default function DescriptionDetailTab({
         </div>
       </CardHeader>
       <CardContent>
-        <ScrollArea className="w-full">
-          <MDEditor.Markdown source={markdownContent} className="text-sm" />
-        </ScrollArea>
+        <MDEditor.Markdown source={markdownContent} className="text-sm" />
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

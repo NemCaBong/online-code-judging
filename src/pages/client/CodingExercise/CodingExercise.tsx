@@ -194,26 +194,28 @@ export function CodingExercise() {
           <Header pathString={`classes/${classSlug}/exercises`} />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
             <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
-              <ExerciseDescriptionCard
-                title={exerciseRes.exercise.name}
-                markdownContent={exerciseRes.exercise.description}
-                evaluationContent={
-                  exerciseRes.exercise.user_exercise_results[0]?.evaluation ||
-                  "No evaluation available"
-                }
-                score={exerciseRes.exercise.user_exercise_results[0]?.score}
-                userStatus={
-                  (exerciseRes.exercise.user_exercise_results.length > 0 &&
-                    exerciseRes.exercise?.user_exercise_results[0]?.status) ||
-                  "not-done"
-                }
-                submittedAt={
-                  (exerciseRes.exercise.user_exercise_results.length > 0 &&
-                    exerciseRes.exercise?.user_exercise_results[0]
-                      ?.submitted_at) ||
-                  undefined
-                }
-              />
+              <ScrollArea className="w-[81vh]">
+                <ExerciseDescriptionCard
+                  title={exerciseRes.exercise.name}
+                  markdownContent={exerciseRes.exercise.description}
+                  evaluationContent={
+                    exerciseRes.exercise.user_exercise_results[0]?.evaluation ||
+                    "No evaluation available"
+                  }
+                  score={exerciseRes.exercise.user_exercise_results[0]?.score}
+                  userStatus={
+                    (exerciseRes.exercise.user_exercise_results.length > 0 &&
+                      exerciseRes.exercise?.user_exercise_results[0]?.status) ||
+                    "not-done"
+                  }
+                  submittedAt={
+                    (exerciseRes.exercise.user_exercise_results.length > 0 &&
+                      exerciseRes.exercise?.user_exercise_results[0]
+                        ?.submitted_at) ||
+                    undefined
+                  }
+                />
+              </ScrollArea>
             </div>
             <div className="flex flex-col justify-between h-full min-h-[50vh] gap-2">
               <ExerciseEditor
