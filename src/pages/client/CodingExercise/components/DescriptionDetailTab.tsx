@@ -47,14 +47,7 @@ export default function DescriptionDetailTab({
         </div>
       </CardHeader>
       <CardContent>
-        <MDEditor.Markdown
-          source={markdownContent}
-          className="text-sm overflow-scroll"
-          // style={{
-          //   overflow: "auto",
-          //   wordWrap: "break-word",
-          // }}
-        />
+        <MDEditor.Markdown source={markdownContent} className="text-sm" />
       </CardContent>
       <CardFooter></CardFooter>
     </Card>
