@@ -98,7 +98,7 @@ export default function ExerciseEditor({
             {codesFields.length <= 0 ? (
               <p>No exercise details found. Try again later!</p>
             ) : (
-              <Tabs defaultValue={codesFields[0].file_name}>
+              <Tabs defaultValue={"1"}>
                 <FormField
                   control={form.control}
                   name="codes"
@@ -106,8 +106,11 @@ export default function ExerciseEditor({
                     <FormItem>
                       <FormControl>
                         <TabsList>
-                          {codesFields.map((field) => (
-                            <TabsTrigger key={field.id} value={field.file_name}>
+                          {codesFields.map((field, index) => (
+                            <TabsTrigger
+                              key={index}
+                              value={(index + 1).toString()}
+                            >
                               {field.file_name}
                             </TabsTrigger>
                           ))}
@@ -117,7 +120,7 @@ export default function ExerciseEditor({
                   )}
                 />
                 {codesFields.map((field, index) => (
-                  <TabsContent key={field.id} value={field.file_name}>
+                  <TabsContent key={index} value={(index + 1).toString()}>
                     <FormField
                       control={form.control}
                       name={`codes.${index}.boilerplate_code`}

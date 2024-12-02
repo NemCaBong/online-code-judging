@@ -152,7 +152,11 @@ export function AdminCreateExercise() {
           fileName: "index.js",
         },
       ],
-      due_at: new Date(),
+      due_at: (() => {
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        return today;
+      })(),
     },
   });
 
@@ -324,6 +328,7 @@ export function AdminCreateExercise() {
                         </FormLabel>
                         <FormControl>
                           <MDEditor
+                            overflow={true}
                             value={field.value}
                             visibleDragbar={false}
                             height="100%"
