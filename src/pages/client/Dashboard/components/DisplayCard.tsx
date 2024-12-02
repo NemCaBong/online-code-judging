@@ -21,12 +21,12 @@ export function DisplayCard({ className, classInfo }: DisplayCardProps) {
 
   return (
     <Card
-      className={`${className} flex flex-col h-[18.5vh]`}
+      className={`${className} flex flex-col h-[18.5vh] min-h-[10vh] overflow-hidden`}
       x-chunk="dashboard-05-chunk-1"
     >
       <div className="flex-grow">
-        <CardHeader className="pb-0 flex justify-between">
-          <CardTitle className="text-xl">
+        <CardHeader className="pb-0 flex justify-between lg:pt-2 xl:pt-4">
+          <CardTitle className="text-lg lg:text-md md:text-md">
             <Link
               to={classInfo?.slug ? `/classes/${classInfo.slug}` : "#"}
               className="text-foreground hover:text-primary transition-colors duration-200"

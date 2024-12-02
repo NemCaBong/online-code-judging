@@ -74,7 +74,7 @@ export function PostCard({
           <div className="ml-14">
             <MDEditor.Markdown
               source={post.content ?? "# Hello world!"}
-              className="text-sm"
+              className="text-xs"
             />
           </div>
         </CardContent>
