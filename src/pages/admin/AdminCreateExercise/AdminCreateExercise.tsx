@@ -330,7 +330,7 @@ export function AdminCreateExercise() {
                           <MDEditor
                             overflow={true}
                             value={field.value}
-                            visibleDragbar={false}
+                            // visibleDragbar={false}
                             height="100%"
                             onChange={(value: string | undefined) =>
                               field.onChange(value || "")
