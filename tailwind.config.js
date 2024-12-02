@@ -83,7 +83,7 @@ module.exports = {
     require("tailwindcss-animate"),
     function ({ addComponents }) {
       addComponents({
-        ".wdme-markdown pre": {
+        ".wmde-markdown pre": {
           overflow: "auto",
           whiteSpace: "pre-wrap",
         },
