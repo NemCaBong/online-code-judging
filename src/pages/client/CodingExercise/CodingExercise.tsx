@@ -193,7 +193,7 @@ export function CodingExercise() {
         <div className="flex flex-col sm:py-4 sm:pl-14 sm:gap-4">
           <Header pathString={`classes/${classSlug}/exercises`} />
           <main className="grid flex-1 gap-4 overflow-auto p-4 md:grid-cols-1 lg:grid-cols-2  sm:px-6 sm:py-0 h-[91vh]">
-            <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full">
+            <div className="grid auto-rows-max items-start gap-4 md:gap-8 col-span-1 grid-flow-dense justify-items-end h-full w-[80vh]">
               <ExerciseDescriptionCard
                 title={exerciseRes.exercise.name}
                 markdownContent={exerciseRes.exercise.description}
