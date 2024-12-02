@@ -47,7 +47,7 @@ export default function DescriptionDetailTab({
         </div>
       </CardHeader>
       <CardContent>
-        <div className="overflow-auto">
+        <div className="overflow-auto w-full">
           <MDEditor.Markdown source={markdownContent} className="text-sm" />
         </div>
       </CardContent>
