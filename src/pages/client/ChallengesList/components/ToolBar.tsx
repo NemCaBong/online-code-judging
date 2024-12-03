@@ -41,6 +41,56 @@ const difficulties = [
   },
 ];
 
+const tagData = [
+  "Array",
+  "String",
+  "Dynamic Programming",
+  "Graph",
+  "Tree",
+  "Sorting",
+  "Searching",
+  "Greedy",
+  "Backtracking",
+  "Bit Manipulation",
+  "Math",
+  "Recursion",
+  "Linked List",
+  "Stack",
+  "Queue",
+  "Heap",
+  "Hash Table",
+  "Binary Search",
+  "Two Pointers",
+  "Sliding Window",
+  "Depth-First Search",
+  "Breadth-First Search",
+  "Divide and Conquer",
+  "Union Find",
+  "Trie",
+  "Segment Tree",
+  "Binary Indexed Tree",
+  "Topological Sort",
+  "Shortest Path",
+  "Minimum Spanning Tree",
+  "Knapsack",
+  "Floyd-Warshall",
+  "Dijkstra",
+  "Bellman-Ford",
+  "Kruskal",
+  "Prim",
+  "Network Flow",
+  "Geometry",
+  "Game Theory",
+  "Combinatorics",
+  "Monotonic Stack",
+  "String Matching",
+];
+
+const tagOptions = tagData.map((tag) => ({
+  value: `${tag}`,
+  label: tag,
+}));
+
 export function DataTableToolbar<TData>({
   table,
 }: DataTableToolbarProps<TData>) {
@@ -69,6 +119,13 @@ export function DataTableToolbar<TData>({
             column={table.getColumn("difficulty")}
             title="Difficulty"
             options={difficulties}
+          />
+        )}
+        {table.getColumn("tags") && (
+          <DataTableFacetedFilter
+            column={table.getColumn("tags")}
+            title="Tags"
+            options={tagOptions}
           />
         )}
         {isFiltered && (

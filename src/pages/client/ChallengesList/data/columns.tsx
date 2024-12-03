@@ -192,6 +192,25 @@ export const columns = (
     },
   },
   {
+    accessorKey: "tags",
+    header: "Tags",
+    cell: ({ row }) => {
+      const tags = row.getValue("tags") as { id: number; name: string }[];
+      return (
+        <div>
+          {tags.map((tag: { id: number; name: string }) => tag.name).join(", ")}
+        </div>
+      );
+    },
+    enableHiding: true,
+    filterFn: (row, columnId, filterValue) => {
+      const rowTags = row.getValue(columnId) as { id: number; name: string }[];
+      return filterValue.every((filterTag: string) =>
+        rowTags.some((rowTag) => rowTag.name === filterTag)
+      );
+    },
+  },
+  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => (
